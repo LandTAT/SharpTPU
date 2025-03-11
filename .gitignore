@@ -30,3 +30,7 @@
 *.exe
 *.out
 *.app
+
+.vscode/
+build/
+HLS_arbitrary_Precision_Types/
