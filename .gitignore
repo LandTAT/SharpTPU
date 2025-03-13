@@ -31,6 +31,9 @@
 *.out
 *.app
 
+#Macos file
+.DS_Store
+
 .vscode/
 build/
 HLS_arbitrary_Precision_Types/
