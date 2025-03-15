@@ -39,7 +39,13 @@ mFP mFP_mul(mFP x, mFP y);
 
 float mFP32_mul(float xx, float yy);
 
+mFP mFP_add(mFP x, mFP y);
+
+float mFP32_add(float xx, float yy);
+
 void pack(mFP x, void *elem, size_t elemSize);
 float pack_FP32(mFP x);
+
+void printHex(float value);
 
 #endif

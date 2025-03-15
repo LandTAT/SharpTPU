@@ -2,7 +2,7 @@
 #include <cstring>
 #include "modelFP.h"
 
-#define BIT(X, POS, LEN) (((X) >> (POS)) & ((1UL << (LEN)) - 1UL))
+#define BIT(X, POS, LEN) (((X) >> (POS)) & ((1UL << (LEN)) - 1UL)) // 从X 中取出从 LSB 开始的 POS 位长度为 LEN 的二进制数
 
 mFP unPack(int We, int Wf, const void *elem, size_t elemSize)
 {
@@ -151,6 +151,168 @@ float mFP32_mul(float xx, float yy)
     return pack_FP32(z);
 }
 
+mFP mFP_add(mFP x, mFP y)
+{
+    // assert x.We == y.We
+    mFP z = {0};
+    z.We = x.We;
+    z.Wf = x.Wf;
+    z.S = x.S && y.S; // 处理NaN，Inf，Zero的符号位
+
+    const int maxE = (1 << z.We) - 1;
+
+    if (x.isNaN || y.isNaN)
+    {
+        z.M = -1;
+        z.E = maxE;
+        z.isNaN = true;
+        return z;
+    }
+
+    if (x.isInf && y.isInf && x.S != y.S)
+    {
+        z.M = 0;
+        z.E = maxE;
+        z.isNaN = true;
+        return z;
+    }
+
+    if (x.isInf || y.isInf)
+    {
+        z.M = 0;
+        z.E = maxE;
+        z.isInf = true;
+        return z;
+    }
+
+    if (x.isZero && y.isZero)
+    {
+        z.M = 0;
+        z.E = 0;
+        z.isZero = true;
+        return z;
+    }
+
+    if (x.isZero)
+    {
+        return y;
+    }
+
+    if (y.isZero)
+    {
+        return x;
+    }
+
+    printf("before exchange\n");
+    x.show();
+    y.show();
+    // Align the exponents
+    if (x.E < y.E) // 交换x和y，默认 x的指数大于等于y的指数
+    {
+        mFP tmp = x;
+        x = y;
+        y = tmp;
+    }
+
+    printf("after exchange\n");
+    x.show();
+    y.show();
+
+    int64_t y_M_shift = y.M >> (x.E - y.E);
+    // exact addition
+    // require normize and rounding in next stage
+    z.Wf = x.Wf;
+
+    if (x.S == y.S)
+    {
+        z.M = x.M + (y.M >> (x.E - y.E));
+        z.S = x.S;
+    }
+    else
+    {
+        if (x.M > y_M_shift)
+        {
+            z.M = x.M - y_M_shift;
+            z.S = x.S;
+        }
+        else
+        {
+            z.M = y_M_shift - x.M;
+            z.S = y.S;
+        }
+        // printf("####\n");
+        // printf("%lx\n", (y.M >> (x.E - y.E)));
+        // z.show();
+        // printf("\n");
+    }
+    z.E = x.E;
+
+    return z;
+}
+
+float mFP32_add(float xx, float yy)
+{
+    // assert x.We == y.We == 8
+    // assert x.Wf == y.Wf == 23
+    mFP x = unPack(&xx);
+    mFP y = unPack(&yy);
+
+    mFP z = mFP_add(x, y);
+
+    z.show();
+
+    if (z.isNaN || z.isInf || z.isZero)
+    {
+        return pack_FP32(z);
+    }
+
+    int64_t M_int = BIT(z.M, z.Wf, 2); // z.M in [0, 4)
+
+    // Normalization
+    if (M_int & 0x2)
+    {
+        z.M = z.M >> 1;
+        z.E = z.E + 1;
+    }
+
+    // Round to Even
+    int64_t round_bit = BIT(z.M, z.Wf - x.Wf - 1, 1);
+    int64_t stick_bit = BIT(z.M, 0, z.Wf - x.Wf - 2);
+    z.M = z.M >> (z.Wf - x.Wf); // Clip to Wf = 23
+    z.Wf = x.Wf;
+    if (round_bit == 1 && (stick_bit != 0 || (z.M & 0x1)))
+    {
+        z.M = z.M + 1;
+    }
+
+    // Normalization
+    M_int = BIT(z.M, z.Wf, 2);
+    if (M_int & 0x2) // 如果尾数的整数部分等于 2
+    {
+        z.M = z.M >> 1;
+        z.E = z.E + 1;
+    }
+
+    const int maxE = (1 << z.We) - 1;
+
+    // Underflow
+    if (z.E <= 0)
+    {
+        z.M = 0;
+        z.E = 0;
+        z.isZero = true;
+    }
+    // Overflow
+    if (z.E >= maxE)
+    {
+        z.M = 0;
+        z.E = maxE;
+        z.isInf = true;
+    }
+
+    return pack_FP32(z);
+}
+
 void pack(mFP x, void *elem, size_t elemSize)
 {
     printf("Pack\n");
@@ -182,4 +344,12 @@ void mFP::show() const
     if (isZero)
         printf("isZero ");
     printf("\n");
+}
+
+// 打印浮点数的十六进制表示
+void printHex(float value)
+{
+    uint32_t hexValue;
+    std::memcpy(&hexValue, &value, sizeof(value)); // 将浮点数的内存内容复制到 uint32_t
+    printf("0x%08x ", hexValue);                   // 以十六进制格式打印
 }
