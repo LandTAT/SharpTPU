@@ -206,8 +206,8 @@ mFP mFP_add(mFP x, mFP y)
     printf("before exchange\n");
     x.show();
     y.show();
-    // Align the exponents
-    if (x.E < y.E) // 交换x和y，默认 x的指数大于等于y的指数
+    // Swap x and y, x.E >= y.E
+    if (x.E < y.E)
     {
         mFP tmp = x;
         x = y;
@@ -218,34 +218,26 @@ mFP mFP_add(mFP x, mFP y)
     x.show();
     y.show();
 
-    int64_t y_M_shift = y.M >> (x.E - y.E);
+    int32_t exp_diff = x.E - y.E;
+    // saturation of exp_diff
+    if (exp_diff > x.Wf + 2)
+        exp_diff = x.Wf + 2;
+
+    int64_t y_M_shift = y.M >> exp_diff;
     // exact addition
     // require normize and rounding in next stage
-    z.Wf = x.Wf;
-
+    z.Wf = x.Wf; // 默认 x 是大的，所以 z 的小数部分位数和 x 一样
+    z.S = x.S;
     if (x.S == y.S)
     {
-        z.M = x.M + (y.M >> (x.E - y.E));
-        z.S = x.S;
+        z.M = x.M + y_M_shift;
     }
     else
     {
-        if (x.M > y_M_shift)
-        {
-            z.M = x.M - y_M_shift;
-            z.S = x.S;
-        }
-        else
-        {
-            z.M = y_M_shift - x.M;
-            z.S = y.S;
-        }
-        // printf("####\n");
-        // printf("%lx\n", (y.M >> (x.E - y.E)));
-        // z.show();
-        // printf("\n");
+        z.M = x.M - y_M_shift;
     }
     z.E = x.E;
+    // z.show();
 
     return z;
 }
@@ -266,32 +258,34 @@ float mFP32_add(float xx, float yy)
         return pack_FP32(z);
     }
 
-    int64_t M_int = BIT(z.M, z.Wf, 2); // z.M in [0, 4)
-
-    // Normalization
+    // Normalize
+    int64_t M_int = BIT(z.M, z.Wf, 2); // z.M in [1, 4)
+    // M_int实际上取得是z.M的最高两位，在这里取得是 24 位和 25 位
+    //  Normalization
     if (M_int & 0x2)
     {
+        printf("Normalization\n");
         z.M = z.M >> 1;
         z.E = z.E + 1;
     }
 
-    // Round to Even
-    int64_t round_bit = BIT(z.M, z.Wf - x.Wf - 1, 1);
-    int64_t stick_bit = BIT(z.M, 0, z.Wf - x.Wf - 2);
-    z.M = z.M >> (z.Wf - x.Wf); // Clip to Wf = 23
-    z.Wf = x.Wf;
-    if (round_bit == 1 && (stick_bit != 0 || (z.M & 0x1)))
+    // leading zero count
+    int lzc = 0;
+
+    for (int i = z.Wf; i >= 0; --i)
     {
-        z.M = z.M + 1;
+        if (BIT(z.M, i, 1) == 1)
+        {
+            break;
+        }
+        lzc++;
     }
 
-    // Normalization
-    M_int = BIT(z.M, z.Wf, 2);
-    if (M_int & 0x2) // 如果尾数的整数部分等于 2
-    {
-        z.M = z.M >> 1;
-        z.E = z.E + 1;
-    }
+    z.show();
+    printf("lzc = %d\n", lzc);
+    // shift
+    z.M = z.M << lzc;
+    z.E = z.E - lzc;
 
     const int maxE = (1 << z.We) - 1;
 

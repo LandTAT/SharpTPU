@@ -65,69 +65,69 @@ int main()
     // 用于存储出错的结果
     std::vector<std::tuple<int, float, float, float, float, float>> error_cases;
 
-    // for (i = 0; i < test_data.size(); i++)
-    // {
-    //     for (j = 0; j < test_data.size(); j++)
-    //     {
-    //         float t = mFP32_add(test_data[i], test_data[j]);
-    //         float ref = test_data[i] + test_data[j];
-    //         float error = ref - t;
+    for (i = 0; i < test_data.size(); i++)
+    {
+        for (j = 0; j < test_data.size(); j++)
+        {
+            float t = mFP32_add(test_data[i], test_data[j]);
+            float ref = test_data[i] + test_data[j];
+            float error = ref - t;
 
-    //         // 略过 error 为 NaN 或正负无穷的情况
-    //         if (error == 0.0 || std::isnan(error) || std::isinf(error) || error == denormalized)
-    //         {
-    //             continue;
-    //         }
-    //         else
-    //         {
-    //             printf("\nTest %d: %.10f * %.10f\n", cnt, test_data[i], test_data[j]);
-    //             printf("Ref out: %.20f, Model out: %.20f, Error = %.20f\n", ref, t, error);
-    //             printHex(ref);
-    //             printHex(t);
-    //             printHex(error);
+            // 略过 error 为 NaN 或正负无穷的情况
+            if (error == 0.0 || std::isnan(error) || std::isinf(error) || error == denormalized)
+            {
+                continue;
+            }
+            else
+            {
+                printf("\nTest %d: %.10f * %.10f\n", cnt, test_data[i], test_data[j]);
+                printf("Ref out: %.20f, Model out: %.20f, Error = %.20f\n", ref, t, error);
+                printHex(ref);
+                printHex(t);
+                printHex(error);
 
-    //             // 记录出错的结果
-    //             error_cases.emplace_back(cnt++, test_data[i], test_data[j], ref, t, error);
+                // 记录出错的结果
+                error_cases.emplace_back(cnt++, test_data[i], test_data[j], ref, t, error);
 
-    //         }
-    //     }
-    // }
+            }
+        }
+    }
 
-    // // 打印所有记录的错误信息
-    // printf("\nTotal ERROR cases: %d\n", (int)error_cases.size());
-    // for (const auto &[id, a, b, ref_out, model_out, err] : error_cases)
-    // {
-    //     printf("\nError Case %d:\n", id);
-    //     printf("Inputs: %.10f + %.10f\n", a, b);
-    //     printf("hex Inputs: ");
-    //     printHex(a);
-    //     printf(" ");
-    //     printHex(b);
-    //     printf("\n");
-    //     printf("Ref out: %.20f, Model out: %.20f, Error = %.20f\n", ref_out, model_out, err);
-    //     printf("Hex Outputs: ");
-    //     printHex(ref_out);
-    //     printf(" ");
-    //     printHex(model_out);
-    //     printf(" ");
-    //     printHex(err);
-    //     printf("\n");
-    // }
+    // 打印所有记录的错误信息
+    printf("\nTotal ERROR cases: %d\n", (int)error_cases.size());
+    for (const auto &[id, a, b, ref_out, model_out, err] : error_cases)
+    {
+        printf("\nError Case %d:\n", id);
+        printf("Inputs: %.10f + %.10f\n", a, b);
+        printf("hex Inputs: ");
+        printHex(a);
+        printf(" ");
+        printHex(b);
+        printf("\n");
+        printf("Ref out: %.20f, Model out: %.20f, Error = %.20f\n", ref_out, model_out, err);
+        printf("Hex Outputs: ");
+        printHex(ref_out);
+        printf(" ");
+        printHex(model_out);
+        printf(" ");
+        printHex(err);
+        printf("\n");
+    }
 
     // 测试加法
-    x = -28.8959045410f;
-    y = 81.4562988281f;
-    float ref = x + y;
-    float model = mFP32_add(x, y);
-    float error = ref - model;
-    printf("\nTest %d: %.10f + %.10f\n", cnt, x, y);
-    printf("Ref out: %.20f, Model out: %.20f, Error = %.20f\n", ref, model, error);
-    printHex(ref);
-    printf(" ");
-    printHex(model);
-    printf(" ");
-    printHex(error);
-    printf("\n");
+    // x = -28.8959045410f;
+    // y = 81.4562988281f;
+    // float ref = x + y;
+    // float model = mFP32_add(x, y);
+    // float error = ref - model;
+    // printf("\nTest %d: %.10f + %.10f\n", cnt, x, y);
+    // printf("Ref out: %.20f, Model out: %.20f, Error = %.20f\n", ref, model, error);
+    // printHex(ref);
+    // printf(" ");
+    // printHex(model);
+    // printf(" ");
+    // printHex(error);
+    // printf("\n");
 
     return 0;
 }
