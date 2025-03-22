@@ -24,8 +24,8 @@ int main()
     std::srand(std::time(nullptr));
 
     // 定义随机数生成范围
-    const float minRand = -100.0f; // 随机数最小值
-    const float maxRand = 100.0f;  // 随机数最大值
+    const float minRand = -100.000000f; // 随机数最小值
+    const float maxRand = 100.000000f;  // 随机数最大值
 
     // 生成随机数的函数
     auto getRandomFloat = [&]() -> float
@@ -74,7 +74,7 @@ int main()
             float error = ref - t;
 
             // 略过 error 为 NaN 或正负无穷的情况
-            if (error == 0.0 || std::isnan(error) || std::isinf(error) || error == denormalized)
+            if (error == 0.0 || (std::isnan(ref) && std::isnan(t)) || (std::isinf(ref) && std::isinf(t)) || (error == denormalized))
             {
                 continue;
             }
@@ -88,7 +88,6 @@ int main()
 
                 // 记录出错的结果
                 error_cases.emplace_back(cnt++, test_data[i], test_data[j], ref, t, error);
-
             }
         }
     }
@@ -115,8 +114,8 @@ int main()
     }
 
     // 测试加法
-    // x = -28.8959045410f;
-    // y = 81.4562988281f;
+    // x = -57.3509445190f;
+    // y = 59.5049133301f;
     // float ref = x + y;
     // float model = mFP32_add(x, y);
     // float error = ref - model;

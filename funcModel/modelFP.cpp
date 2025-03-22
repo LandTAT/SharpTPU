@@ -67,7 +67,6 @@ mFP mFP_mul(mFP x, mFP y)
 
     if (x.isZero || y.isZero)
     {
-        printf("3\n");
         z.M = 0;
         z.E = 0;
         z.isZero = true;
@@ -171,7 +170,7 @@ mFP mFP_add(mFP x, mFP y)
 
     if (x.isInf && y.isInf && x.S != y.S)
     {
-        z.M = 0;
+        z.M = -1;
         z.E = maxE;
         z.isNaN = true;
         return z;
@@ -208,6 +207,12 @@ mFP mFP_add(mFP x, mFP y)
     y.show();
     // Swap x and y, x.E >= y.E
     if (x.E < y.E)
+    {
+        mFP tmp = x;
+        x = y;
+        y = tmp;
+    }
+    else if (x.E == y.E && x.M < y.M)
     {
         mFP tmp = x;
         x = y;
@@ -258,10 +263,10 @@ float mFP32_add(float xx, float yy)
         return pack_FP32(z);
     }
 
-    // Normalize
+    //  Normalization
     int64_t M_int = BIT(z.M, z.Wf, 2); // z.M in [1, 4)
     // M_int实际上取得是z.M的最高两位，在这里取得是 24 位和 25 位
-    //  Normalization
+
     if (M_int & 0x2)
     {
         printf("Normalization\n");
