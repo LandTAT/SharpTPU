@@ -228,21 +228,35 @@ mFP mFP_add(mFP x, mFP y)
     if (exp_diff > x.Wf + 2)
         exp_diff = x.Wf + 2;
 
-    int64_t y_M_shift = y.M >> exp_diff;
+    // 对x.M和 y.M都扩展 3 位(保护位，舍入位，粘滞位)
+    int64_t x_M_shift = x.M << 3;
+    int64_t y_M_shift = y.M << 3;
+    if (exp_diff > 2)
+    {
+        uint32_t mask = BIT(y.M, 0, exp_diff - 2);
+        y_M_shift >>= (exp_diff - 2);
+        y_M_shift |= mask ? 0x1 : 0x0; // 粘滞位
+    }
+    else
+    {
+        y_M_shift >>= exp_diff;
+    }
     // exact addition
     // require normize and rounding in next stage
     z.Wf = x.Wf; // 默认 x 是大的，所以 z 的小数部分位数和 x 一样
     z.S = x.S;
+    // printf("x_M_shift = %lx, y_M_shift = %lx\n", x_M_shift, y_M_shift);
+
     if (x.S == y.S)
     {
-        z.M = x.M + y_M_shift;
+        z.M = x_M_shift + y_M_shift;
     }
     else
     {
-        z.M = x.M - y_M_shift;
+        z.M = x_M_shift - y_M_shift;
     }
     z.E = x.E;
-    // z.show();
+    z.show();
 
     return z;
 }
@@ -256,28 +270,19 @@ float mFP32_add(float xx, float yy)
 
     mFP z = mFP_add(x, y);
 
-    z.show();
+    // z.show();
 
     if (z.isNaN || z.isInf || z.isZero)
     {
         return pack_FP32(z);
     }
 
-    //  Normalization
-    int64_t M_int = BIT(z.M, z.Wf, 2); // z.M in [1, 4)
-    // M_int实际上取得是z.M的最高两位，在这里取得是 24 位和 25 位
-
-    if (M_int & 0x2)
-    {
-        printf("Normalization\n");
-        z.M = z.M >> 1;
-        z.E = z.E + 1;
-    }
+    printf("z.M = %lx\n", z.M);
 
     // leading zero count
     int lzc = 0;
 
-    for (int i = z.Wf; i >= 0; --i)
+    for (int i = z.Wf + 4; i >= 0; --i)
     {
         if (BIT(z.M, i, 1) == 1)
         {
@@ -290,7 +295,46 @@ float mFP32_add(float xx, float yy)
     printf("lzc = %d\n", lzc);
     // shift
     z.M = z.M << lzc;
+
     z.E = z.E - lzc;
+
+    //  Normalization
+
+    printf("Normalization\n");
+    z.show();
+    uint32_t M_int = BIT(z.M, z.Wf + 3, 2); // z.M in [1, 4)
+    // M_int实际上取得是z.M的符号位和进位
+    if (M_int & 0x2)
+    {
+        printf("Normalization\n");
+        z.M = z.M >> 1;
+        z.E = z.E + 1;
+    }
+
+    // Round to Even
+    int64_t guard_bit = BIT(z.M, 2, 1);
+    int64_t round_bit = BIT(z.M, 1, 1);
+    int64_t stick_bit = BIT(z.M, 0, 1);
+    printf("z.M = %lx\n", z.M);
+    z.M = BIT(z.M, 3, z.Wf);
+    printf("z.M = %lx\n", z.M);
+    if (guard_bit == 0 || (round_bit == 0 && stick_bit == 0 && z.M & 0x0))
+    {
+        // do nothing
+    }
+    else
+    {
+        z.M = z.M + 1;
+    }
+
+    M_int = BIT(z.M, z.Wf, 2); // z.M in [1, 4)
+    // M_int实际上取得是z.M的最高两位
+    if (M_int & 0x2)
+    {
+        printf("Normalization\n");
+        z.M = z.M >> 1;
+        z.E = z.E + 1;
+    }
 
     const int maxE = (1 << z.We) - 1;
 
@@ -343,12 +387,4 @@ void mFP::show() const
     if (isZero)
         printf("isZero ");
     printf("\n");
-}
-
-// 打印浮点数的十六进制表示
-void printHex(float value)
-{
-    uint32_t hexValue;
-    std::memcpy(&hexValue, &value, sizeof(value)); // 将浮点数的内存内容复制到 uint32_t
-    printf("0x%08x ", hexValue);                   // 以十六进制格式打印
 }

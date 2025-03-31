@@ -46,6 +46,13 @@ float mFP32_add(float xx, float yy);
 void pack(mFP x, void *elem, size_t elemSize);
 float pack_FP32(mFP x);
 
-void printHex(float value);
+// 打印任意类型数据的十六进制表示
+template <typename T>
+void printHex(const T &value)
+{
+    uint32_t hexValue;
+    std::memcpy(&hexValue, &value, sizeof(T)); // 将浮点数的内存内容复制到 uint32_t
+    printf("0x%08x ", hexValue);               // 以十六进制格式打印
+}
 
 #endif

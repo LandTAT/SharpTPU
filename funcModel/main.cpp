@@ -115,7 +115,8 @@ int main()
 
     // 测试加法
     // x = -57.3509445190f;
-    // y = 59.5049133301f;
+    // // y = 59.5049133301f;
+    // y = -57.3509445190f;
     // float ref = x + y;
     // float model = mFP32_add(x, y);
     // float error = ref - model;
