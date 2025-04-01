@@ -32,19 +32,27 @@ public:
 };
 // Value = (-1) ^ S * M * 2 ^ (E - Bias)
 
+// Float unPack & Pack
 mFP unPack(int We, int Wf, const void *elem, size_t elemSize);
 mFP unPack(const float *fp32);
-
-mFP mFP_mul(mFP x, mFP y);
-
-float mFP32_mul(float xx, float yy);
-
-mFP mFP_add(mFP x, mFP y);
-
-float mFP32_add(float xx, float yy);
-
 void pack(mFP x, void *elem, size_t elemSize);
 float pack_FP32(mFP x);
+
+// Float Multiplication
+mFP mFP_mul(mFP x, mFP y);
+float mFP32_mul(float xx, float yy);
+
+// Float Addition
+mFP mFP_add(mFP x, mFP y);
+float mFP32_add(float xx, float yy);
+
+// Utility
+uint32_t F32toU32(float x);
+float U32toF32(uint32_t x);
+bool fp32_equ(float x, float y);
+
+// 从 X 中取出从 LSB 开始的 POS 位长度为 LEN 的二进制数
+#define BIT(X, POS, LEN) (((X) >> (POS)) & ((1UL << (LEN)) - 1UL))
 
 // 打印任意类型数据的十六进制表示
 template <typename T>

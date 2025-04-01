@@ -10,6 +10,52 @@
 #include <cstdlib> // 用于 rand() 和 srand()
 #include <ctime>   // 用于 time()
 
+using FP32Limit = std::numeric_limits<float>;
+
+int main()
+{
+    const std::vector<float> testVec = {
+        +3.14159F, -3.14159F,
+        +2.71828F, -2.71828F,
+        +0.0F, -0.0F,
+        +1.0F, -1.0F,
+        +1e+30F, -1e+30F,
+        +1e-30F, -1e-30F,
+        +FP32Limit::min(), -FP32Limit::min(), 
+        +FP32Limit::max(), -FP32Limit::max(), 
+        +FP32Limit::epsilon(), -FP32Limit::epsilon(), 
+        // +FP32Limit::denorm_min(), -FP32Limit::denorm_min(), 
+        +FP32Limit::infinity(), -FP32Limit::infinity(), 
+        +FP32Limit::quiet_NaN(), -FP32Limit::quiet_NaN()
+    };
+    const int N = testVec.size();
+    int err = 0;
+
+    for (int i = 0; i < N; ++i)
+    {
+        for (int j = 0; j < N; ++j)
+        {
+            float x = testVec[i];
+            float y = testVec[j];
+            float z = mFP32_mul(x, y);
+            float g = x * y;
+            if (!fp32_equ(z, g))
+            {
+                ++err;
+                printf("Error #%d, %d; %f * %f = %f, %f\n", i, j, x, y, z, g);
+            }
+        }
+    }
+    printf("Float32 MUL ");
+    if (err == 0)
+        printf("PASS\n");
+    else
+        printf("FAIL %d in %d\n", err, N * N);
+
+    return 0;
+}
+
+/*
 // 定义非规格化数
 float createDenormalized(uint32_t bitPattern)
 {
@@ -131,3 +177,4 @@ int main()
 
     return 0;
 }
+*/
