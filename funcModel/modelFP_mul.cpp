@@ -13,27 +13,27 @@ mFP mFP_mul(mFP x, mFP y)
 
     const int maxE = (1 << z.We) - 1;
 
-    if (x.isNaN || y.isNaN || (x.isZero && y.isInf) || (x.isInf && y.isZero))
+    if (x.isNaN() || y.isNaN() || (x.isZero() && y.isInf()) || (x.isInf() && y.isZero()))
     {
         z.M = -1;
         z.E = maxE;
-        z.isNaN = true;
+        z.exn = EXN_NAN;
         return z;
     }
 
-    if (x.isInf || y.isInf)
+    if (x.isInf() || y.isInf())
     {
         z.M = 0;
         z.E = maxE;
-        z.isInf = true;
+        z.exn = EXN_INF;
         return z;
     }
 
-    if (x.isZero || y.isZero)
+    if (x.isZero() || y.isZero())
     {
         z.M = 0;
         z.E = 0;
-        z.isZero = true;
+        z.exn = EXN_ZERO;
         return z;
     }
 
@@ -42,6 +42,7 @@ mFP mFP_mul(mFP x, mFP y)
     z.Wf = x.Wf + y.Wf;
     z.M = x.M * y.M;
     z.E = x.E + y.E + 1 - (1 << (z.We - 1));
+    z.exn = EXN_NORM;
 
     return z;
 }
@@ -62,7 +63,7 @@ float mFP32_mul(float xx, float yy)
 
     // z.show();
 
-    if (z.isNaN || z.isInf || z.isZero)
+    if (z.isNaN() || z.isInf() || z.isZero())
     {
         return pack_FP32(z);
     }
@@ -101,14 +102,14 @@ float mFP32_mul(float xx, float yy)
     {
         z.M = 0;
         z.E = 0;
-        z.isZero = true;
+        z.exn = EXN_ZERO;
     }
     // Overflow
     if (z.E >= maxE)
     {
         z.M = 0;
         z.E = maxE;
-        z.isInf = true;
+        z.exn = EXN_INF;
     }
 
     return pack_FP32(z);

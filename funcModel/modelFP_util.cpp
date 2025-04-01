@@ -44,11 +44,11 @@ bool fp32_equ(float x, float y)
 void mFP::show() const
 {
     printf("E%df%d: %c M = %lx E = %d ", We, Wf, S ? '-' : '+', M, E);
-    if (isNaN)
+    if (isNaN())
         printf("isNaN ");
-    if (isInf)
+    if (isInf())
         printf("isInf ");
-    if (isZero)
+    if (isZero())
         printf("isZero ");
     printf("\n");
 }

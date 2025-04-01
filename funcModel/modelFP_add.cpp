@@ -9,47 +9,48 @@ mFP mFP_add(mFP x, mFP y)
     z.We = x.We;
     z.Wf = x.Wf;
     z.S = x.S && y.S; // 处理NaN，Inf，Zero的符号位
+    z.exn = EXN_NORM;
 
     const int maxE = (1 << z.We) - 1;
 
-    if (x.isNaN || y.isNaN)
+    if (x.isNaN() || y.isNaN())
     {
         z.M = -1;
         z.E = maxE;
-        z.isNaN = true;
+        z.exn = EXN_NAN;
         return z;
     }
 
-    if (x.isInf && y.isInf && x.S != y.S)
+    if (x.isInf() && y.isInf() && x.S != y.S)
     {
         z.M = -1;
         z.E = maxE;
-        z.isNaN = true;
+        z.exn = EXN_NAN;
         return z;
     }
 
-    if (x.isInf || y.isInf)
+    if (x.isInf() || y.isInf())
     {
         z.M = 0;
         z.E = maxE;
-        z.isInf = true;
+        z.exn = EXN_INF;
         return z;
     }
 
-    if (x.isZero && y.isZero)
+    if (x.isZero() && y.isZero())
     {
         z.M = 0;
         z.E = 0;
-        z.isZero = true;
+        z.exn = EXN_ZERO;
         return z;
     }
 
-    if (x.isZero)
+    if (x.isZero())
     {
         return y;
     }
 
-    if (y.isZero)
+    if (y.isZero())
     {
         return x;
     }
@@ -124,7 +125,7 @@ float mFP32_add(float xx, float yy)
 
     // z.show();
 
-    if (z.isNaN || z.isInf || z.isZero)
+    if (z.isNaN() || z.isInf() || z.isZero())
     {
         return pack_FP32(z);
     }
@@ -195,14 +196,14 @@ float mFP32_add(float xx, float yy)
     {
         z.M = 0;
         z.E = 0;
-        z.isZero = true;
+        z.exn = EXN_ZERO;
     }
     // Overflow
     if (z.E >= maxE)
     {
         z.M = 0;
         z.E = maxE;
-        z.isInf = true;
+        z.exn = EXN_INF;
     }
 
     return pack_FP32(z);

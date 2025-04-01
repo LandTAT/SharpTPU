@@ -24,9 +24,17 @@ mFP unPack(int We, int Wf, const void *elem, size_t elemSize)
     info.S = sign != 0;
 
     // Treat all denormalized numbers as Zero
-    info.isZero = expn == 0;
-    info.isInf = expn == maxE && frac == 0;
-    info.isNaN = expn == maxE && frac != 0;
+    // info.isZero = expn == 0;
+    // info.isInf = expn == maxE && frac == 0;
+    // info.isNaN = expn == maxE && frac != 0;
+    if (expn == maxE)
+    {
+        info.exn = frac == 0 ? EXN_INF  : EXN_NAN ;
+    }
+    else
+    {
+        info.exn = expn == 0 ? EXN_ZERO : EXN_NORM;
+    }
 
     return info;
 }

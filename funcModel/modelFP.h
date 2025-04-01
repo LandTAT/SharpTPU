@@ -4,6 +4,12 @@
 #include <cstddef>
 #include <cstdint>
 
+using mFP_exn_t = uint8_t;
+constexpr mFP_exn_t EXN_ZERO = 0x0;
+constexpr mFP_exn_t EXN_NORM = 0x1;
+constexpr mFP_exn_t EXN_INF  = 0x2;
+constexpr mFP_exn_t EXN_NAN  = 0x3;
+
 /*
     FP32: We = 8, Wf = 23
     FP16: We = 5, Wf = 10
@@ -12,22 +18,17 @@
 */
 struct mFP
 {
-    int We;    // exponent width
-    int Wf;    // fraction width
-    int64_t M; // M = 1.f    (1 <= f < 2)
-    int32_t E; // E = e - Bias
-    bool S;    // 0: positive, 1: negative
-    bool isZero;
-    bool isInf;
-    bool isNaN;
-
-    // 默认构造函数，初始化所有成员变量
-    mFP() : We(0), Wf(0), M(0), E(0), S(false), isZero(false), isInf(false), isNaN(false) {}
-    mFP(int We = 0, int Wf = 0, int64_t M = 0,
-        int32_t E = 0, bool S = false, bool isZero = false,
-        bool isInf = false, bool isNaN = false) : We(We), Wf(Wf), M(M), E(E), S(S), isZero(isZero), isInf(isInf), isNaN(isNaN) {}
-
+    int We;         // exponent width
+    int Wf;         // fraction width
+    int64_t M;      // M = 1.f    (1 <= f < 2)
+    int32_t E;      // E = e - Bias
+    bool S;         // 0: positive, 1: negative
+    mFP_exn_t exn;  // 00: Zero, 01: Norm, 10: Inf, 11: NaN
 public:
+    bool isZero() const { return exn == EXN_ZERO; }
+    bool isNorm() const { return exn == EXN_NORM; }
+    bool isInf()  const { return exn == EXN_INF ; }
+    bool isNaN()  const { return exn == EXN_NAN ; }
     void show() const;
 };
 // Value = (-1) ^ S * M * 2 ^ (E - Bias)
