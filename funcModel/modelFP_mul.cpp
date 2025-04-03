@@ -11,29 +11,21 @@ mFP mFP_mul(mFP x, mFP y)
     z.Wf = x.Wf;
     z.S = x.S ^ y.S;
 
-    const int maxE = (1 << z.We) - 1;
-
     if (x.isNaN() || y.isNaN() || (x.isZero() && y.isInf()) || (x.isInf() && y.isZero()))
     {
-        z.M = -1;
-        z.E = maxE;
-        z.exn = EXN_NAN;
+        z.setNaN();
         return z;
     }
 
     if (x.isInf() || y.isInf())
     {
-        z.M = 0;
-        z.E = maxE;
-        z.exn = EXN_INF;
+        z.setInf();
         return z;
     }
 
     if (x.isZero() || y.isZero())
     {
-        z.M = 0;
-        z.E = 0;
-        z.exn = EXN_ZERO;
+        z.setZero();
         return z;
     }
 

@@ -41,9 +41,32 @@ bool fp32_equ(float x, float y)
     return x == y;
 }
 
+void mFP::setZero()
+{
+    M = 0;
+    E = 0;
+    exn = EXN_ZERO;
+}
+
+void mFP::setInf()
+{
+    const int allOneE = (1 << We) - 1;
+    M = 0;
+    E = allOneE;
+    exn = EXN_INF;
+}
+
+void mFP::setNaN()
+{
+    const int allOneE = (1 << We) - 1;
+    M = -1;
+    E = allOneE;
+    exn = EXN_NAN;
+}
+
 void mFP::show() const
 {
-    printf("E%df%d: %c M = %lx E = %d ", We, Wf, S ? '-' : '+', M, E);
+    printf("E%df%d: %c M 0x%lx E %d ", We, Wf, S ? '-' : '+', M, E);
     if (isNaN())
         printf("isNaN ");
     if (isInf())

@@ -52,129 +52,32 @@ int main()
     else
         printf("FAIL %d in %d\n", err, N * N);
 
-    return 0;
-}
-
-/*
-// 定义非规格化数
-float createDenormalized(uint32_t bitPattern)
-{
-    float result;
-    std::memcpy(&result, &bitPattern, sizeof(result));
-    return result;
-}
-
-int main()
-{
-    // 初始化随机数种子
-    std::srand(std::time(nullptr));
-
-    // 定义随机数生成范围
-    const float minRand = -100.000000f; // 随机数最小值
-    const float maxRand = 100.000000f;  // 随机数最大值
-
-    // 生成随机数的函数
-    auto getRandomFloat = [&]() -> float
+    for (int i = 0; i < N; ++i)
     {
-        return minRand + static_cast<float>(std::rand()) / (static_cast<float>(RAND_MAX / (maxRand - minRand)));
-    };
-
-    // 替换 x 和 y 为随机数
-    float x = getRandomFloat();
-    float y = getRandomFloat();
-    float z = x * y;
-
-    // NaN 测试数据
-    float NaN = std::numeric_limits<float>::quiet_NaN();
-
-    // 正无穷大测试数据
-    float posInf = std::numeric_limits<float>::infinity();
-
-    // 负无穷大测试数据
-    float negInf = -std::numeric_limits<float>::infinity();
-
-    // Zero 测试数据：expn == 0, frac == 0
-    float zero = 0.0f;
-
-    // 正常数：expn != 0, expn != maxE
-    float normal = 1.0f;
-
-    // 非规格化数（Denormalized Number）：expn == 0, frac != 0
-    float denormalized = createDenormalized(0x00000001);  // 最小的非规格化数
-    float denormalized2 = createDenormalized(0x00000002); // 较大的非规格化数
-
-    // 将随机数 x 和 y 添加到测试数据中
-    std::vector<float> test_data = {NaN, posInf, negInf, zero, normal, denormalized, x, y};
-
-    int i, j, cnt = 0;
-
-    // 用于存储出错的结果
-    std::vector<std::tuple<int, float, float, float, float, float>> error_cases;
-
-    for (i = 0; i < test_data.size(); i++)
-    {
-        for (j = 0; j < test_data.size(); j++)
+        for (int j = 0; j < N; ++j)
         {
-            float t = mFP32_add(test_data[i], test_data[j]);
-            float ref = test_data[i] + test_data[j];
-            float error = ref - t;
-
-            // 略过 error 为 NaN 或正负无穷的情况
-            if (error == 0.0 || (std::isnan(ref) && std::isnan(t)) || (std::isinf(ref) && std::isinf(t)) || (error == denormalized))
+            float x = testVec[i];
+            float y = testVec[j];
+            float z = mFP32_add2(x, y);
+            float g = x + y;
+            if (!fp32_equ(z, g))
             {
-                continue;
-            }
-            else
-            {
-                printf("\nTest %d: %.10f * %.10f\n", cnt, test_data[i], test_data[j]);
-                printf("Ref out: %.20f, Model out: %.20f, Error = %.20f\n", ref, t, error);
-                printHex(ref);
-                printHex(t);
-                printHex(error);
-
-                // 记录出错的结果
-                error_cases.emplace_back(cnt++, test_data[i], test_data[j], ref, t, error);
+                ++err;
+                printf("Error #%d, %d; %g + %g = %g %g %e 0x%x\n", i, j, x, y, z, g, z - g, F32toU32(z) - F32toU32(g));
             }
         }
     }
-
-    // 打印所有记录的错误信息
-    printf("\nTotal ERROR cases: %d\n", (int)error_cases.size());
-    for (const auto &[id, a, b, ref_out, model_out, err] : error_cases)
-    {
-        printf("\nError Case %d:\n", id);
-        printf("Inputs: %.10f + %.10f\n", a, b);
-        printf("hex Inputs: ");
-        printHex(a);
-        printf(" ");
-        printHex(b);
-        printf("\n");
-        printf("Ref out: %.20f, Model out: %.20f, Error = %.20f\n", ref_out, model_out, err);
-        printf("Hex Outputs: ");
-        printHex(ref_out);
-        printf(" ");
-        printHex(model_out);
-        printf(" ");
-        printHex(err);
-        printf("\n");
-    }
-
-    // 测试加法
-    // x = -57.3509445190f;
-    // // y = 59.5049133301f;
-    // y = -57.3509445190f;
-    // float ref = x + y;
-    // float model = mFP32_add(x, y);
-    // float error = ref - model;
-    // printf("\nTest %d: %.10f + %.10f\n", cnt, x, y);
-    // printf("Ref out: %.20f, Model out: %.20f, Error = %.20f\n", ref, model, error);
-    // printHex(ref);
-    // printf(" ");
-    // printHex(model);
-    // printf(" ");
-    // printHex(error);
-    // printf("\n");
-
+    printf("Float32 ADD2 ");
+    if (err == 0)
+        printf("PASS\n");
+    else
+        printf("FAIL %d in %d\n", err, N * N);
+/*
+    float x = +2.71828F;
+    float y = +FP32Limit::epsilon();
+    float z = mFP32_add2(x, y);
+    float g = x + y;
+    printf("%g + %g = %g %g %e 0x%x\n", x, y, z, g, z - g, F32toU32(z) - F32toU32(g));
+*/
     return 0;
 }
-*/

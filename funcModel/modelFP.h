@@ -29,6 +29,9 @@ public:
     bool isNorm() const { return exn == EXN_NORM; }
     bool isInf()  const { return exn == EXN_INF ; }
     bool isNaN()  const { return exn == EXN_NAN ; }
+    void setZero();
+    void setInf();
+    void setNaN();
     void show() const;
 };
 // Value = (-1) ^ S * M * 2 ^ (E - Bias)
@@ -46,6 +49,12 @@ float mFP32_mul(float xx, float yy);
 // Float Addition
 mFP mFP_add(mFP x, mFP y);
 float mFP32_add(float xx, float yy);
+
+// Float Accumulation
+mFP mFP_accum(const mFP* x, int N);
+mFP mFP_norm_rtne(mFP x, int Wo);
+float mFP32_accum(const float* x, int N);
+float mFP32_add2(float x, float y);
 
 // Utility
 uint32_t F32toU32(float x);
