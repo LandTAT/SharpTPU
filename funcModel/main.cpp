@@ -14,20 +14,32 @@ using FP32Limit = std::numeric_limits<float>;
 
 int main()
 {
-    const std::vector<float> testVec = {
+    std::vector<float> testVec = {
         +3.14159F, -3.14159F,
         +2.71828F, -2.71828F,
         +0.0F, -0.0F,
         +1.0F, -1.0F,
         +1e+30F, -1e+30F,
         +1e-30F, -1e-30F,
-        +FP32Limit::min(), -FP32Limit::min(), 
-        +FP32Limit::max(), -FP32Limit::max(), 
-        +FP32Limit::epsilon(), -FP32Limit::epsilon(), 
-        // +FP32Limit::denorm_min(), -FP32Limit::denorm_min(), 
-        +FP32Limit::infinity(), -FP32Limit::infinity(), 
-        +FP32Limit::quiet_NaN(), -FP32Limit::quiet_NaN()
-    };
+        +FP32Limit::min(), -FP32Limit::min(),
+        +FP32Limit::max(), -FP32Limit::max(),
+        +FP32Limit::epsilon(), -FP32Limit::epsilon(),
+        // +FP32Limit::denorm_min(), -FP32Limit::denorm_min(),
+        +FP32Limit::infinity(), -FP32Limit::infinity(),
+        +FP32Limit::quiet_NaN(), -FP32Limit::quiet_NaN()};
+
+    // 添加一些接近 1 的测试值，验证舍入与精度
+    testVec.push_back(1.0F + FP32Limit::epsilon());
+    testVec.push_back(1.0F - FP32Limit::epsilon());
+    testVec.push_back(-1.0F + FP32Limit::epsilon());
+    testVec.push_back(-1.0F - FP32Limit::epsilon());
+
+    // 添加一些极端测试值（在边界附近）
+    testVec.push_back(FP32Limit::max() / 2);
+    testVec.push_back(-FP32Limit::max() / 2);
+    testVec.push_back(FP32Limit::min() * 2);
+    testVec.push_back(-FP32Limit::min() * 2);
+
     const int N = testVec.size();
     int err = 0;
 
@@ -52,6 +64,7 @@ int main()
     else
         printf("FAIL %d in %d\n", err, N * N);
 
+    err = 0;
     for (int i = 0; i < N; ++i)
     {
         for (int j = 0; j < N; ++j)
@@ -72,12 +85,12 @@ int main()
         printf("PASS\n");
     else
         printf("FAIL %d in %d\n", err, N * N);
-/*
-    float x = +2.71828F;
-    float y = +FP32Limit::epsilon();
-    float z = mFP32_add2(x, y);
-    float g = x + y;
-    printf("%g + %g = %g %g %e 0x%x\n", x, y, z, g, z - g, F32toU32(z) - F32toU32(g));
-*/
+    /*
+        float x = +2.71828F;
+        float y = +FP32Limit::epsilon();
+        float z = mFP32_add2(x, y);
+        float g = x + y;
+        printf("%g + %g = %g %g %e 0x%x\n", x, y, z, g, z - g, F32toU32(z) - F32toU32(g));
+    */
     return 0;
 }
