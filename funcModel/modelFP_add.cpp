@@ -33,6 +33,16 @@ mFP mFP_add(mFP x, mFP y)
         z.M = 0;
         z.E = maxE;
         z.isInf = true;
+
+        if (x.isInf)
+        {
+            z.S = x.S;
+        }
+        else
+        {
+            z.S = y.S;
+        }
+
         return z;
     }
 
@@ -54,9 +64,9 @@ mFP mFP_add(mFP x, mFP y)
         return x;
     }
 
-    printf("before exchange\n");
-    x.show();
-    y.show();
+    // printf("before exchange\n");
+    // x.show();
+    // y.show();
     // Swap x and y, x.E >= y.E
     if (x.E < y.E)
     {
@@ -70,20 +80,26 @@ mFP mFP_add(mFP x, mFP y)
         x = y;
         y = tmp;
     }
+    else if (x.E == y.E && x.M == y.M)
+    {
+        mFP tmp = x;
+        x = y;
+        y = tmp;
+    }
 
-    printf("after exchange\n");
-    x.show();
-    y.show();
+    // x.show();
+    // y.show();
 
     int32_t exp_diff = x.E - y.E;
-    // saturation of exp_diff
-    if (exp_diff > x.Wf + 2)
-        exp_diff = x.Wf + 2;
 
     // 对x.M和 y.M都扩展 3 位(保护位，舍入位，粘滞位)
     int64_t x_M_shift = x.M << 3;
     int64_t y_M_shift = y.M << 3;
-    if (exp_diff > 2)
+    if (exp_diff > x.Wf)
+    {
+        y_M_shift = 0;
+    }
+    else if (exp_diff > 2)
     {
         uint32_t mask = BIT(y.M, 0, exp_diff - 2);
         y_M_shift >>= (exp_diff - 2);
@@ -108,8 +124,14 @@ mFP mFP_add(mFP x, mFP y)
         z.M = x_M_shift - y_M_shift;
     }
     z.E = x.E;
-    z.show();
-
+    // z.show();
+    z.Wf = x.Wf + 3; // 扩展 3 位
+    if (z.M == 0)
+    {
+        z.isZero = true;
+        z.E = 0;
+        return z;
+    }
     return z;
 }
 
@@ -129,12 +151,17 @@ float mFP32_add(float xx, float yy)
         return pack_FP32(z);
     }
 
-    printf("z.M = %lx\n", z.M);
+    if (z.Wf == 23)
+    {
+        return pack_FP32(z);
+    }
+
+    // printf("LZC z.M = %lx\n", z.M);
 
     // leading zero count
     int lzc = 0;
 
-    for (int i = z.Wf + 4; i >= 0; --i)
+    for (int i = z.Wf + 1; i >= 0; --i)
     {
         if (BIT(z.M, i, 1) == 1)
         {
@@ -143,33 +170,33 @@ float mFP32_add(float xx, float yy)
         lzc++;
     }
 
-    z.show();
     printf("lzc = %d\n", lzc);
     // shift
     z.M = z.M << lzc;
 
     z.E = z.E - lzc;
-
+    z.show();
     //  Normalization
 
-    printf("Normalization\n");
-    z.show();
-    uint32_t M_int = BIT(z.M, z.Wf + 3, 2); // z.M in [1, 4)
+    // printf("Normalization\n");
+    // z.show();
+    uint32_t M_int = BIT(z.M, z.Wf, 2); // z.M in [1, 4)
     // M_int实际上取得是z.M的符号位和进位
-    if (M_int & 0x2)
-    {
-        printf("Normalization\n");
-        z.M = z.M >> 1;
-        z.E = z.E + 1;
-    }
+    // if (M_int & 0x2)
+    // {
+    //     printf("Normalization\n");
+    //     z.M = z.M >> 1;
+    //     z.E = z.E + 1;
+    // }
 
     // Round to Even
     int64_t guard_bit = BIT(z.M, 2, 1);
     int64_t round_bit = BIT(z.M, 1, 1);
     int64_t stick_bit = BIT(z.M, 0, 1);
-    printf("z.M = %lx\n", z.M);
-    z.M = BIT(z.M, 3, z.Wf);
-    printf("z.M = %lx\n", z.M);
+    // z.show();
+    z.M = z.M >> (z.Wf - x.Wf); // Clip to Wf = 23
+    z.Wf = x.Wf;                // Clip to Wf = 23
+    // z.show();
     if (guard_bit == 0 || (round_bit == 0 && stick_bit == 0 && z.M & 0x0))
     {
         // do nothing
@@ -183,7 +210,7 @@ float mFP32_add(float xx, float yy)
     // M_int实际上取得是z.M的最高两位
     if (M_int & 0x2)
     {
-        printf("Normalization\n");
+        // printf("Normalization\n");
         z.M = z.M >> 1;
         z.E = z.E + 1;
     }

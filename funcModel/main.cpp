@@ -21,13 +21,12 @@ int main()
         +1.0F, -1.0F,
         +1e+30F, -1e+30F,
         +1e-30F, -1e-30F,
-        +FP32Limit::min(), -FP32Limit::min(), 
-        +FP32Limit::max(), -FP32Limit::max(), 
-        +FP32Limit::epsilon(), -FP32Limit::epsilon(), 
-        // +FP32Limit::denorm_min(), -FP32Limit::denorm_min(), 
-        +FP32Limit::infinity(), -FP32Limit::infinity(), 
-        +FP32Limit::quiet_NaN(), -FP32Limit::quiet_NaN()
-    };
+        +FP32Limit::min(), -FP32Limit::min(),
+        +FP32Limit::max(), -FP32Limit::max(),
+        +FP32Limit::epsilon(), -FP32Limit::epsilon(),
+        // +FP32Limit::denorm_min(), -FP32Limit::denorm_min(),
+        +FP32Limit::infinity(), -FP32Limit::infinity(),
+        +FP32Limit::quiet_NaN(), -FP32Limit::quiet_NaN()};
     const int N = testVec.size();
     int err = 0;
 
@@ -37,12 +36,14 @@ int main()
         {
             float x = testVec[i];
             float y = testVec[j];
-            float z = mFP32_mul(x, y);
-            float g = x * y;
+            float z = mFP32_add(x, y);
+            float g = x + y;
             if (!fp32_equ(z, g))
             {
                 ++err;
-                printf("Error #%d, %d; %f * %f = %f, %f\n", i, j, x, y, z, g);
+                printf("Error #%d, %d; %f + %f = %f, %f\n", i, j, x, y, z, g);
+                printf("Error #%d, %d; 0x%08x + 0x%08x = 0x%08x, 0x%08x\n",
+                       i, j, F32toU32(x), F32toU32(y), F32toU32(z), F32toU32(g));
             }
         }
     }
@@ -159,21 +160,26 @@ int main()
         printf("\n");
     }
 
-    // 测试加法
+    // // 测试加法
     // x = -57.3509445190f;
     // // y = 59.5049133301f;
     // y = -57.3509445190f;
-    // float ref = x + y;
-    // float model = mFP32_add(x, y);
-    // float error = ref - model;
-    // printf("\nTest %d: %.10f + %.10f\n", cnt, x, y);
-    // printf("Ref out: %.20f, Model out: %.20f, Error = %.20f\n", ref, model, error);
-    // printHex(ref);
-    // printf(" ");
-    // printHex(model);
-    // printf(" ");
-    // printHex(error);
-    // printf("\n");
+    // y = denormalized;
+    x = 91.4361572266f;
+    y = 91.4361572266f;
+    // x = 1.0f;
+    // y = 1.0f;
+    float ref = x + y;
+    float model = mFP32_add(x, y);
+    float error = ref - model;
+    printf("\nTest %d: %.10f + %.10f\n", cnt, x, y);
+    printf("Ref out: %.20f, Model out: %.20f, Error = %.20f\n", ref, model, error);
+    printHex(ref);
+    printf(" ");
+    printHex(model);
+    printf(" ");
+    printHex(error);
+    printf("\n");
 
     return 0;
 }
