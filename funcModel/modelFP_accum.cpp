@@ -3,7 +3,7 @@
 #include <vector>
 #include "modelFP.h"
 
-mFP mFP_accum(const mFP* x, int N)
+mFP mFP_accum(int N, const mFP* x)
 {
     // x[i].We == x[j].We, for any 0 <= i, j < N
     // x[i].Wf == x[j].Wf, for any 0 <= i, j < N
@@ -166,7 +166,7 @@ mFP mFP_norm_rtne(mFP x, int Wo)
     return z;
 }
 
-float mFP32_accum(const float* v, int N)
+float mFP32_accum(int N, const float* v)
 {
     const int Wf = 23;
     const int Wm = 23 + 3;
@@ -186,7 +186,7 @@ float mFP32_accum(const float* v, int N)
         // vec[i].show();
     }
 
-    mFP z = mFP_accum(vec.data(), N);
+    mFP z = mFP_accum(N, vec.data());
     // z.show();
 
     z = mFP_norm_rtne(z, Wf);
@@ -198,5 +198,5 @@ float mFP32_accum(const float* v, int N)
 float mFP32_add2(float x, float y)
 {
     float v[] = {x, y};
-    return mFP32_accum(v, 2);
+    return mFP32_accum(2, v);
 }

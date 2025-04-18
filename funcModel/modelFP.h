@@ -51,10 +51,14 @@ mFP mFP_add(mFP x, mFP y);
 float mFP32_add(float xx, float yy);
 
 // Float Accumulation
-mFP mFP_accum(const mFP* x, int N);
+mFP mFP_accum(int N, const mFP* x);
 mFP mFP_norm_rtne(mFP x, int Wo);
-float mFP32_accum(const float* x, int N);
+float mFP32_accum(int N, const float* x);
 float mFP32_add2(float x, float y);
+
+// Float Dot Production
+float mFP32_dotv1(int N, const float* a, const float* b, float c);
+float mFP32_dotv2(int N, const float* a, const float* b, float c);
 
 // Utility
 uint32_t F32toU32(float x);
