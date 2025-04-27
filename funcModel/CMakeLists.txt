@@ -13,7 +13,12 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
+# 设置构建时的rpath
+set(CMAKE_BUILD_RPATH "/usr/local/lib")
+
 # include_directories(../HLS_arbitrary_Precision_Types/include)
 
 # 指定生成目标
 add_executable(${PROJECT_NAME} ${DIR_SRCS})
+
+target_link_libraries(${PROJECT_NAME} z cnpy)

@@ -1,0 +1,6 @@
+<testsuites name="results">
+  <testsuite name="all" package="all">
+    <property name="random_seed" value="1745764485" />
+    <testcase name="fpMul_test" classname="test_FloatMul" file="/home/zhouzhq/SharpTPU/floatMul/tb/test_FloatMul.py" lineno="12" time="0.08376550674438477" sim_time_ns="3552.501" ratio_time="42410.06994490776" />
+  </testsuite>
+</testsuites>

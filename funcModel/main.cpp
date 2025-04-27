@@ -14,6 +14,7 @@ using FP32Limit = std::numeric_limits<float>;
 
 int main()
 {
+    /*
     std::vector<float> testVec = {
         +3.14159F, -3.14159F,
         +2.71828F, -2.71828F,
@@ -85,6 +86,7 @@ int main()
         printf("PASS\n");
     else
         printf("FAIL %d in %d\n", err, N * N);
+    */
     /*
         float x = +2.71828F;
         float y = +FP32Limit::epsilon();
@@ -92,5 +94,8 @@ int main()
         float g = x + y;
         printf("%g + %g = %g %g %e 0x%x\n", x, y, z, g, z - g, F32toU32(z) - F32toU32(g));
     */
+    TB_corner_mFP32_mul("../output/FP32_MUL_corner_case.npz");
+    TB_random_mFP32_mul(0x123, 1000, nullptr);
+
     return 0;
 }

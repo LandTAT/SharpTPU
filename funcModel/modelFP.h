@@ -65,6 +65,16 @@ uint32_t F32toU32(float x);
 float U32toF32(uint32_t x);
 bool fp32_equ(float x, float y);
 
+// Test Case
+int TB_corner_mFP32_mul(const char* npzName = nullptr);
+int TB_random_mFP32_mul(uint32_t seed, int N, const char* npzName = nullptr);
+
+// Ref Function
+float ref_fp32_mul(float x, float y);
+float ref_fp32_add(float x, float y);
+float ref_fp32_accum(int N, const float* x);
+float ref_fp32_dotv1(int N, const float* a, const float* b, float c);
+
 // 从 X 中取出从 LSB 开始的 POS 位长度为 LEN 的二进制数
 #define BIT(X, POS, LEN) (((X) >> (POS)) & ((1UL << (LEN)) - 1UL))
 
