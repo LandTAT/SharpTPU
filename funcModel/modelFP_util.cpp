@@ -64,6 +64,19 @@ void mFP::setNaN()
     exn = EXN_NAN;
 }
 
+void mFP::adjustWf(int new_Wf)
+{
+    int lsh = new_Wf - Wf;
+    if (isNorm())
+    {
+        if (lsh >= 0)
+            M <<= +lsh;
+        else
+            M >>= -lsh;
+    }
+    Wf = new_Wf;
+}
+
 void mFP::show() const
 {
     printf("E%df%d: %c M 0x%lx E %d ", We, Wf, S ? '-' : '+', M, E);

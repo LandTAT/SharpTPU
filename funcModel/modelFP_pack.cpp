@@ -18,22 +18,28 @@ mFP unPack(int We, int Wf, const void *elem, size_t elemSize)
     info.We = We;
     info.Wf = Wf;
 
-    // Not support denormalized numbers
-    info.M = frac | (1L << Wf); // M = 1.f
+    info.M = frac;
     info.E = expn;
     info.S = sign != 0;
 
-    // Treat all denormalized numbers as Zero
-    // info.isZero = expn == 0;
+    // info.isZero = expn == 0 && frac == 0;
     // info.isInf = expn == maxE && frac == 0;
     // info.isNaN = expn == maxE && frac != 0;
     if (expn == maxE)
     {
         info.exn = frac == 0 ? EXN_INF  : EXN_NAN ;
     }
+    else if (expn == 0)
+    {
+        // M = 0.frac, Denormalized number
+        info.exn = frac == 0 ? EXN_ZERO : EXN_NORM;
+        info.E = 1;
+    }
     else
     {
-        info.exn = expn == 0 ? EXN_ZERO : EXN_NORM;
+        // M = 1.frac, Normalized number
+        info.exn = EXN_NORM;
+        info.M |= (1L << Wf);
     }
 
     return info;

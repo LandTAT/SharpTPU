@@ -55,6 +55,8 @@ float mFP32_mul(float xx, float yy)
 
     // z.show();
 
+    z = mFP_norm_rtne(z, x.Wf);
+/*
     if (z.isNaN() || z.isInf() || z.isZero())
     {
         return pack_FP32(z);
@@ -103,6 +105,6 @@ float mFP32_mul(float xx, float yy)
         z.E = maxE;
         z.exn = EXN_INF;
     }
-
+*/
     return pack_FP32(z);
 }

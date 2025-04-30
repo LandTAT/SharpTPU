@@ -94,8 +94,10 @@ int main()
         float g = x + y;
         printf("%g + %g = %g %g %e 0x%x\n", x, y, z, g, z - g, F32toU32(z) - F32toU32(g));
     */
-    TB_corner_mFP32_mul("../output/FP32_MUL_corner_case.npz");
-    TB_random_mFP32_mul(0x123, 1000, nullptr);
+    TB_corner_mFP32_mul(nullptr);
+    // TB_corner_mFP32_mul("../output/FP32_MUL_corner_case.npz");
+    // TB_random_mFP32_mul(0x123, 1000, nullptr);
+    TB_manual_mFP32_dot();
 
     return 0;
 }

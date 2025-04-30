@@ -32,6 +32,7 @@ public:
     void setZero();
     void setInf();
     void setNaN();
+    void adjustWf(int new_Wf);
     void show() const;
 };
 // Value = (-1) ^ S * M * 2 ^ (E - Bias)
@@ -57,6 +58,8 @@ float mFP32_accum(int N, const float* x);
 float mFP32_add2(float x, float y);
 
 // Float Dot Production
+mFP mFP_dotv1(int N, const mFP* a, const mFP* b, mFP c, int Wm);
+mFP mFP_dotv2(int N, const mFP* a, const mFP* b, mFP c, int Wm);
 float mFP32_dotv1(int N, const float* a, const float* b, float c);
 float mFP32_dotv2(int N, const float* a, const float* b, float c);
 
@@ -68,12 +71,15 @@ bool fp32_equ(float x, float y);
 // Test Case
 int TB_corner_mFP32_mul(const char* npzName = nullptr);
 int TB_random_mFP32_mul(uint32_t seed, int N, const char* npzName = nullptr);
+int TB_manual_mFP32_dot(const char* npzName = nullptr);
+int TB_random_mFP32_dot(uint32_t seed, int N, int K, const char* npzName = nullptr);
 
 // Ref Function
 float ref_fp32_mul(float x, float y);
 float ref_fp32_add(float x, float y);
 float ref_fp32_accum(int N, const float* x);
 float ref_fp32_dotv1(int N, const float* a, const float* b, float c);
+float ref_fp32_dotv2(int N, const float* a, const float* b, float c);
 
 // 从 X 中取出从 LSB 开始的 POS 位长度为 LEN 的二进制数
 #define BIT(X, POS, LEN) (((X) >> (POS)) & ((1UL << (LEN)) - 1UL))
