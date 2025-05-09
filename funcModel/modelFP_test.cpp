@@ -97,6 +97,7 @@ int TB_random_mFP32_mul(uint32_t seed, int N, const char* npzName)
 
 int TB_manual_mFP32_dot(const char* npzName)
 {
+    // const int N = 1;
     const int N = cornerCase.size();
     int err = 0;
 
@@ -109,6 +110,9 @@ int TB_manual_mFP32_dot(const char* npzName)
                 float a = cornerCase[i];
                 float b = cornerCase[j];
                 float c = cornerCase[k];
+                // float a = cornerCase[8];
+                // float b = cornerCase[12];
+                // float c = cornerCase[17];
                 float z = mFP32_dotv2(1, &a, &b, c);
                 float g = ref_fp32_dotv1(1, &a, &b, c);
                 if (!fp32_equ(z, g))
@@ -118,6 +122,8 @@ int TB_manual_mFP32_dot(const char* npzName)
                     uint32_t di = F32toU32(z) - F32toU32(g);
                     di = std::min(+di, -di);
                     printf("[FP32 DOT Manual] #%d, #%d, #%d: %g * %g + %g = %g %g, Err = %e, Diff = 0x%x\n", i, j, k, a, b, c, z, g, df, di);
+                    // unPack(&z).show();
+                    // unPack(&g).show();
                 }
             }
         }

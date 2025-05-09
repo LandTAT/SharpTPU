@@ -3,6 +3,7 @@
 
 #include <cstddef>
 #include <cstdint>
+#include <cstring>
 
 using mFP_exn_t = uint8_t;
 constexpr mFP_exn_t EXN_ZERO = 0x0;
@@ -74,6 +75,10 @@ int TB_random_mFP32_mul(uint32_t seed, int N, const char* npzName = nullptr);
 int TB_manual_mFP32_dot(const char* npzName = nullptr);
 int TB_random_mFP32_dot(uint32_t seed, int N, int K, const char* npzName = nullptr);
 
+// Dataset Test Case
+int TB_dataset_mFP32(int M, int N, int K);
+int TB_dataset_mFP16(int M, int N, int K);
+
 // Ref Function
 float ref_fp32_mul(float x, float y);
 float ref_fp32_add(float x, float y);
@@ -89,7 +94,7 @@ template <typename T>
 void printHex(const T &value)
 {
     uint32_t hexValue;
-    std::memcpy(&hexValue, &value, sizeof(T)); // 将浮点数的内存内容复制到 uint32_t
+    memcpy(&hexValue, &value, sizeof(T)); // 将浮点数的内存内容复制到 uint32_t
     printf("0x%08x ", hexValue);               // 以十六进制格式打印
 }
 

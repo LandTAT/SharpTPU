@@ -56,55 +56,7 @@ float mFP32_mul(float xx, float yy)
     // z.show();
 
     z = mFP_norm_rtne(z, x.Wf);
-/*
-    if (z.isNaN() || z.isInf() || z.isZero())
-    {
-        return pack_FP32(z);
-    }
-
-    int64_t M_int = BIT(z.M, z.Wf, 2); // z.M in [1, 4)
-
-    // Normalization
-    if (M_int & 0x2)
-    {
-        z.M = z.M >> 1;
-        z.E = z.E + 1;
-    }
-
-    // Round to Even
-    int64_t round_bit = BIT(z.M, z.Wf - x.Wf - 1, 1);
-    int64_t stick_bit = BIT(z.M, 0, z.Wf - x.Wf - 2);
-    z.M = z.M >> (z.Wf - x.Wf); // Clip to Wf = 23
-    z.Wf = x.Wf;
-    if (round_bit == 1 && (stick_bit != 0 || (z.M & 0x1)))
-    {
-        z.M = z.M + 1;
-    }
-
-    // Normalization
-    M_int = BIT(z.M, z.Wf, 2);
-    if (M_int & 0x2)
-    {
-        z.M = z.M >> 1;
-        z.E = z.E + 1;
-    }
-
-    const int maxE = (1 << z.We) - 1;
-
-    // Underflow
-    if (z.E <= 0)
-    {
-        z.M = 0;
-        z.E = 0;
-        z.exn = EXN_ZERO;
-    }
-    // Overflow
-    if (z.E >= maxE)
-    {
-        z.M = 0;
-        z.E = maxE;
-        z.exn = EXN_INF;
-    }
-*/
+    
+    // z.show();
     return pack_FP32(z);
 }

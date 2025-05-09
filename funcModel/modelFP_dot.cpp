@@ -74,6 +74,9 @@ mFP mFP_dotv2(int N, const mFP* a, const mFP* b, mFP c, int Wf_acc)
     d.Wf = Wf_acc;
     d.exn = EXN_NORM;
 
+    // z.show();
+    // c.show();
+
     int rsh = c.E - z.E;
     if (rsh >= 0)
     {
@@ -97,8 +100,10 @@ mFP mFP_dotv2(int N, const mFP* a, const mFP* b, mFP c, int Wf_acc)
     {
         d.setZero();
     }
+    // d.show();
 
     d = mFP_norm_rtne(d, Wf_dst);
+    // d.show();
     return d;
 }
 

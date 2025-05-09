@@ -27,6 +27,7 @@ bool fp32_equ(float x, float y)
     {
         return xCatagory == FP_NAN && yCatagory == FP_NAN;
     }
+    /*
     if (xCatagory == FP_SUBNORMAL)
     {
         xCatagory = FP_ZERO;
@@ -37,6 +38,7 @@ bool fp32_equ(float x, float y)
         yCatagory = FP_ZERO;
         y = std::signbit(y) ? -0.0f : +0.0f;
     }
+    */
     // Bit level equal
     return x == y;
 }

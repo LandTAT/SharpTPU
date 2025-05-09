@@ -52,14 +52,15 @@ mFP unPack(const float *fp32)
 
 void pack(mFP x, void *elem, size_t elemSize)
 {
-    // printf("Pack\n");
     // x.show();
+    if (x.E == 1 && BIT(x.M, x.Wf, 1) == 0)
+    {
+        x.E = 0;
+    }
     uint64_t data = BIT(x.M, 0, x.Wf);
-    // printf("Data before memcpy: 0x%016lx\n", data);
     data |= uint64_t(x.E) << (x.Wf);
     data |= uint64_t(x.S) << (x.Wf + x.We);
     memcpy(elem, &data, elemSize);
-    // printf("Data after memcpy: 0x%08x\n", *(uint32_t *)elem);
     return;
 }
 
