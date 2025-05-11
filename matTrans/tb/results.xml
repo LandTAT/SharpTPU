@@ -1,0 +1,6 @@
+<testsuites name="results">
+  <testsuite name="all" package="all">
+    <property name="random_seed" value="1746974997" />
+    <testcase name="matTrans_test" classname="test_MatTrans" file="/Users/azureglacier/Documents/Codes/SharpTPU/matTrans/tb/test_MatTrans.py" lineno="12" time="0.021597862243652344" sim_time_ns="177.501" ratio_time="8218.45227076434" />
+  </testsuite>
+</testsuites>
