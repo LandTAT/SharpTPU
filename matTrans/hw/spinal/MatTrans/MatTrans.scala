@@ -86,7 +86,7 @@ case class MatTransNxN(sizeN: Int = 8, floatConfig: FloatConfig = FloatConfig())
     val input = new State with EntryPoint
     val output = new State
     // 默认值设置
-    io.inReady := True
+    io.inReady := False
     io.outReady := False
     io.outValid := False
 
@@ -98,6 +98,7 @@ case class MatTransNxN(sizeN: Int = 8, floatConfig: FloatConfig = FloatConfig())
         selH := True
       }
       .whenIsActive {
+        io.inReady := True
         when(io.inValid) {
           count := count + 1
         }
@@ -108,11 +109,12 @@ case class MatTransNxN(sizeN: Int = 8, floatConfig: FloatConfig = FloatConfig())
     output
       .onEntry {
         count := 0
-        io.outReady := True
         selH := False
+        io.outReady := True
       }
       .whenIsActive {
         io.outValid := True
+        io.outReady := True
         count := count + 1
         when(count === (sizeN - 1)) {
           goto(input)

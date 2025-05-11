@@ -9,7 +9,7 @@ from cocotb.runner import get_runner
 from cocotb.triggers import RisingEdge
 
 #%%
-@cocotb.test()
+@cocotb.test(timeout_time=1000, timeout_unit="ns")
 async def matTrans_test(dut):
     # Create Clock
     clock = Clock(dut.clk, 5, units="ns")
@@ -48,15 +48,16 @@ async def matTrans_test(dut):
             
             # 等待一个时钟周期进入下一行
             await RisingEdge(dut.clk)
-        
+
         # 所有数据发送完毕后清除有效信号
+        for row in range(N):
+            for col in range(N):
+                getattr(dut, f"io_inBus_{col}").value = 0
+        
         dut.io_inValid.value = 0
     
     # 等待输出就绪
-    timeout_cycles = 10
-    for _ in range(timeout_cycles):
-        if dut.io_outReady.value == 1:
-            break
+    while dut.io_outReady.value == 0:
         await RisingEdge(dut.clk)
     
     # 输出就绪后，连续N个周期接收每一行数据
@@ -70,11 +71,14 @@ async def matTrans_test(dut):
             await RisingEdge(dut.clk)
     
        # 等待输出就绪
-    timeout_cycles = 10
-    for _ in range(timeout_cycles):
-        if dut.io_inReady.value == 1:
-            break
+
+    while dut.io_outValid.value == 1:
         await RisingEdge(dut.clk)
+    # timeout_cycles = 10
+    # for _ in range(timeout_cycles):
+    #     if dut.io_inReady.value  ==1 and dut.io_outValid.value == 0:
+    #         break
+    #     await RisingEdge(dut.clk)
 
     # 将原始矩阵转置以进行比较
     expected_transpose = np.transpose(random_uint32)

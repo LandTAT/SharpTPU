@@ -1,6 +1,6 @@
 // Generator : SpinalHDL v1.12.0    git head : 1aa7d7b5732f11cca2dd83bacc2a4cb92ca8e5c9
 // Component : MatTransNxN
-// Git hash  : 577032a90a6829d01ed4a83667360bfcdadccdae
+// Git hash  : fc8c9c73c0a1bc55a809a7121345b5a0ded52f25
 
 `timescale 1ns/1ps
 
@@ -103,8 +103,8 @@ module MatTransNxN (
   reg        [7:0]    fsm_count;
   reg        [1:0]    fsm_stateReg;
   reg        [1:0]    fsm_stateNext;
-  wire                when_MatTrans_l104;
-  wire                when_MatTrans_l117;
+  wire                when_MatTrans_l105;
+  wire                when_MatTrans_l119;
   wire                fsm_onExit_BOOT;
   wire                fsm_onExit_input_1;
   wire                fsm_onExit_output_1;
@@ -672,7 +672,16 @@ module MatTransNxN (
 
   assign fsm_wantKill = 1'b0;
   always @(*) begin
-    io_inReady = 1'b1;
+    io_inReady = 1'b0;
+    case(fsm_stateReg)
+      fsm_input_1 : begin
+        io_inReady = 1'b1;
+      end
+      fsm_output_1 : begin
+      end
+      default : begin
+      end
+    endcase
     if(fsm_onEntry_input_1) begin
       io_inReady = 1'b1;
     end
@@ -680,6 +689,15 @@ module MatTransNxN (
 
   always @(*) begin
     io_outReady = 1'b0;
+    case(fsm_stateReg)
+      fsm_input_1 : begin
+      end
+      fsm_output_1 : begin
+        io_outReady = 1'b1;
+      end
+      default : begin
+      end
+    endcase
     if(fsm_onEntry_output_1) begin
       io_outReady = 1'b1;
     end
@@ -702,12 +720,12 @@ module MatTransNxN (
     fsm_stateNext = fsm_stateReg;
     case(fsm_stateReg)
       fsm_input_1 : begin
-        if(when_MatTrans_l104) begin
+        if(when_MatTrans_l105) begin
           fsm_stateNext = fsm_output_1;
         end
       end
       fsm_output_1 : begin
-        if(when_MatTrans_l117) begin
+        if(when_MatTrans_l119) begin
           fsm_stateNext = fsm_input_1;
         end
       end
@@ -722,8 +740,8 @@ module MatTransNxN (
     end
   end
 
-  assign when_MatTrans_l104 = (fsm_count == 8'h07);
-  assign when_MatTrans_l117 = (fsm_count == 8'h07);
+  assign when_MatTrans_l105 = (fsm_count == 8'h07);
+  assign when_MatTrans_l119 = (fsm_count == 8'h07);
   assign fsm_onExit_BOOT = ((fsm_stateNext != fsm_BOOT) && (fsm_stateReg == fsm_BOOT));
   assign fsm_onExit_input_1 = ((fsm_stateNext != fsm_input_1) && (fsm_stateReg == fsm_input_1));
   assign fsm_onExit_output_1 = ((fsm_stateNext != fsm_output_1) && (fsm_stateReg == fsm_output_1));
