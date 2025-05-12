@@ -1,6 +1,6 @@
 <testsuites name="results">
   <testsuite name="all" package="all">
-    <property name="random_seed" value="1746981240" />
-    <testcase name="matTrans_test" classname="test_MatTrans" file="/Users/azureglacier/miniconda3/lib/python3.12/site-packages/cocotb/decorators.py" lineno="12" time="0.023679018020629883" sim_time_ns="182.501" ratio_time="7707.287516779605" />
+    <property name="random_seed" value="1747034481" />
+    <testcase name="matTrans_test" classname="test_MatTrans" file="/Users/azureglacier/miniconda3/lib/python3.12/site-packages/cocotb/decorators.py" lineno="12" time="0.029846906661987305" sim_time_ns="267.501" ratio_time="8962.43630971267" />
   </testsuite>
 </testsuites>
