@@ -173,7 +173,8 @@ async def matTransNxNStream_test(dut):
         
         for row in range(N):
             # 设置这一行的所有数据
-            dut.io_input_payload.value = concatenate_uint32_row(random_uint32[row])
+            # dut.io_input_payload.value = concatenate_uint32_row(random_uint32[row])
+            dut.io_input_payload.value = int.from_bytes(random_uint32[row].tobytes(), byteorder='little')
             # 模拟中断 - 注意使用整数除法确保得到整数结果
             if row == (N-1)//2:  # 使用//进行整数除法
                 # 输出调试信息
@@ -190,7 +191,7 @@ async def matTransNxNStream_test(dut):
                 dut.io_input_valid.value = 1
                 
                 # 可能需要重新设置当前行数据(取决于你的硬件设计)
-                dut.io_input_payload.value = concatenate_uint32_row(random_uint32[row])
+                dut.io_input_payload.value = int.from_bytes(random_uint32[row].tobytes(), byteorder='little')
             
             # 等待一个时钟周期进入下一行
             await RisingEdge(dut.clk)
