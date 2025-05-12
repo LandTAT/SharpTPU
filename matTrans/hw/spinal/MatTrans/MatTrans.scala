@@ -15,12 +15,17 @@ case class muxReg(floatConfig: FloatConfig = FloatConfig()) extends Component {
     val inputV = in Bits(floatConfig.width bits) //垂直方向的输入
     val output = out Bits(floatConfig.width bits) //垂直方向的输出
     val selH = in Bool() //选择信号，1为水平输入，0为垂直输入
+    val shiftEnb = in Bool() //移位使能信号
   }
   val reg = Reg(Bits(floatConfig.width bits)) init(0)
-  when(io.selH) {
-    reg := io.inputH
+  when(io.shiftEnb) {
+    when(io.selH) {
+      reg := io.inputH
+    } otherwise {
+      reg := io.inputV
+    }
   } otherwise {
-    reg := io.inputV
+    reg := reg
   }
   io.output := reg
 }
@@ -28,7 +33,7 @@ case class muxReg(floatConfig: FloatConfig = FloatConfig()) extends Component {
 case class MatTransNxN(sizeN: Int = 8, floatConfig: FloatConfig = FloatConfig()) extends Component {
   val io = new Bundle {
     val inReady = out Bool()
-    val outReady = out Bool()
+    val outReady = in Bool()
     val inValid = in Bool()
     val outValid = out Bool()
     val inBus = in Vec(Bits(floatConfig.width bits), sizeN)
@@ -59,6 +64,8 @@ case class MatTransNxN(sizeN: Int = 8, floatConfig: FloatConfig = FloatConfig())
   // }
 
   val selH = Reg(Bool()) init(False)
+  val shiftEnb = Bool()
+  shiftEnb := (io.outValid && io.outReady) || (io.inValid && io.inReady)
 
   val datapath = new Area {
     val muxRegArray = Array.fill(sizeN, sizeN)(muxReg(floatConfig))
@@ -66,6 +73,7 @@ case class MatTransNxN(sizeN: Int = 8, floatConfig: FloatConfig = FloatConfig())
       for (j <- 0 until sizeN) {
         // 如果不是最右列，连接水平方向
         muxRegArray(i)(j).io.selH := selH
+        muxRegArray(i)(j).io.shiftEnb := shiftEnb
         if (j < sizeN-1) {
           muxRegArray(i)(j+1).io.inputH := muxRegArray(i)(j).io.output
         }
@@ -87,7 +95,6 @@ case class MatTransNxN(sizeN: Int = 8, floatConfig: FloatConfig = FloatConfig())
     val output = new State
     // 默认值设置
     io.inReady := False
-    io.outReady := False
     io.outValid := False
 
     val count = Reg(UInt(sizeN bits)) init(0)
@@ -100,7 +107,10 @@ case class MatTransNxN(sizeN: Int = 8, floatConfig: FloatConfig = FloatConfig())
       .whenIsActive {
         io.inReady := True
         when(io.inValid) {
+          // shiftEnb := True
           count := count + 1
+        } otherwise{
+          // shiftEnb := False
         }
         when(count === (sizeN - 1)) {
           goto(output)
@@ -110,12 +120,16 @@ case class MatTransNxN(sizeN: Int = 8, floatConfig: FloatConfig = FloatConfig())
       .onEntry {
         count := 0
         selH := False
-        io.outReady := True
       }
       .whenIsActive {
-        io.outValid := True
-        io.outReady := True
-        count := count + 1
+        when(io.outReady){
+          count := count + 1
+          io.outValid := True
+          // shiftEnb := True
+        } otherwise {
+          // shiftEnb := False
+          io.outValid := False
+        }
         when(count === (sizeN - 1)) {
           goto(input)
         }
