@@ -11,6 +11,9 @@ constexpr mFP_exn_t EXN_NORM = 0x1;
 constexpr mFP_exn_t EXN_INF  = 0x2;
 constexpr mFP_exn_t EXN_NAN  = 0x3;
 
+using mfp16 = uint16_t;
+using mbf16 = uint16_t;
+
 /*
     FP32: We = 8, Wf = 23
     FP16: We = 5, Wf = 10
@@ -30,10 +33,12 @@ public:
     bool isNorm() const { return exn == EXN_NORM; }
     bool isInf()  const { return exn == EXN_INF ; }
     bool isNaN()  const { return exn == EXN_NAN ; }
+    bool isSubnorm() const;
     void setZero();
     void setInf();
     void setNaN();
     void adjustWf(int new_Wf);
+    void adjustWe(int new_We);
     void show() const;
 };
 // Value = (-1) ^ S * M * 2 ^ (E - Bias)
@@ -41,8 +46,12 @@ public:
 // Float unPack & Pack
 mFP unPack(int We, int Wf, const void *elem, size_t elemSize);
 mFP unPack(const float *fp32);
+mFP unPack_FP16(const mfp16 *fp16);
+mFP unPack_BF16(const mbf16 *bf16);
 void pack(mFP x, void *elem, size_t elemSize);
 float pack_FP32(mFP x);
+mfp16 pack_FP16(mFP x);
+mbf16 pack_BF16(mFP x);
 
 // Float Multiplication
 mFP mFP_mul(mFP x, mFP y);
@@ -59,10 +68,18 @@ float mFP32_accum(int N, const float* x);
 float mFP32_add2(float x, float y);
 
 // Float Dot Production
-mFP mFP_dotv1(int N, const mFP* a, const mFP* b, mFP c, int Wm);
-mFP mFP_dotv2(int N, const mFP* a, const mFP* b, mFP c, int Wm);
+mFP mFP_dotv1(int N, const mFP* a, const mFP* b, mFP c, int Wf_acc);
+mFP mFP_dotv2(int N, const mFP* a, const mFP* b, mFP c, int Wf_acc, int Wf_add);
 float mFP32_dotv1(int N, const float* a, const float* b, float c);
 float mFP32_dotv2(int N, const float* a, const float* b, float c);
+mfp16 mFP16_dotv1(int N, const mfp16* a, const mfp16* b, mfp16 c);
+mfp16 mFP16_dotv2(int N, const mfp16* a, const mfp16* b, mfp16 c);
+float mFP16_mix_dotv1(int N, const mfp16* a, const mfp16* b, float c);
+float mFP16_mix_dotv2(int N, const mfp16* a, const mfp16* b, float c);
+mbf16 mBF16_dotv1(int N, const mbf16* a, const mbf16* b, mbf16 c);
+mbf16 mBF16_dotv2(int N, const mbf16* a, const mbf16* b, mbf16 c);
+float mBF16_mix_dotv1(int N, const mbf16* a, const mbf16* b, float c);
+float mBF16_mix_dotv2(int N, const mbf16* a, const mbf16* b, float c);
 
 // Utility
 uint32_t F32toU32(float x);
@@ -78,6 +95,7 @@ int TB_random_mFP32_dot(uint32_t seed, int N, int K, const char* npzName = nullp
 // Dataset Test Case
 int TB_dataset_mFP32(int M, int N, int K);
 int TB_dataset_mFP16(int M, int N, int K);
+int TB_dataset_mFP16_mix(int M, int N, int K);
 
 // Ref Function
 float ref_fp32_mul(float x, float y);

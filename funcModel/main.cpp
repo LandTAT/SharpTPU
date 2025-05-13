@@ -21,5 +21,11 @@ int main()
     TB_dataset_mFP32(16, 16, 16);
     TB_dataset_mFP32( 8, 32, 16);
     TB_dataset_mFP32(32,  8, 16);
+    TB_dataset_mFP16(16, 16, 16);
+    TB_dataset_mFP16( 8, 32, 16);
+    TB_dataset_mFP16(32,  8, 16);
+    TB_dataset_mFP16_mix(16, 16, 16);
+    TB_dataset_mFP16_mix( 8, 32, 16);
+    TB_dataset_mFP16_mix(32,  8, 16);
     return 0;
 }

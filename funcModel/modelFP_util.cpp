@@ -43,10 +43,15 @@ bool fp32_equ(float x, float y)
     return x == y;
 }
 
+bool mFP::isSubnorm() const
+{
+    return exn == EXN_NORM && E == 1 && BIT(M, Wf, 1) == 0;
+}
+
 void mFP::setZero()
 {
     M = 0;
-    E = 0;
+    E = 1;
     exn = EXN_ZERO;
 }
 
@@ -77,6 +82,36 @@ void mFP::adjustWf(int new_Wf)
             M >>= -lsh;
     }
     Wf = new_Wf;
+}
+
+void mFP::adjustWe(int new_We)
+{
+    const int dffBias = (1 << (new_We - 1)) - (1 << (We - 1));
+    const int allOneE = (1 << new_We) - 1;
+    We = new_We;
+    switch (exn)
+    {
+    case EXN_ZERO:
+        setZero();
+        break;
+    case EXN_NORM:
+        E += dffBias;
+        if (E < 1)
+        {
+            // Shoule be deal in later function: mFP_norm_rtne
+        }
+        if (E >= allOneE)
+        {
+            // setInf();
+        }
+        break;
+    case EXN_INF:
+        setInf();
+        break;
+    case EXN_NAN:
+        setNaN();
+        break;
+    }
 }
 
 void mFP::show() const

@@ -50,6 +50,16 @@ mFP unPack(const float *fp32)
     return unPack(8, 23, fp32, sizeof(float));
 }
 
+mFP unPack_FP16(const mfp16 *fp16)
+{
+    return unPack(5, 10, fp16, sizeof(mfp16));
+}
+
+mFP unPack_BF16(const mbf16 *bf16)
+{
+    return unPack(8,  7, bf16, sizeof(mbf16));
+}
+
 void pack(mFP x, void *elem, size_t elemSize)
 {
     // x.show();
@@ -69,5 +79,21 @@ float pack_FP32(mFP x)
     // assert x.We == 8 && x.Wf == 23
     float z = 0.0f;
     pack(x, &z, sizeof(float));
+    return z;
+}
+
+mfp16 pack_FP16(mFP x)
+{
+    // assert x.We == 5 && x.Wf == 10
+    mfp16 z = 0;
+    pack(x, &z, sizeof(mfp16));
+    return z;
+}
+
+mbf16 pack_BF16(mFP x)
+{
+    // assert x.We == 8 && x.Wf == 7
+    mbf16 z = 0;
+    pack(x, &z, sizeof(mbf16));
     return z;
 }
