@@ -30,7 +30,62 @@ case class muxReg(width: Int = 32) extends Component {
   io.output := reg
 }
 
-case class MatTransNxN(sizeN: Int = 8, width: Int = 8) extends Component {
+case class ram_t2p(addr_width: Int = 6, data_width: Int = 256) extends Component {
+  val mem = Mem(Bits(data_width bits), 1 << addr_width)
+  
+  // 定义端口接口数据类型
+  case class PortBundle() extends Bundle {
+    val addr = in UInt(addr_width bits)
+    val din = in Bits(data_width bits)
+    val we = in Bool()
+    val en = in Bool()
+    val dout = out Bits(data_width bits)
+  }
+  
+  val io = new Bundle {
+    // 使用Vec创建两个端口
+    val ports = Vec(PortBundle(), 2)
+  }
+  
+  // 内部连接
+  for (i <- 0 until 2) {
+    io.ports(i).dout := mem.readWriteSync(
+      io.ports(i).addr,
+      io.ports(i).din,
+      io.ports(i).en,
+      io.ports(i).we
+    )
+  }
+  
+  // 辅助方法 - 设置为读模式
+  def setupPortRead(portId: Int, addr: UInt): Unit = {
+    io.ports(portId).en := True
+    io.ports(portId).we := False
+    io.ports(portId).addr := addr
+  }
+  
+  // 辅助方法 - 设置为写模式
+  def setupPortWrite(portId: Int, addr: UInt, data: Bits): Unit = {
+    io.ports(portId).en := True
+    io.ports(portId).we := True
+    io.ports(portId).addr := addr
+    io.ports(portId).din := data
+  }
+  
+  // 辅助方法 - 禁用端口
+  def disablePort(portId: Int): Unit = {
+    io.ports(portId).en := False
+    io.ports(portId).we := False
+    io.ports(portId).addr := 0
+    io.ports(portId).din := 0
+  }
+  
+  // 向下兼容的访问方法 (兼容原有代码)
+  def port1 = io.ports(0)
+  def port2 = io.ports(1)
+}
+
+case class MatTransNxN(sizeN: Int = 8, width: Int = 32) extends Component {
   val io = new Bundle {
     val inReady = out Bool()
     val outReady = in Bool()
@@ -195,10 +250,132 @@ case class MatTransNxNStream(sizeN: Int = 8, width: Int = 32) extends Component 
 
 }
 
+case class MatTransMxNStream(sizeM: Int = 16, sizeN: Int = 16, sizePE: Int = 8, width: Int = 32) extends Component {
+  val io = new Bundle {
+    val input = slave Stream(Bits(width * sizePE bits))
+    val output = master Stream(Bits(width * sizePE bits))
+  }
+  val peArray = Array.fill(2)(MatTransNxNStream(sizePE, width))
+  val addr_width = 7
+  val memory = ram_t2p(7, 256)
+
+
+  def count2Addr(count: UInt = 0, sizeN: Int = 8, sizePE: Int = 8): UInt = {
+    val setN = sizeN / sizePE
+    val addrX = count.algoInt % setN
+    val addrY = count.algoInt / setN
+    addrY * setN + addrX
+  }
+  
+  val lastAddr = sizeN / sizePE * sizeM - 1
+
+  val fsm = new StateMachine {
+    val loadData2Mem = new State with EntryPoint
+    val process = new State
+    val output = new State
+    // 默认值设置
+    memory.disablePort(0)
+    memory.disablePort(1)
+
+    io.input.ready := False
+    io.output.valid := False
+    io.output.payload := 0
+
+    peArray.foreach(pe =>{
+      pe.io.input.valid := False
+      pe.io.output.ready := False
+      pe.io.input.payload := 0
+    })
+
+    val count = Reg(UInt(addr_width bits)) init(0)
+    val countBlock = Reg(UInt(addr_width bits)) init(0)
+
+    loadData2Mem
+      .onEntry {
+        count := 0
+        countBlock := 0
+        io.input.ready := True
+      }
+      .whenIsActive {
+        io.input.ready := True
+        when(io.input.valid) {
+          memory.setupPortWrite(1, count2Addr(count, sizeN, sizePE), io.input.payload)
+          count := count + 1
+        } 
+        when(count === lastAddr) {
+          goto(process)
+        }
+      }
+    process
+      .onEntry {
+        count := 0
+      }
+      .whenIsActive {
+        when(peArray(0).io.input.ready && peArray(1).io.input.ready) {
+          count := count + 1
+          
+          memory.setupPortRead(0, count)
+          memory.setupPortRead(1, count+ sizeN)
+          
+          for (i <- 0 until 2) {
+            peArray(i).io.input.payload := memory.io.ports(i).dout
+            peArray(i).io.input.valid := True
+          }
+
+        }
+        when(count === (sizePE - 1)) {
+          goto(output)
+        }
+      }
+    output
+      .onEntry {
+        count := 0
+      }
+      .whenIsActive {
+        when(io.output.ready) {
+          count := count + 1
+
+          when(count(0) === False) {
+            peArray(0).io.output.ready := True
+            peArray(1).io.output.ready := False
+            io.output.payload := peArray(0).io.output.payload
+          } otherwise {
+            peArray(0).io.output.ready := False
+            peArray(1).io.output.ready := True
+            io.output.payload := peArray(1).io.output.payload
+          }
+
+          io.output.valid := True
+
+        } otherwise {
+          peArray(0).io.output.ready := False
+          peArray(1).io.output.ready := False
+          io.output.valid := False
+        }
+
+        
+        when(countBlock === (sizeM * sizeN / sizePE)){
+          goto(loadData2Mem)
+        }
+
+        when(count === lastAddr) {
+          countBlock := countBlock + 2
+          goto(process)
+        }
+
+      }
+
+  }
+}
+
 object MyTopLevelVerilog extends App {
     Config.spinal.generateVerilog(MatTransNxN())
 }
 
 object MyTopLevelStreamVerilog extends App {
     Config.spinal.generateVerilog(MatTransNxNStream())
+}
+
+object MyTopLevelMxNStreamVerilog extends App {
+    Config.spinal.generateVerilog(MatTransMxNStream())
 }
