@@ -30,7 +30,7 @@ case class muxReg(width: Int = 32) extends Component {
   io.output := reg
 }
 
-case class ram_t2p(addr_width: Int = 6, data_width: Int = 256) extends Component {
+case class ram_t2p(addr_width: Int = 7, data_width: Int = 256) extends Component {
   val mem = Mem(Bits(data_width bits), 1 << addr_width)
   
   // 定义端口接口数据类型
@@ -261,18 +261,16 @@ case class MatTransMxNStream(sizeM: Int = 16, sizeN: Int = 16, sizePE: Int = 8, 
 
 
   def count2Addr(count: UInt, sizeM: Int = 8, sizeN: Int = 8, sizePE: Int = 8): UInt = {
-    // val setN = sizeN / sizePE
-    // // 明确类型转换和位宽，避免隐式转换
-    // val addrX = (count % U(setN, count.getWidth bits)).resized
-    // val addrY = (count / U(setN, count.getWidth bits)).resized
-    // // 确保最终计算结果位宽正确
-    // (addrY * U(setN, addrY.getWidth bits) + addrX).resized
-
-
-    // val blockNum = sizeM * sizeN / sizePE / sizePE
-    val blockX = count % U(sizePE, count.getWidth bits)
-    val blockY = count / U(sizePE, count.getWidth bits)
-    (blockY * sizePE + blockX).resized
+    val blocksInRow = U(sizeN / sizePE).resize(addr_width)
+    // 将 sizeM 扩展为 addr_width (7位)
+    val sizeM_resized = U(sizeM).resize(addr_width)
+    val blockRow = (count / sizeM_resized).resize(addr_width)
+    val blockCol = (count % blocksInRow).resize(addr_width)
+    val sizePE_resized = U(sizePE, addr_width bits)
+    val blockStartAddrInMem = ((blockRow * blocksInRow + blockCol) * sizePE_resized).resize(addr_width)
+    val targetAddrInBlock = ((count / blocksInRow) - blockRow * sizePE_resized).resize(addr_width)
+    val targetAddrInMem = blockStartAddrInMem + targetAddrInBlock
+    targetAddrInMem.resized
   }
 
   
@@ -323,7 +321,7 @@ case class MatTransMxNStream(sizeM: Int = 16, sizeN: Int = 16, sizePE: Int = 8, 
           count := count + 1
           
           memory.setupPortRead(0, (count + sizePE * countBlock ).resized)
-          memory.setupPortRead(1, (count+ sizePE * countBlock + sizeN ).resized)
+          memory.setupPortRead(1, (count + sizePE * countBlock + sizeN ).resized)
           
           // for (i <- 0 until 2) {
           //   peArray(i).io.input.payload := memory.io.ports(i).dout
@@ -367,7 +365,7 @@ case class MatTransMxNStream(sizeM: Int = 16, sizeN: Int = 16, sizePE: Int = 8, 
         io.output.valid := peArray(0).io.output.valid || peArray(1).io.output.valid
 
         
-        when(countBlock === (sizeM * sizeN / sizePE)){
+        when(countBlock === sizeM * sizeN / sizePE){
           goto(loadData2Mem)
         }
 
