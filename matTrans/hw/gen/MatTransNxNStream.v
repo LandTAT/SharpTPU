@@ -1,6 +1,6 @@
 // Generator : SpinalHDL v1.12.0    git head : 1aa7d7b5732f11cca2dd83bacc2a4cb92ca8e5c9
 // Component : MatTransNxNStream
-// Git hash  : 79a2081597c3ace48e5c7d6538d3b9bfb4a13902
+// Git hash  : abbee42a0d4fce2c99c13da0c0373b286bea0f53
 
 `timescale 1ns/1ps
 
@@ -98,8 +98,8 @@ module MatTransNxNStream (
   reg        [7:0]    fsm_count;
   reg        [1:0]    fsm_stateReg;
   reg        [1:0]    fsm_stateNext;
-  wire                when_MatTrans_l173;
-  wire                when_MatTrans_l189;
+  wire                when_MatTrans_l228;
+  wire                when_MatTrans_l244;
   wire                fsm_onExit_BOOT;
   wire                fsm_onExit_input_1;
   wire                fsm_onExit_output_1;
@@ -779,12 +779,12 @@ module MatTransNxNStream (
     fsm_stateNext = fsm_stateReg;
     case(fsm_stateReg)
       fsm_input_1 : begin
-        if(when_MatTrans_l173) begin
+        if(when_MatTrans_l228) begin
           fsm_stateNext = fsm_output_1;
         end
       end
       fsm_output_1 : begin
-        if(when_MatTrans_l189) begin
+        if(when_MatTrans_l244) begin
           fsm_stateNext = fsm_input_1;
         end
       end
@@ -799,8 +799,8 @@ module MatTransNxNStream (
     end
   end
 
-  assign when_MatTrans_l173 = (fsm_count == 8'h07);
-  assign when_MatTrans_l189 = (fsm_count == 8'h07);
+  assign when_MatTrans_l228 = (fsm_count == 8'h07);
+  assign when_MatTrans_l244 = (fsm_count == 8'h07);
   assign fsm_onExit_BOOT = ((fsm_stateNext != fsm_BOOT) && (fsm_stateReg == fsm_BOOT));
   assign fsm_onExit_input_1 = ((fsm_stateNext != fsm_input_1) && (fsm_stateReg == fsm_input_1));
   assign fsm_onExit_output_1 = ((fsm_stateNext != fsm_output_1) && (fsm_stateReg == fsm_output_1));

@@ -214,6 +214,7 @@ async def matTransNxNStream_test(dut):
         for row in range(N):
             # 接收这一行的所有数据
             output_matrix[row] = np.frombuffer(int(dut.io_output_payload.value).to_bytes(4*N, byteorder='little'), dtype=np.uint32)
+            print(f"第{row}行输出数据:\n {output_matrix}\n")
             if row == (N-1)//2:  # 使用//进行整数除法
                 # 输出调试信息
                 print(f"在第{row}行模拟输入中断10个时钟周期")
@@ -244,6 +245,7 @@ async def matTransNxNStream_test(dut):
     is_correct = np.array_equal(output_matrix, expected_transpose)
     if is_correct:
         print("矩阵转置成功！输出与预期完全匹配")
+        print(f"标准矩阵:\n{random_uint32}")
         print(f"预期矩阵:\n{expected_transpose}")
         print(f"实际输出:\n{output_matrix}")
     else:

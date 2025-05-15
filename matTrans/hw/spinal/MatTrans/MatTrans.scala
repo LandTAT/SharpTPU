@@ -322,18 +322,25 @@ case class MatTransMxNStream(sizeM: Int = 16, sizeN: Int = 16, sizePE: Int = 8, 
         when(peArray(0).io.input.ready && peArray(1).io.input.ready) {
           count := count + 1
           
-          memory.setupPortRead(0, count)
-          memory.setupPortRead(1, count+ sizeN)
+          memory.setupPortRead(0, (count + sizePE * countBlock ).resized)
+          memory.setupPortRead(1, (count+ sizePE * countBlock + sizeN ).resized)
           
+          // for (i <- 0 until 2) {
+          //   peArray(i).io.input.payload := memory.io.ports(i).dout
+          //   peArray(i).io.input.valid := True
+          // }
+
+        }
+        when(count =/= 0) {
+          // 这里是为了避免在第0个周期就开始读取数据,打一拍
           for (i <- 0 until 2) {
             peArray(i).io.input.payload := memory.io.ports(i).dout
             peArray(i).io.input.valid := True
           }
-
         }
-        when(count === (sizePE - 1)) {
+        when(count === sizePE) {
           goto(output)
-        }
+        } 
       }
     output
       .onEntry {
@@ -365,7 +372,7 @@ case class MatTransMxNStream(sizeM: Int = 16, sizeN: Int = 16, sizePE: Int = 8, 
         }
 
         when(count === lastAddr / 2 - 1) {
-          countBlock := countBlock + 2
+          countBlock := countBlock + 1
           goto(process)
         }
 
