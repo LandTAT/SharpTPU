@@ -261,16 +261,24 @@ case class MatTransMxNStream(sizeM: Int = 16, sizeN: Int = 16, sizePE: Int = 8, 
 
 
   def count2Addr(count: UInt, sizeM: Int = 8, sizeN: Int = 8, sizePE: Int = 8): UInt = {
-    val blocksInRow = U(sizeN / sizePE).resize(addr_width)
-    // 将 sizeM 扩展为 addr_width (7位)
-    val sizeM_resized = U(sizeM).resize(addr_width)
-    val blockRow = (count / sizeM_resized).resize(addr_width)
-    val blockCol = (count % blocksInRow).resize(addr_width)
-    val sizePE_resized = U(sizePE, addr_width bits)
-    val blockStartAddrInMem = ((blockRow * blocksInRow + blockCol) * sizePE_resized).resize(addr_width)
-    val targetAddrInBlock = ((count / blocksInRow) - blockRow * sizePE_resized).resize(addr_width)
-    val targetAddrInMem = blockStartAddrInMem + targetAddrInBlock
-    targetAddrInMem.resized
+    // 计算移位位数（代替除法）
+    val blocksInRow = sizeN / sizePE
+    val sizePE_bits = log2Up(sizePE)       // 计算 log2(sizePE)，如 log2(8)=3
+    val blocksInRow_bits = log2Up(blocksInRow) // 计算 log2(blocksInRow)
+    
+    // 使用移位代替除法
+    val blockRow = (count >> U(log2Up(sizeM)).resize(addr_width)).resize(addr_width)  // count / sizeM
+    val blockCol = (count(blocksInRow_bits-1 downto 0)).resize(addr_width) // count % blocksInRow
+    
+    // 构建块起始地址
+    val blockStartAddrInMem = ((blockRow << blocksInRow_bits) + blockCol << sizePE_bits).resize(addr_width)
+    
+    // 计算块内偏移
+    val targetAddrInBlock = ((count >> U(blocksInRow_bits).resize(addr_width)) - (blockRow << sizePE_bits)).resize(addr_width)
+    
+    // 最终地址
+    val targetAddrInMem = (blockStartAddrInMem + targetAddrInBlock).resize(addr_width)
+    targetAddrInMem
   }
 
   
