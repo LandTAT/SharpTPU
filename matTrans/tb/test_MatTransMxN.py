@@ -55,7 +55,7 @@ async def matTransMxNStream_test(dut):
     # 输入就绪后，连续N个周期发送每一行数据
     if dut.io_input_ready.value == 1:
         # 先设置输入有效信号为高
-        dut.io_input_valid.value = 1
+        
         
         for row in range(M):
             # 设置这一行的所有数据
@@ -64,7 +64,7 @@ async def matTransMxNStream_test(dut):
                 start_index = i * SIZE_PE
                 # 计算当前行的结束索引
                 end_index = start_index + SIZE_PE
-            
+                dut.io_input_valid.value = 1
                 dut.io_input_payload.value = int.from_bytes(random_uint32[row][start_index:end_index].tobytes(), byteorder='little')
                 # 等待一个时钟周期进入下一行
                 await RisingEdge(dut.clk)
@@ -116,7 +116,7 @@ async def matTransMxNStream_test(dut):
                 # 将接收到的数据存储到输出矩阵中
                 output_matrix[row][start_index:end_index] = np.frombuffer(int(dut.io_output_payload.value).to_bytes(4*8, byteorder='little'), dtype=np.uint32)
                 # 等待一个时钟周期进入下一行
-                print(f"\n第{row}行数据: {output_matrix[0][0]}\n")
+                # print(f"\n第{row}行数据: {output_matrix[0][0]}\n")
                 await RisingEdge(dut.clk)
             # if row == (N-1)//2:  # 使用//进行整数除法
             #     # 输出调试信息
@@ -149,6 +149,7 @@ async def matTransMxNStream_test(dut):
         print(f"实际输出:\n{output_matrix}")
     else:
         print("矩阵转置不匹配")
+        print(f"原始矩阵:\n{random_uint32}")
         print(f"预期矩阵:\n{expected_transpose}")
         print(f"实际输出:\n{output_matrix}")
         

@@ -1,6 +1,6 @@
 // Generator : SpinalHDL v1.12.0    git head : 1aa7d7b5732f11cca2dd83bacc2a4cb92ca8e5c9
 // Component : MatTransMxNStream
-// Git hash  : 7fdd7821c8069536c4f5408be199f9f54495ec80
+// Git hash  : a0abfb2cb850d76723442068631f4274d351e32b
 
 `timescale 1ns/1ps
 
@@ -26,10 +26,10 @@ module MatTransMxNStream (
   reg        [255:0]  peArray_1_io_input_payload;
   reg                 peArray_1_io_output_ready;
   reg        [6:0]    memory_io_ports_0_addr;
+  reg        [255:0]  memory_io_ports_0_din;
   reg                 memory_io_ports_0_we;
   reg                 memory_io_ports_0_en;
   reg        [6:0]    memory_io_ports_1_addr;
-  reg        [255:0]  memory_io_ports_1_din;
   reg                 memory_io_ports_1_we;
   reg                 memory_io_ports_1_en;
   wire                peArray_0_io_input_ready;
@@ -40,6 +40,11 @@ module MatTransMxNStream (
   wire       [255:0]  peArray_1_io_output_payload;
   wire       [255:0]  memory_io_ports_0_dout;
   wire       [255:0]  memory_io_ports_1_dout;
+  wire       [10:0]   _zz_io_ports_0_addr;
+  wire       [10:0]   _zz_io_ports_0_addr_1;
+  wire       [6:0]    _zz_io_ports_0_addr_2;
+  wire       [10:0]   _zz_io_ports_0_addr_3;
+  wire       [6:0]    _zz_io_ports_0_addr_4;
   wire                fsm_wantExit;
   reg                 fsm_wantStart;
   wire                fsm_wantKill;
@@ -47,12 +52,12 @@ module MatTransMxNStream (
   reg        [6:0]    fsm_countBlock;
   reg        [1:0]    fsm_stateReg;
   reg        [1:0]    fsm_stateNext;
-  wire                when_MatTrans_l305;
-  wire                when_MatTrans_l314;
-  wire                when_MatTrans_l326;
-  wire                when_MatTrans_l338;
-  wire                when_MatTrans_l357;
-  wire                when_MatTrans_l361;
+  wire                when_MatTrans_l313;
+  wire                when_MatTrans_l322;
+  wire                when_MatTrans_l334;
+  wire                when_MatTrans_l346;
+  wire                when_MatTrans_l363;
+  wire                when_MatTrans_l367;
   wire                fsm_onExit_BOOT;
   wire                fsm_onExit_loadData2Mem;
   wire                fsm_onExit_process_1;
@@ -67,6 +72,11 @@ module MatTransMxNStream (
   `endif
 
 
+  assign _zz_io_ports_0_addr = (_zz_io_ports_0_addr_1 + _zz_io_ports_0_addr_3);
+  assign _zz_io_ports_0_addr_1 = (_zz_io_ports_0_addr_2 * 4'b1000);
+  assign _zz_io_ports_0_addr_2 = (fsm_count / 7'h08);
+  assign _zz_io_ports_0_addr_4 = (fsm_count % 7'h08);
+  assign _zz_io_ports_0_addr_3 = {4'd0, _zz_io_ports_0_addr_4};
   MatTransNxNStream peArray_0 (
     .io_input_valid    (peArray_0_io_input_valid          ), //i
     .io_input_ready    (peArray_0_io_input_ready          ), //o
@@ -89,12 +99,12 @@ module MatTransMxNStream (
   );
   ram_t2p memory (
     .io_ports_0_addr (memory_io_ports_0_addr[6:0]  ), //i
-    .io_ports_0_din  (256'h0                       ), //i
+    .io_ports_0_din  (memory_io_ports_0_din[255:0] ), //i
     .io_ports_0_we   (memory_io_ports_0_we         ), //i
     .io_ports_0_en   (memory_io_ports_0_en         ), //i
     .io_ports_0_dout (memory_io_ports_0_dout[255:0]), //o
     .io_ports_1_addr (memory_io_ports_1_addr[6:0]  ), //i
-    .io_ports_1_din  (memory_io_ports_1_din[255:0] ), //i
+    .io_ports_1_din  (256'h0                       ), //i
     .io_ports_1_we   (memory_io_ports_1_we         ), //i
     .io_ports_1_en   (memory_io_ports_1_en         ), //i
     .io_ports_1_dout (memory_io_ports_1_dout[255:0]), //o
@@ -143,9 +153,12 @@ module MatTransMxNStream (
     memory_io_ports_0_en = 1'b0;
     case(fsm_stateReg)
       fsm_loadData2Mem : begin
+        if(io_input_valid) begin
+          memory_io_ports_0_en = 1'b1;
+        end
       end
       fsm_process_1 : begin
-        if(when_MatTrans_l314) begin
+        if(when_MatTrans_l322) begin
           memory_io_ports_0_en = 1'b1;
         end
       end
@@ -160,9 +173,12 @@ module MatTransMxNStream (
     memory_io_ports_0_we = 1'b0;
     case(fsm_stateReg)
       fsm_loadData2Mem : begin
+        if(io_input_valid) begin
+          memory_io_ports_0_we = 1'b1;
+        end
       end
       fsm_process_1 : begin
-        if(when_MatTrans_l314) begin
+        if(when_MatTrans_l322) begin
           memory_io_ports_0_we = 1'b0;
         end
       end
@@ -177,11 +193,31 @@ module MatTransMxNStream (
     memory_io_ports_0_addr = 7'h0;
     case(fsm_stateReg)
       fsm_loadData2Mem : begin
+        if(io_input_valid) begin
+          memory_io_ports_0_addr = _zz_io_ports_0_addr[6:0];
+        end
       end
       fsm_process_1 : begin
-        if(when_MatTrans_l314) begin
+        if(when_MatTrans_l322) begin
           memory_io_ports_0_addr = fsm_count;
         end
+      end
+      fsm_output_1 : begin
+      end
+      default : begin
+      end
+    endcase
+  end
+
+  always @(*) begin
+    memory_io_ports_0_din = 256'h0;
+    case(fsm_stateReg)
+      fsm_loadData2Mem : begin
+        if(io_input_valid) begin
+          memory_io_ports_0_din = io_input_payload;
+        end
+      end
+      fsm_process_1 : begin
       end
       fsm_output_1 : begin
       end
@@ -194,12 +230,9 @@ module MatTransMxNStream (
     memory_io_ports_1_en = 1'b0;
     case(fsm_stateReg)
       fsm_loadData2Mem : begin
-        if(io_input_valid) begin
-          memory_io_ports_1_en = 1'b1;
-        end
       end
       fsm_process_1 : begin
-        if(when_MatTrans_l314) begin
+        if(when_MatTrans_l322) begin
           memory_io_ports_1_en = 1'b1;
         end
       end
@@ -214,12 +247,9 @@ module MatTransMxNStream (
     memory_io_ports_1_we = 1'b0;
     case(fsm_stateReg)
       fsm_loadData2Mem : begin
-        if(io_input_valid) begin
-          memory_io_ports_1_we = 1'b1;
-        end
       end
       fsm_process_1 : begin
-        if(when_MatTrans_l314) begin
+        if(when_MatTrans_l322) begin
           memory_io_ports_1_we = 1'b0;
         end
       end
@@ -234,31 +264,11 @@ module MatTransMxNStream (
     memory_io_ports_1_addr = 7'h0;
     case(fsm_stateReg)
       fsm_loadData2Mem : begin
-        if(io_input_valid) begin
-          memory_io_ports_1_addr = 7'h0;
-        end
       end
       fsm_process_1 : begin
-        if(when_MatTrans_l314) begin
+        if(when_MatTrans_l322) begin
           memory_io_ports_1_addr = (fsm_count + 7'h10);
         end
-      end
-      fsm_output_1 : begin
-      end
-      default : begin
-      end
-    endcase
-  end
-
-  always @(*) begin
-    memory_io_ports_1_din = 256'h0;
-    case(fsm_stateReg)
-      fsm_loadData2Mem : begin
-        if(io_input_valid) begin
-          memory_io_ports_1_din = io_input_payload;
-        end
-      end
-      fsm_process_1 : begin
       end
       fsm_output_1 : begin
       end
@@ -293,11 +303,7 @@ module MatTransMxNStream (
       fsm_process_1 : begin
       end
       fsm_output_1 : begin
-        if(io_output_ready) begin
-          io_output_valid = 1'b1;
-        end else begin
-          io_output_valid = 1'b0;
-        end
+        io_output_valid = (peArray_0_io_output_valid || peArray_1_io_output_valid);
       end
       default : begin
       end
@@ -313,7 +319,7 @@ module MatTransMxNStream (
       end
       fsm_output_1 : begin
         if(io_output_ready) begin
-          if(when_MatTrans_l338) begin
+          if(when_MatTrans_l346) begin
             io_output_payload = peArray_0_io_output_payload;
           end else begin
             io_output_payload = peArray_1_io_output_payload;
@@ -331,7 +337,7 @@ module MatTransMxNStream (
       fsm_loadData2Mem : begin
       end
       fsm_process_1 : begin
-        if(when_MatTrans_l314) begin
+        if(when_MatTrans_l322) begin
           peArray_0_io_input_valid = 1'b1;
         end
       end
@@ -351,7 +357,7 @@ module MatTransMxNStream (
       end
       fsm_output_1 : begin
         if(io_output_ready) begin
-          if(when_MatTrans_l338) begin
+          if(when_MatTrans_l346) begin
             peArray_0_io_output_ready = 1'b1;
           end else begin
             peArray_0_io_output_ready = 1'b0;
@@ -371,7 +377,7 @@ module MatTransMxNStream (
       fsm_loadData2Mem : begin
       end
       fsm_process_1 : begin
-        if(when_MatTrans_l314) begin
+        if(when_MatTrans_l322) begin
           peArray_0_io_input_payload = memory_io_ports_0_dout;
         end
       end
@@ -388,7 +394,7 @@ module MatTransMxNStream (
       fsm_loadData2Mem : begin
       end
       fsm_process_1 : begin
-        if(when_MatTrans_l314) begin
+        if(when_MatTrans_l322) begin
           peArray_1_io_input_valid = 1'b1;
         end
       end
@@ -408,7 +414,7 @@ module MatTransMxNStream (
       end
       fsm_output_1 : begin
         if(io_output_ready) begin
-          if(when_MatTrans_l338) begin
+          if(when_MatTrans_l346) begin
             peArray_1_io_output_ready = 1'b0;
           end else begin
             peArray_1_io_output_ready = 1'b1;
@@ -428,7 +434,7 @@ module MatTransMxNStream (
       fsm_loadData2Mem : begin
       end
       fsm_process_1 : begin
-        if(when_MatTrans_l314) begin
+        if(when_MatTrans_l322) begin
           peArray_1_io_input_payload = memory_io_ports_1_dout;
         end
       end
@@ -443,20 +449,20 @@ module MatTransMxNStream (
     fsm_stateNext = fsm_stateReg;
     case(fsm_stateReg)
       fsm_loadData2Mem : begin
-        if(when_MatTrans_l305) begin
+        if(when_MatTrans_l313) begin
           fsm_stateNext = fsm_process_1;
         end
       end
       fsm_process_1 : begin
-        if(when_MatTrans_l326) begin
+        if(when_MatTrans_l334) begin
           fsm_stateNext = fsm_output_1;
         end
       end
       fsm_output_1 : begin
-        if(when_MatTrans_l357) begin
+        if(when_MatTrans_l363) begin
           fsm_stateNext = fsm_loadData2Mem;
         end
-        if(when_MatTrans_l361) begin
+        if(when_MatTrans_l367) begin
           fsm_stateNext = fsm_process_1;
         end
       end
@@ -471,12 +477,12 @@ module MatTransMxNStream (
     end
   end
 
-  assign when_MatTrans_l305 = (fsm_count == 7'h1f);
-  assign when_MatTrans_l314 = (peArray_0_io_input_ready && peArray_1_io_input_ready);
-  assign when_MatTrans_l326 = (fsm_count == 7'h07);
-  assign when_MatTrans_l338 = (fsm_count[0] == 1'b0);
-  assign when_MatTrans_l357 = (fsm_countBlock == 7'h20);
-  assign when_MatTrans_l361 = (fsm_count == 7'h1f);
+  assign when_MatTrans_l313 = (fsm_count == 7'h1f);
+  assign when_MatTrans_l322 = (peArray_0_io_input_ready && peArray_1_io_input_ready);
+  assign when_MatTrans_l334 = (fsm_count == 7'h07);
+  assign when_MatTrans_l346 = (fsm_count[0] == 1'b0);
+  assign when_MatTrans_l363 = (fsm_countBlock == 7'h20);
+  assign when_MatTrans_l367 = (fsm_count == 7'h0f);
   assign fsm_onExit_BOOT = ((fsm_stateNext != fsm_BOOT) && (fsm_stateReg == fsm_BOOT));
   assign fsm_onExit_loadData2Mem = ((fsm_stateNext != fsm_loadData2Mem) && (fsm_stateReg == fsm_loadData2Mem));
   assign fsm_onExit_process_1 = ((fsm_stateNext != fsm_process_1) && (fsm_stateReg == fsm_process_1));
@@ -499,7 +505,7 @@ module MatTransMxNStream (
           end
         end
         fsm_process_1 : begin
-          if(when_MatTrans_l314) begin
+          if(when_MatTrans_l322) begin
             fsm_count <= (fsm_count + 7'h01);
           end
         end
@@ -507,7 +513,7 @@ module MatTransMxNStream (
           if(io_output_ready) begin
             fsm_count <= (fsm_count + 7'h01);
           end
-          if(when_MatTrans_l361) begin
+          if(when_MatTrans_l367) begin
             fsm_countBlock <= (fsm_countBlock + 7'h02);
           end
         end

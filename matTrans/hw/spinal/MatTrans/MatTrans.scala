@@ -260,15 +260,23 @@ case class MatTransMxNStream(sizeM: Int = 16, sizeN: Int = 16, sizePE: Int = 8, 
   val memory = ram_t2p(7, 256)
 
 
-  def count2Addr(count: UInt = 0, sizeN: Int = 8, sizePE: Int = 8): UInt = {
-    val setN = sizeN / sizePE
-    val addrX = count.algoInt % setN
-    val addrY = count.algoInt / setN
-    addrY * setN + addrX
-  }
-  
-  val lastAddr = sizeN / sizePE * sizeM - 1
+  def count2Addr(count: UInt, sizeM: Int = 8, sizeN: Int = 8, sizePE: Int = 8): UInt = {
+    // val setN = sizeN / sizePE
+    // // 明确类型转换和位宽，避免隐式转换
+    // val addrX = (count % U(setN, count.getWidth bits)).resized
+    // val addrY = (count / U(setN, count.getWidth bits)).resized
+    // // 确保最终计算结果位宽正确
+    // (addrY * U(setN, addrY.getWidth bits) + addrX).resized
 
+
+    // val blockNum = sizeM * sizeN / sizePE / sizePE
+    val blockX = count % U(sizePE, count.getWidth bits)
+    val blockY = count / U(sizePE, count.getWidth bits)
+    (blockY * sizePE + blockX).resized
+  }
+
+  
+  val lastAddr = sizeN / sizePE * sizeM
   val fsm = new StateMachine {
     val loadData2Mem = new State with EntryPoint
     val process = new State
@@ -299,10 +307,10 @@ case class MatTransMxNStream(sizeM: Int = 16, sizeN: Int = 16, sizePE: Int = 8, 
       .whenIsActive {
         io.input.ready := True
         when(io.input.valid) {
-          memory.setupPortWrite(1, count2Addr(count, sizeN, sizePE), io.input.payload)
+          memory.setupPortWrite(0, count2Addr(count, sizeM, sizeN, sizePE), io.input.payload)
           count := count + 1
         } 
-        when(count === lastAddr) {
+        when(count === lastAddr - 1) {
           goto(process)
         }
       }
@@ -345,20 +353,18 @@ case class MatTransMxNStream(sizeM: Int = 16, sizeN: Int = 16, sizePE: Int = 8, 
             io.output.payload := peArray(1).io.output.payload
           }
 
-          io.output.valid := True
-
         } otherwise {
           peArray(0).io.output.ready := False
           peArray(1).io.output.ready := False
-          io.output.valid := False
         }
+        io.output.valid := peArray(0).io.output.valid || peArray(1).io.output.valid
 
         
         when(countBlock === (sizeM * sizeN / sizePE)){
           goto(loadData2Mem)
         }
 
-        when(count === lastAddr) {
+        when(count === lastAddr / 2 - 1) {
           countBlock := countBlock + 2
           goto(process)
         }
