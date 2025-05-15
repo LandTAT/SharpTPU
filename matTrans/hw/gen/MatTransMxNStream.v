@@ -1,6 +1,6 @@
 // Generator : SpinalHDL v1.12.0    git head : 1aa7d7b5732f11cca2dd83bacc2a4cb92ca8e5c9
 // Component : MatTransMxNStream
-// Git hash  : 313a995cde82ff15716e2946248030cb89c00e48
+// Git hash  : 14a735b280eede57ab34238afbbfe384bf8dfa8c
 
 `timescale 1ns/1ps
 
@@ -521,7 +521,7 @@ module MatTransMxNStream (
   assign when_MatTrans_l340 = (fsm_count != 7'h0);
   assign when_MatTrans_l347 = (fsm_count == 7'h08);
   assign when_MatTrans_l359 = (fsm_count[0] == 1'b0);
-  assign when_MatTrans_l376 = (fsm_countBlock == 7'h20);
+  assign when_MatTrans_l376 = (fsm_countBlock == 7'h02);
   assign when_MatTrans_l380 = (fsm_count == 7'h0f);
   assign fsm_onExit_BOOT = ((fsm_stateNext != fsm_BOOT) && (fsm_stateReg == fsm_BOOT));
   assign fsm_onExit_loadData2Mem = ((fsm_stateNext != fsm_loadData2Mem) && (fsm_stateReg == fsm_loadData2Mem));

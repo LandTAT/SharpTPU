@@ -96,46 +96,28 @@ async def matTransMxNStream_test(dut):
     for _ in range(10):
         await RisingEdge(dut.clk)
     dut.io_output_ready.value = 1
-
-    while dut.io_output_valid.value == 0:
-        await RisingEdge(dut.clk)
-    
-    # 输出就绪后，连续N个周期接收每一行数据
-    if dut.io_output_valid.value == 1:
-        for row in range(N):
-            # 接收这一行的所有数据
+    row = 0
+    while (row != N-1):
+        # 输出就绪后，连续N个周期接收每一行数据
+        if dut.io_output_valid.value == 1:
             for j in range(SIZE_M // SIZE_PE):
                 # 计算当前行的起始索引
                 start_index = j * SIZE_PE
                 # 计算当前行的结束索引
                 end_index = start_index + SIZE_PE
 
-               
+            
                 len1 = len(dut.io_output_payload.value)
                 # print(f"\n第{row}行数据: {len1}\n")
                 # 将接收到的数据存储到输出矩阵中
                 output_matrix[row][start_index:end_index] = np.frombuffer(int(dut.io_output_payload.value).to_bytes(4*8, byteorder='little'), dtype=np.uint32)
                 # 等待一个时钟周期进入下一行
                 # print(f"\n第{row}行数据: {output_matrix[0][0]}\n")
-                await RisingEdge(dut.clk)
-            # if row == (N-1)//2:  # 使用//进行整数除法
-            #     # 输出调试信息
-            #     print(f"在第{row}行模拟输入中断10个时钟周期")
                 
-            #     # 将输入有效信号设为低，模拟中断
-            #     dut.io_output_ready.value = 0
-                
-            #     # 等待10个时钟周期
-            #     for _ in range(10):
-            #         await RisingEdge(dut.clk)
-                    
-            #     # 恢复输入有效信号
-            #     dut.io_output_ready.value = 1
-
-            
-
-    while dut.io_output_valid.value == 1:
-        await RisingEdge(dut.clk)
+                await RisingEdge(dut.clk) 
+            row += 1 
+        else:
+            await RisingEdge(dut.clk)
 
     # 将原始矩阵转置以进行比较
     expected_transpose = np.transpose(random_uint32)

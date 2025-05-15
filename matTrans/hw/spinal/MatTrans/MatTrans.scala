@@ -373,7 +373,7 @@ case class MatTransMxNStream(sizeM: Int = 16, sizeN: Int = 16, sizePE: Int = 8, 
         io.output.valid := peArray(0).io.output.valid || peArray(1).io.output.valid
 
         
-        when(countBlock === sizeM * sizeN / sizePE){
+        when(countBlock === sizeN / sizePE) {
           goto(loadData2Mem)
         }
 
