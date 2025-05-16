@@ -241,7 +241,7 @@ case class MatTransNxNStream(sizeN: Int = 8, width: Int = 32) extends Component 
         } otherwise {
           io.output.valid := False
         }
-        when(count === (sizeN - 1)) {
+        when(count === (sizeN)) {
           goto(input)
         }
       }
@@ -267,7 +267,7 @@ case class MatTransMxNStream(sizeM: Int = 16, sizeN: Int = 16, sizePE: Int = 8, 
     val blocksInRow_bits = log2Up(blocksInRow) // 计算 log2(blocksInRow)
     
     // 使用移位代替除法
-    val blockRow = (count >> U(log2Up(sizeM)).resize(addr_width)).resize(addr_width)  // count / sizeM
+    val blockRow = (count >> U(log2Up(sizeN)).resize(addr_width)).resize(addr_width)  // count / sizeN
     val blockCol = (count(blocksInRow_bits-1 downto 0)).resize(addr_width) // count % blocksInRow
     
     // 构建块起始地址
@@ -373,11 +373,11 @@ case class MatTransMxNStream(sizeM: Int = 16, sizeN: Int = 16, sizePE: Int = 8, 
         io.output.valid := peArray(0).io.output.valid || peArray(1).io.output.valid
 
         
-        when(countBlock === sizeN / sizePE) {
+        when(countBlock === sizeN / sizePE - 1 && count === 2*sizePE - 1) {
           goto(loadData2Mem)
         }
 
-        when(count === lastAddr / 2 - 1) {
+        when(countBlock =/= sizeN/sizePE -1 && count === 2*sizePE - 1) {
           countBlock := countBlock + 1
           goto(process)
         }
@@ -396,5 +396,5 @@ object MyTopLevelStreamVerilog extends App {
 }
 
 object MyTopLevelMxNStreamVerilog extends App {
-    Config.spinal.generateVerilog(MatTransMxNStream())
+    Config.spinal.generateVerilog(MatTransMxNStream(16, 16 ))
 }

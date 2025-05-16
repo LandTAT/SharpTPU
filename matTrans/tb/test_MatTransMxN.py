@@ -97,7 +97,7 @@ async def matTransMxNStream_test(dut):
         await RisingEdge(dut.clk)
     dut.io_output_ready.value = 1
     row = 0
-    while (row != N-1):
+    while (row != N):
         # 输出就绪后，连续N个周期接收每一行数据
         if dut.io_output_valid.value == 1:
             for j in range(SIZE_M // SIZE_PE):
@@ -115,7 +115,9 @@ async def matTransMxNStream_test(dut):
                 # print(f"\n第{row}行数据: {output_matrix[0][0]}\n")
                 
                 await RisingEdge(dut.clk) 
+            print(f"第{row}行输出数据:\n {output_matrix}\n")
             row += 1 
+            
         else:
             await RisingEdge(dut.clk)
 
