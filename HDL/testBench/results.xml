@@ -1,8 +1,8 @@
 <testsuites name="results">
   <testsuite name="all" package="all">
-    <property name="random_seed" value="1747488608" />
-    <testcase name="fp32dot_smoke" classname="dotProdUnit_TB" file="/Users/azureglacier/Documents/Codes/SharpTPU/HDL/testBench/dotProdUnit_TB.py" lineno="46" time="0.07683777809143066" sim_time_ns="1657.501" ratio_time="21571.43323467409">
-      <failure message="Test failed with RANDOM_SEED=1747488608" />
+    <property name="random_seed" value="1747493186" />
+    <testcase name="fp32dot_smoke" classname="dotProdUnit_TB" file="/Users/azureglacier/Documents/Codes/SharpTPU/HDL/testBench/dotProdUnit_TB.py" lineno="46" time="0.08394217491149902" sim_time_ns="1657.501" ratio_time="19745.747614325195">
+      <failure message="Test failed with RANDOM_SEED=1747493186" />
     </testcase>
   </testsuite>
 </testsuites>
