@@ -95,10 +95,12 @@ int TB_dataset_mFP32(int M, int N, int K)
     {
         for (int j = 0; j < N; ++j)
         {
+            // i = 8;
+            // j = 11;
             const float* pA = A.data() + i * K;
             const float* pB = B.data() + j * K;
             float c = C[i * N + j];
-            float z = mFP32_dotv2(K, pA, pB, c);
+            float z = mFP32_dotv1(K, pA, pB, c);
             float g = ref_fp32_dotv2(K, pA, pB, c);
             if (!fp32_equ(z, g))
             {
@@ -159,7 +161,7 @@ int TB_dataset_mFP16(int M, int N, int K)
             const float* pA_f32 = A_f32.data() + i * K;
             const float* pB_f32 = B_f32.data() + j * K;
             float c_f32 = C_f32[i * N + j];
-            mfp16 z_f16 = mFP16_dotv2(K, pA_f16, pB_f16, c_f16);
+            mfp16 z_f16 = mFP16_dotv1(K, pA_f16, pB_f16, c_f16);
             float z_f32 = fp16_to_fp32(z_f16);
             float g_f32 = ref_fp32_dotv2(K, pA_f32, pB_f32, c_f32);
             mfp16 g_f16 = fp32_to_fp16(g_f32);
@@ -219,7 +221,7 @@ int TB_dataset_mFP16_mix(int M, int N, int K)
             const float* pA_f32 = A_f32.data() + i * K;
             const float* pB_f32 = B_f32.data() + j * K;
             float c_f32 = C_f32[i * N + j];
-            float z = mFP16_mix_dotv2(K, pA_f16, pB_f16, c_f32);
+            float z = mFP16_mix_dotv1(K, pA_f16, pB_f16, c_f32);
             float g = ref_fp32_dotv2(K, pA_f32, pB_f32, c_f32);
             if (!fp32_equ(z, g))
             {

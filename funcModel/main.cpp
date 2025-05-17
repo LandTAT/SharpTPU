@@ -17,7 +17,7 @@ int main()
     TB_corner_mFP32_mul(nullptr);
     // TB_corner_mFP32_mul("../output/FP32_MUL_corner_case.npz");
     // TB_random_mFP32_mul(0x123, 1000, nullptr);
-    TB_manual_mFP32_dot();
+    // TB_manual_mFP32_dot();
     TB_dataset_mFP32(16, 16, 16);
     TB_dataset_mFP32( 8, 32, 16);
     TB_dataset_mFP32(32,  8, 16);
