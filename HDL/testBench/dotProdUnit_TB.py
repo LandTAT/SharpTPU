@@ -9,34 +9,37 @@ from cocotb.runner import get_runner
 from cocotb.triggers import RisingEdge
 
 #%%
-def vec2bits(vec : np.ndarray):
-    assert vec.ndim == 1
-    assert vec.dtype == np.uint32
-    z = int(0)
-    for i, x in enumerate(vec):
-        z |= int(x) << (32 * i)
-    return z
 
-# SIZE_M = 16
-# SIZE_N = 16
+# SIZE_M = 32
+# SIZE_N = 8
 # SIZE_K = 16
 # ARITHOP = "FP32"
-SIZE_M = 32
-SIZE_N = 8
+
+
+SIZE_M = 16
+SIZE_N = 16
 SIZE_K = 16
-ARITHOP = "FP32"
+ARITHOP = "FP16"
 
 
-# object ArithOp extends SpinalEnum {
-#     val FP32, FP16, FP16_MIX, INT8, INT4 = newElement()
-#     defaultEncoding = SpinalEnumEncoding("staticEncoding") (
-#         FP32     -> 0x1,
-#         FP16     -> 0x2,
-#         FP16_MIX -> 0x3,
-#         INT8     -> 0x4,
-#         INT4     -> 0x5
-#     )
-# }
+def vec2bits(vec : np.ndarray):
+    assert vec.ndim == 1, "输入必须是一维数组"
+    
+    # 自动获取数据类型的位宽
+    if np.issubdtype(vec.dtype, np.integer):
+        bitwidth = np.iinfo(vec.dtype).bits
+    else:
+        bitwidth = np.finfo(vec.dtype).bits
+        
+    # 打印调试信息
+    # print(f"检测到数据类型: {vec.dtype}, 位宽: {bitwidth}位")
+    
+    # 执行位移拼接
+    z = int(0)
+    for i, x in enumerate(vec):
+        z |= int(x) << (bitwidth * i)
+    
+    return z
 
 
 #%%
@@ -61,21 +64,47 @@ async def fp32dot_smoke(dut):
     for _ in range(10):
         await RisingEdge(dut.clk)
 
+
+    if (ARITHOP == "FP32"):
+        dut.io_op.value = 0x1     # ArithOp.FP32
+        DATA_TYPE_AB = np.uint32
+        DATA_TYPE_CD = np.uint32
+    elif (ARITHOP == "FP16"):
+        dut.io_op.value = 0x2
+        DATA_TYPE_AB = np.uint16
+        DATA_TYPE_CD = np.uint16
+    elif (ARITHOP == "FP16_MIX"):
+        dut.io_op.value = 0x3
+        DATA_TYPE_AB = np.uint16
+        DATA_TYPE_CD = np.uint32
+    elif (ARITHOP == "INT8"):
+        dut.io_op.value = 0x4
+        DATA_TYPE_AB = np.uint8
+        DATA_TYPE_CD = np.uint32
+    elif (ARITHOP == "INT4"):
+        dut.io_op.value = 0x5
+        DATA_TYPE_AB = np.uint4
+        DATA_TYPE_CD = np.uint32
+    else:
+        raise ValueError("Invalid ARITHOP value")
+    
+
     # Load Data
     dataPath = "../../funcModel/output/" + ARITHOP + "_m" + str(SIZE_M) + "n" + str(SIZE_N) + "k" + str(SIZE_K) +".npz"
     # data = np.load("../../funcModel/output/FP32_m16n16k16.npz")
     data = np.load(dataPath)
 
-    A = data["A"].view(dtype=np.uint32).reshape(SIZE_M, SIZE_K)
-    B = data["B"].view(dtype=np.uint32).reshape(SIZE_K, SIZE_N)
-    C = data["C"].view(dtype=np.uint32).reshape(SIZE_M, SIZE_N)
-    D = data["D"].view(dtype=np.uint32).reshape(SIZE_M, SIZE_N)
+    A = data["A"].view(dtype=DATA_TYPE_AB).reshape(SIZE_M, SIZE_K)
+    B = data["B"].view(dtype=DATA_TYPE_AB).reshape(SIZE_N, SIZE_K)
+    C = data["C"].view(dtype=DATA_TYPE_CD).reshape(SIZE_M, SIZE_N)
+    D = data["D"].view(dtype=DATA_TYPE_CD).reshape(SIZE_M, SIZE_N)
     print("Loading data from", dataPath)
     print("A.shape", A.shape)   
     print("B.shape", B.shape)
     print("C.shape", C.shape)
     print("D.shape", D.shape)
-    dut.io_op.value = 0x1     # ArithOp.FP32
+
+
 
     for _ in range(20):
         await RisingEdge(dut.clk)
