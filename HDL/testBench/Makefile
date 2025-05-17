@@ -1,10 +1,14 @@
 # Makefile
 
 # defaults
-SIM ?= icarus
+# SIM ?= icarus
 WAVES ?= 1
-# SIM ?= verilator
-# EXTRA_ARGS += --trace --trace-fst --trace-structs
+SIM ?= verilator
+# 为Verilator添加波形记录参数
+ifeq ($(WAVES), 1)
+    EXTRA_ARGS += --trace --trace-fst
+    PLUSARGS += -v
+endif
 TOPLEVEL_LANG ?= verilog
 
 VERILOG_SOURCES += ../hw/gen/dotProdUnit.v

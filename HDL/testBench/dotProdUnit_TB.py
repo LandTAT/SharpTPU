@@ -17,6 +17,28 @@ def vec2bits(vec : np.ndarray):
         z |= int(x) << (32 * i)
     return z
 
+# SIZE_M = 16
+# SIZE_N = 16
+# SIZE_K = 16
+# ARITHOP = "FP32"
+SIZE_M = 32
+SIZE_N = 8
+SIZE_K = 16
+ARITHOP = "FP32"
+
+
+# object ArithOp extends SpinalEnum {
+#     val FP32, FP16, FP16_MIX, INT8, INT4 = newElement()
+#     defaultEncoding = SpinalEnumEncoding("staticEncoding") (
+#         FP32     -> 0x1,
+#         FP16     -> 0x2,
+#         FP16_MIX -> 0x3,
+#         INT8     -> 0x4,
+#         INT4     -> 0x5
+#     )
+# }
+
+
 #%%
 @cocotb.test()
 async def fp32dot_smoke(dut):
@@ -40,12 +62,19 @@ async def fp32dot_smoke(dut):
         await RisingEdge(dut.clk)
 
     # Load Data
-    data = np.load("../../funcModel/output/FP32_m16n16k16.npz")
-    A = data["A"].view(dtype=np.uint32).reshape(16, 16)
-    B = data["B"].view(dtype=np.uint32).reshape(16, 16)
-    C = data["C"].view(dtype=np.uint32).reshape(16, 16)
-    D = data["D"].view(dtype=np.uint32).reshape(16, 16)
+    dataPath = "../../funcModel/output/" + ARITHOP + "_m" + str(SIZE_M) + "n" + str(SIZE_N) + "k" + str(SIZE_K) +".npz"
+    # data = np.load("../../funcModel/output/FP32_m16n16k16.npz")
+    data = np.load(dataPath)
 
+    A = data["A"].view(dtype=np.uint32).reshape(SIZE_M, SIZE_K)
+    B = data["B"].view(dtype=np.uint32).reshape(SIZE_K, SIZE_N)
+    C = data["C"].view(dtype=np.uint32).reshape(SIZE_M, SIZE_N)
+    D = data["D"].view(dtype=np.uint32).reshape(SIZE_M, SIZE_N)
+    print("Loading data from", dataPath)
+    print("A.shape", A.shape)   
+    print("B.shape", B.shape)
+    print("C.shape", C.shape)
+    print("D.shape", D.shape)
     dut.io_op.value = 0x1     # ArithOp.FP32
 
     for _ in range(20):
@@ -61,11 +90,14 @@ async def fp32dot_smoke(dut):
     err = 0
 
     LATENCY = 15
-    for i in range(16 * 16 + LATENCY + 1):
-        r = i // 16
-        c = i  % 16
-        if i < 16 * 16:
-            dut.io_vecA.value = vec2bits(A[r])
+    # FP16/FP32: 15
+
+    for i in range(SIZE_M * SIZE_N + LATENCY + 1):
+        r = i // SIZE_N
+        c = i  % SIZE_N
+        # print("i", i, "r", r, "c", c)
+        if i < SIZE_M * SIZE_N:
+            dut.io_vecA.value = vec2bits(A[r])  
             dut.io_vecB.value = vec2bits(B[c])
             dut.io_vecC.value = int(C[r, c])
         else:
@@ -74,8 +106,9 @@ async def fp32dot_smoke(dut):
             dut.io_vecC.value = 0
         if i > LATENCY:
             j = i - (LATENCY + 1)
-            r1 = j // 16
-            c1 = j  % 16
+            r1 = j // SIZE_N
+            c1 = j  % SIZE_N
+            print("i", i, "j", j, "r1", r1, "c1", c1)
             print("#{:2d},{:2d} {:x} {:x} {:x}".format(r1, c1, C[r1, c1], D[r1, c1], int(dut.io_vecD.value) & 0xFFFFFFFF))
             if (int(dut.io_vecD) & 0xFFFFFFFF) != int(D[r1, c1]):
                 err += 1
