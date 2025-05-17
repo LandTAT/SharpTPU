@@ -16,8 +16,8 @@ def concatenate_uint32_row(row):
     return result
 
 # 根据硬件参数设置
-SIZE_M = 16    # 应匹配硬件中的sizeM
-SIZE_N = 16    # 应匹配硬件中的sizeN
+SIZE_K = 16    # 应匹配硬件中的sizeM
+SIZE_N = 8   # 应匹配硬件中的sizeN
 SIZE_PE = 8    # 应匹配硬件中的sizePE
 WIDTH = 32     # 应匹配硬件中的width
 
@@ -35,12 +35,28 @@ async def matTransMxNStream_test(dut):
         await RisingEdge(dut.clk)
     
     dut.resetn.value = 1
+
+    for _ in range(5):
+        await RisingEdge(dut.clk)
+
+    if SIZE_K == 16 and SIZE_N == 16:
+        dut.io_op = 0x1
+    elif SIZE_K == 16 and SIZE_N == 8:
+        dut.io_op = 0x2
+    elif SIZE_K == 16 and SIZE_N == 32:
+        dut.io_op = 0x3
+    else:
+        raise ValueError("Unsupported SIZE_K and SIZE_N combination")
+
+
     for _ in range(10):
         await RisingEdge(dut.clk)
 
+
     # 生成测试数据
-    M = SIZE_M
+    M = SIZE_K
     N = SIZE_N
+
     # random_float32 = np.random.random((N, N)).astype(np.float32)
     # random_uint32 = random_float32.view(dtype=np.uint32)
     random_uint32 = np.arange(1,M*N+1, dtype=np.uint32).reshape(M, N)
@@ -100,7 +116,7 @@ async def matTransMxNStream_test(dut):
     while (row != N):
         # 输出就绪后，连续N个周期接收每一行数据
         if dut.io_output_valid.value == 1:
-            for j in range(SIZE_M // SIZE_PE):
+            for j in range(SIZE_K // SIZE_PE):
                 # 计算当前行的起始索引
                 start_index = j * SIZE_PE
                 # 计算当前行的结束索引

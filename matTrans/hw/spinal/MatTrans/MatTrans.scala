@@ -8,6 +8,8 @@ import spinal.core
 import scala.tools.nsc.doc.html.HtmlTags.Tr
 import spinal.lib.bus.amba4.axi.Axi4.size
 import spinal.lib.fsm._
+import spinal.lib.io.InOutWrapperPlayground.D
+import scala.tools.nsc.doc.model.Def
 
 case class muxReg(width: Int = 32) extends Component {
   val io = new Bundle {
@@ -250,31 +252,65 @@ case class MatTransNxNStream(sizeN: Int = 8, width: Int = 32) extends Component 
 
 }
 
-case class MatTransMxNStream(sizeM: Int = 16, sizeN: Int = 16, sizePE: Int = 8, width: Int = 32) extends Component {
+object MxNOp extends SpinalEnum {
+    val Default, M16N16K16, M32N8K16, M8N32K16 = newElement()
+    defaultEncoding = SpinalEnumEncoding("staticEncoding") (
+        Default -> 0x0,
+        M16N16K16     -> 0x1,
+        M32N8K16     -> 0x2,
+        M8N32K16 -> 0x3
+    )
+}
+
+case class MatTransMxNStream(sizePE: Int = 8, width: Int = 32) extends Component {
   val io = new Bundle {
     val input = slave Stream(Bits(width * sizePE bits))
     val output = master Stream(Bits(width * sizePE bits))
+    val op = in (MxNOp)
   }
   val peArray = Array.fill(2)(MatTransNxNStream(sizePE, width))
   val addr_width = 7
-  val memory = ram_t2p(7, 256)
+  val memory = ram_t2p(addr_width, 256)
+  val sizeMode = RegNext(io.op)
 
+  val sizeN = Reg(UInt(addr_width bits)) init(16)
+  val sizeK = Reg(UInt(addr_width bits)) init(16)
+  val sizeN_bits = Reg(UInt(addr_width bits)) init(4)
+  val blocksInRow_bits = Reg(UInt(addr_width bits)) init(2)
+  switch(sizeMode) {
+    is(MxNOp.M16N16K16) {
+      sizeN := 16
+      sizeK := 16
+      sizeN_bits := log2Up(16)
+      blocksInRow_bits := log2Up(2)
+    }
+    is(MxNOp.M32N8K16) {
+      sizeN := 8
+      sizeK := 16
+      sizeN_bits := log2Up(8)
+      blocksInRow_bits := log2Up(1)
+    }
+    is(MxNOp.M8N32K16) {
+      sizeN := 32
+      sizeK := 16
+      sizeN_bits := log2Up(32)
+      blocksInRow_bits := log2Up(4)
+    }
+  } 
+  
 
-  def count2Addr(count: UInt, sizeM: Int = 8, sizeN: Int = 8, sizePE: Int = 8): UInt = {
-    // 计算移位位数（代替除法）
-    val blocksInRow = sizeN / sizePE
+  def count2Addr(count: UInt, sizeN_bits: UInt, blocksInRow_bits: UInt, sizePE: Int = 8): UInt = {
     val sizePE_bits = log2Up(sizePE)       // 计算 log2(sizePE)，如 log2(8)=3
-    val blocksInRow_bits = log2Up(blocksInRow) // 计算 log2(blocksInRow)
     
     // 使用移位代替除法
-    val blockRow = (count >> U(log2Up(sizeN)).resize(addr_width)).resize(addr_width)  // count / sizeN
-    val blockCol = (count(blocksInRow_bits-1 downto 0)).resize(addr_width) // count % blocksInRow
+    val blockRow = (count >> sizeN_bits).resize(addr_width)  // count / sizeN
+    val blockCol = (count & ((U(1) << blocksInRow_bits) - 1).resize(addr_width)).resize(addr_width)  // count % blocksInRow
     
     // 构建块起始地址
     val blockStartAddrInMem = ((blockRow << blocksInRow_bits) + blockCol << sizePE_bits).resize(addr_width)
     
     // 计算块内偏移
-    val targetAddrInBlock = ((count >> U(blocksInRow_bits).resize(addr_width)) - (blockRow << sizePE_bits)).resize(addr_width)
+    val targetAddrInBlock = ((count >> blocksInRow_bits) - (blockRow << sizePE_bits)).resize(addr_width)
     
     // 最终地址
     val targetAddrInMem = (blockStartAddrInMem + targetAddrInBlock).resize(addr_width)
@@ -282,9 +318,10 @@ case class MatTransMxNStream(sizeM: Int = 16, sizeN: Int = 16, sizePE: Int = 8, 
   }
 
   
-  val lastAddr = sizeN / sizePE * sizeM
+  // val lastAddr = Reg(UInt(addr_width bits)) init(0)
   val fsm = new StateMachine {
-    val loadData2Mem = new State with EntryPoint
+    val idle = new State with EntryPoint
+    val loadData2Mem = new State 
     val process = new State
     val output = new State
     // 默认值设置
@@ -304,6 +341,14 @@ case class MatTransMxNStream(sizeM: Int = 16, sizeN: Int = 16, sizePE: Int = 8, 
     val count = Reg(UInt(addr_width bits)) init(0)
     val countBlock = Reg(UInt(addr_width bits)) init(0)
 
+    idle
+      .whenIsActive {
+        when(sizeMode =/= MxNOp.Default) {
+          goto(loadData2Mem)
+        }
+      }
+
+
     loadData2Mem
       .onEntry {
         count := 0
@@ -313,10 +358,10 @@ case class MatTransMxNStream(sizeM: Int = 16, sizeN: Int = 16, sizePE: Int = 8, 
       .whenIsActive {
         io.input.ready := True
         when(io.input.valid) {
-          memory.setupPortWrite(0, count2Addr(count, sizeM, sizeN, sizePE), io.input.payload)
+          memory.setupPortWrite(0, count2Addr(count, sizeN_bits, blocksInRow_bits, sizePE), io.input.payload)
           count := count + 1
         } 
-        when(count === lastAddr - 1) {
+        when(count === (sizeN >> U(log2Up(sizePE)).resize(addr_width)) * sizeK - 1) {
           goto(process)
         }
       }
@@ -331,11 +376,6 @@ case class MatTransMxNStream(sizeM: Int = 16, sizeN: Int = 16, sizePE: Int = 8, 
           memory.setupPortRead(0, (count + sizePE * countBlock ).resized)
           memory.setupPortRead(1, (count + sizePE * countBlock + sizeN ).resized)
           
-          // for (i <- 0 until 2) {
-          //   peArray(i).io.input.payload := memory.io.ports(i).dout
-          //   peArray(i).io.input.valid := True
-          // }
-
         }
         when(count =/= 0) {
           // 这里是为了避免在第0个周期就开始读取数据,打一拍
@@ -373,11 +413,11 @@ case class MatTransMxNStream(sizeM: Int = 16, sizeN: Int = 16, sizePE: Int = 8, 
         io.output.valid := peArray(0).io.output.valid || peArray(1).io.output.valid
 
         
-        when(countBlock === sizeN / sizePE - 1 && count === 2*sizePE - 1) {
+        when(countBlock === (sizeN >> U(log2Up(sizePE)).resize(addr_width)) - 1 && count === 2*sizePE - 1) {
           goto(loadData2Mem)
         }
 
-        when(countBlock =/= sizeN/sizePE -1 && count === 2*sizePE - 1) {
+        when(countBlock =/= (sizeN >> U(log2Up(sizePE)).resize(addr_width)) -1 && count === 2*sizePE - 1) {
           countBlock := countBlock + 1
           goto(process)
         }
@@ -396,5 +436,5 @@ object MyTopLevelStreamVerilog extends App {
 }
 
 object MyTopLevelMxNStreamVerilog extends App {
-    Config.spinal.generateVerilog(MatTransMxNStream(16, 16 ))
+    Config.spinal.generateVerilog(MatTransMxNStream())
 }
