@@ -27,6 +27,7 @@ bool fp32_equ(float x, float y)
     {
         return xCatagory == FP_NAN && yCatagory == FP_NAN;
     }
+    /*
     if (xCatagory == FP_SUBNORMAL)
     {
         xCatagory = FP_ZERO;
@@ -37,14 +38,20 @@ bool fp32_equ(float x, float y)
         yCatagory = FP_ZERO;
         y = std::signbit(y) ? -0.0f : +0.0f;
     }
+    */
     // Bit level equal
     return x == y;
+}
+
+bool mFP::isSubnorm() const
+{
+    return exn == EXN_NORM && E == 1 && BIT(M, Wf, 1) == 0;
 }
 
 void mFP::setZero()
 {
     M = 0;
-    E = 0;
+    E = 1;
     exn = EXN_ZERO;
 }
 
@@ -62,6 +69,49 @@ void mFP::setNaN()
     M = -1;
     E = allOneE;
     exn = EXN_NAN;
+}
+
+void mFP::adjustWf(int new_Wf)
+{
+    int lsh = new_Wf - Wf;
+    if (isNorm())
+    {
+        if (lsh >= 0)
+            M <<= +lsh;
+        else
+            M >>= -lsh;
+    }
+    Wf = new_Wf;
+}
+
+void mFP::adjustWe(int new_We)
+{
+    const int dffBias = (1 << (new_We - 1)) - (1 << (We - 1));
+    const int allOneE = (1 << new_We) - 1;
+    We = new_We;
+    switch (exn)
+    {
+    case EXN_ZERO:
+        setZero();
+        break;
+    case EXN_NORM:
+        E += dffBias;
+        if (E < 1)
+        {
+            // Shoule be deal in later function: mFP_norm_rtne
+        }
+        if (E >= allOneE)
+        {
+            // setInf();
+        }
+        break;
+    case EXN_INF:
+        setInf();
+        break;
+    case EXN_NAN:
+        setNaN();
+        break;
+    }
 }
 
 void mFP::show() const

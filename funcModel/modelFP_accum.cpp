@@ -122,6 +122,14 @@ mFP mFP_norm_rtne(mFP x, int Wo)
     int adj = Wnz - (x.Wf + 1);
     int rsh = Wnz - (z.Wf + 1);
 
+    z.E = x.E + adj;
+    if (z.E < 1)
+    {
+        rsh += 1 - z.E;
+        z.E  = 1;
+    }
+    // printf("%d %d\n", rsh, adj);
+
     int64_t round_bit = 0;
     int64_t stick_bit = 0;
 
@@ -130,14 +138,13 @@ mFP mFP_norm_rtne(mFP x, int Wo)
         round_bit = BIT(x.M, rsh - 1, 1);
         if (rsh > 1)
             stick_bit = BIT(x.M, 0, rsh - 2);
-        z.M = x.M >> (+rsh);
+        z.M = rsh < 64 ? x.M >> rsh : 0;
         // printf("%d %ld %lx\n", rsh, round_bit, stick_bit);
     }
     else
     {
         z.M = x.M << (-rsh);
     }
-    z.E = x.E + adj;
 
     if (round_bit == 1 && (stick_bit != 0 || (z.M & 0x1)))
     {
@@ -153,7 +160,7 @@ mFP mFP_norm_rtne(mFP x, int Wo)
     }
 
     // Underflow
-    if (z.E <= 0)
+    if (z.M == 0)
     {
         z.setZero();
     }

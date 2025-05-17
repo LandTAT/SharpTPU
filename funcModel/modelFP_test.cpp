@@ -17,7 +17,7 @@ const std::vector<float> cornerCase = {
     +FP32Limit::min(), -FP32Limit::min(),
     +FP32Limit::max(), -FP32Limit::max(),
     +FP32Limit::epsilon(), -FP32Limit::epsilon(),
-    // +FP32Limit::denorm_min(), -FP32Limit::denorm_min(),
+    +FP32Limit::denorm_min(), -FP32Limit::denorm_min(),
     +FP32Limit::infinity(), -FP32Limit::infinity(),
     +FP32Limit::quiet_NaN(), -FP32Limit::quiet_NaN(),
     +1.0F + FP32Limit::epsilon(), +1.0F - FP32Limit::epsilon(), 
@@ -48,7 +48,7 @@ int TB_corner_mFP32_mul(const char* npzName)
             float x = cornerCase[i];
             float y = cornerCase[j];
             float z = mFP32_mul(x, y);
-            float g = x * y;    // Standard Float Mul
+            float g = ref_fp32_mul(x, y);    // Standard Float Mul
             if (!fp32_equ(z, g))
             {
                 ++err;
@@ -95,6 +95,51 @@ int TB_random_mFP32_mul(uint32_t seed, int N, const char* npzName)
     return 0;
 }
 
+int TB_manual_mFP32_dot(const char* npzName)
+{
+    // const int N = 1;
+    const int N = cornerCase.size();
+    int err = 0;
+
+    for (int i = 0; i < N; ++i)
+    {
+        for (int j = 0; j < N; ++j)
+        {
+            for (int k = 0; k < N; ++k)
+            {
+                float a = cornerCase[i];
+                float b = cornerCase[j];
+                float c = cornerCase[k];
+                // float a = cornerCase[8];
+                // float b = cornerCase[12];
+                // float c = cornerCase[17];
+                float z = mFP32_dotv2(1, &a, &b, c);
+                float g = ref_fp32_dotv1(1, &a, &b, c);
+                if (!fp32_equ(z, g))
+                {
+                    ++err;
+                    float df = z - g;
+                    uint32_t di = F32toU32(z) - F32toU32(g);
+                    di = std::min(+di, -di);
+                    printf("[FP32 DOT Manual] #%d, #%d, #%d: %g * %g + %g = %g %g, Err = %e, Diff = 0x%x\n", i, j, k, a, b, c, z, g, df, di);
+                    // unPack(&z).show();
+                    // unPack(&g).show();
+                }
+            }
+        }
+    }
+
+    if (err == 0)
+    {
+        printf("[FP32 DOT Manual] PASS %d Cases\n", N * N * N);
+    }
+    else
+    {
+        printf("[FP32 DOT Manual] Fail %d in %d\n", err, N * N * N);
+    }
+    return err;
+}
+
 float ref_fp32_mul(float x, float y)
 {
     return x * y;
@@ -117,10 +162,24 @@ float ref_fp32_accum(int N, const float* x)
 
 float ref_fp32_dotv1(int N, const float* a, const float* b, float c)
 {
+    double acc = static_cast<double>(c);
+    for (int i = 0; i < N; ++i)
+    {
+        acc = std::fma(
+            static_cast<double>(a[i]), 
+            static_cast<double>(b[i]), 
+            acc
+        );
+    }
+    return static_cast<float>(acc);
+}
+
+float ref_fp32_dotv2(int N, const float* a, const float* b, float c)
+{
     double acc = 0.0;
     for (int i = 0; i < N; ++i)
     {
-        acc += std::fma(
+        acc = std::fma(
             static_cast<double>(a[i]), 
             static_cast<double>(b[i]), 
             acc

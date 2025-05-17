@@ -18,22 +18,28 @@ mFP unPack(int We, int Wf, const void *elem, size_t elemSize)
     info.We = We;
     info.Wf = Wf;
 
-    // Not support denormalized numbers
-    info.M = frac | (1L << Wf); // M = 1.f
+    info.M = frac;
     info.E = expn;
     info.S = sign != 0;
 
-    // Treat all denormalized numbers as Zero
-    // info.isZero = expn == 0;
+    // info.isZero = expn == 0 && frac == 0;
     // info.isInf = expn == maxE && frac == 0;
     // info.isNaN = expn == maxE && frac != 0;
     if (expn == maxE)
     {
         info.exn = frac == 0 ? EXN_INF  : EXN_NAN ;
     }
+    else if (expn == 0)
+    {
+        // M = 0.frac, Denormalized number
+        info.exn = frac == 0 ? EXN_ZERO : EXN_NORM;
+        info.E = 1;
+    }
     else
     {
-        info.exn = expn == 0 ? EXN_ZERO : EXN_NORM;
+        // M = 1.frac, Normalized number
+        info.exn = EXN_NORM;
+        info.M |= (1L << Wf);
     }
 
     return info;
@@ -44,16 +50,27 @@ mFP unPack(const float *fp32)
     return unPack(8, 23, fp32, sizeof(float));
 }
 
+mFP unPack_FP16(const mfp16 *fp16)
+{
+    return unPack(5, 10, fp16, sizeof(mfp16));
+}
+
+mFP unPack_BF16(const mbf16 *bf16)
+{
+    return unPack(8,  7, bf16, sizeof(mbf16));
+}
+
 void pack(mFP x, void *elem, size_t elemSize)
 {
-    // printf("Pack\n");
     // x.show();
+    if (x.E == 1 && BIT(x.M, x.Wf, 1) == 0)
+    {
+        x.E = 0;
+    }
     uint64_t data = BIT(x.M, 0, x.Wf);
-    // printf("Data before memcpy: 0x%016lx\n", data);
     data |= uint64_t(x.E) << (x.Wf);
     data |= uint64_t(x.S) << (x.Wf + x.We);
     memcpy(elem, &data, elemSize);
-    // printf("Data after memcpy: 0x%08x\n", *(uint32_t *)elem);
     return;
 }
 
@@ -62,5 +79,21 @@ float pack_FP32(mFP x)
     // assert x.We == 8 && x.Wf == 23
     float z = 0.0f;
     pack(x, &z, sizeof(float));
+    return z;
+}
+
+mfp16 pack_FP16(mFP x)
+{
+    // assert x.We == 5 && x.Wf == 10
+    mfp16 z = 0;
+    pack(x, &z, sizeof(mfp16));
+    return z;
+}
+
+mbf16 pack_BF16(mFP x)
+{
+    // assert x.We == 8 && x.Wf == 7
+    mbf16 z = 0;
+    pack(x, &z, sizeof(mbf16));
     return z;
 }
