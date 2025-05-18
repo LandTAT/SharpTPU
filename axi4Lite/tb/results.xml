@@ -1,6 +1,6 @@
 <testsuites name="results">
   <testsuite name="all" package="all">
-    <property name="random_seed" value="1747591217" />
-    <testcase name="test_axi4Lite_registers" classname="test_Axi4Lite" file="/Users/azureglacier/Documents/Codes/SharpTPU/axi4Lite/tb/test_Axi4Lite.py" lineno="109" time="0.004202127456665039" sim_time_ns="510.001" ratio_time="121367.33244278014" />
+    <property name="random_seed" value="1747592671" />
+    <testcase name="test_axi4Lite_registers" classname="test_Axi4Lite" file="/Users/azureglacier/Documents/Codes/SharpTPU/axi4Lite/tb/test_Axi4Lite.py" lineno="29" time="0.023743152618408203" sim_time_ns="750.001" ratio_time="31588.096663225755" />
   </testsuite>
 </testsuites>
