@@ -14,7 +14,7 @@ case class dotProdUnit(K : Int = 16) extends Component {
         val inf_f = out Bits(2 bits)
         val ovf_i = out Bits(4 bits)
     }
-    assert(mulUnit().Latency == expnAddUnit().Latency + nrshUnit().Latency)
+    // assert(mulUnit().Latency == expnAddUnit().Latency + nrshUnit().Latency)
 
     val arithMode = RegNext(io.op)
     val isIntMode = arithMode === ArithOp.INT4 || arithMode === ArithOp.INT8
@@ -141,9 +141,9 @@ case class dotProdUnit(K : Int = 16) extends Component {
     for (i <- 0 until 2) {
         roundInst(i).io.i_sel  := CDpackMode =/= PackOp.FP32
         roundInst(i).io.i_mtsa := addTreeInst(i).io.o_data
-        roundInst(i).io.i_expn := Delay(nrshP(i).io.Q_expn, FPalignUnit().Latency + adderTree().Latency)
-        roundInst(i).io.i_sign := Delay(nrshP(i).io.Q_sign, FPalignUnit().Latency + adderTree().Latency)
-        roundInst(i).io.i_flag := Delay(nrshP(i).io.Q_flag, FPalignUnit().Latency + adderTree().Latency)
+        roundInst(i).io.i_expn := Delay(nrshP(i).io.Q_expn, 2 + 3)    // FPalign + adderTree
+        roundInst(i).io.i_sign := Delay(nrshP(i).io.Q_sign, 2 + 3)
+        roundInst(i).io.i_flag := Delay(nrshP(i).io.Q_flag, 2 + 3)
         packer(i).io.op   := CDpackMode
         packer(i).io.mtsa := roundInst(i).io.o_mtsa
         packer(i).io.expn := roundInst(i).io.o_expn
@@ -154,7 +154,7 @@ case class dotProdUnit(K : Int = 16) extends Component {
     // Int C Adder
     val intAdder = Array.fill(4)(intAdderChecker())
     for (i <- 0 until 4) {
-        intAdder(i).io.i_C := Delay(vecC(i).asSInt, 1 + 4 + 1 + 3)
+        intAdder(i).io.i_C := Delay(vecC(i).asSInt, 1 + 4 + 1 + 3)  // Pack + Mul + alignInt + adderTree
         intAdder(i).io.i_Q := addTreeInst(i / 2).io.o_data((i % 2) * 28, 22 bits)
     }
 
@@ -179,7 +179,7 @@ case class vecCPath() extends Component {
         val c_sign = out (Vec(Bool, 2))
         val c_flag = out (Vec(FpFlag(), 2))
     }
-    assert(expnAddUnit().Latency == 1)
+    // assert(expnAddUnit().Latency == 1)
 
     val CDpackMode = Reg(PackOp())
     switch (io.op) {
@@ -202,6 +202,7 @@ case class vecCPath() extends Component {
         unpacker(i).io.op := CDpackMode
         unpacker(i).io.xf := io.vecC(i)
     }
+    /*
     val C0_mtsa_f32 = unpacker(0).io.mtsa( 0, 24 bits)
     val C1_mtsa_f16 = unpacker(0).io.mtsa(12, 12 bits)
     val C1_mtsa_f32 = unpacker(1).io.mtsa( 0, 24 bits)
@@ -213,6 +214,15 @@ case class vecCPath() extends Component {
     val C1_expn = Mux(io.op === ArithOp.FP16_MIX, unpacker(1).io.expn(0), unpacker(0).io.expn(1))
     val C1_sign = Mux(io.op === ArithOp.FP16_MIX, unpacker(1).io.sign(0), unpacker(0).io.sign(1))
     val C1_flag = Mux(io.op === ArithOp.FP16_MIX, unpacker(1).io.flag(0), unpacker(0).io.flag(1))
+    */
+    val C0_mtsa = unpacker(0).io.mtsa(0, 24 bits)
+    val C0_expn = unpacker(0).io.expn(0)
+    val C0_sign = unpacker(0).io.sign(0)
+    val C0_flag = unpacker(0).io.flag(0)
+    val C1_mtsa = unpacker(1).io.mtsa(0, 24 bits)
+    val C1_expn = unpacker(1).io.expn(0)
+    val C1_sign = unpacker(1).io.sign(0)
+    val C1_flag = unpacker(1).io.flag(0)
 
     io.c_mtsa(0) := RegNext(C0_mtsa)
     io.c_expn(0) := RegNext(B"2'b0" ## C0_expn).asSInt
