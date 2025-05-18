@@ -270,7 +270,7 @@ case class MatTransMxNStream(sizePE: Int = 8, width: Int = 32) extends Component
   }
   val peArray = Array.fill(2)(MatTransNxNStream(sizePE, width))
   val addr_width = 7
-  val memory = ram_t2p(addr_width, 256)
+  val memory = ram_t2p(addr_width, 8 * width)
   val sizeMode = RegNext(io.op)
 
   val sizeN = Reg(UInt(addr_width bits)) init(16)
@@ -436,5 +436,5 @@ object MyTopLevelStreamVerilog extends App {
 }
 
 object MyTopLevelMxNStreamVerilog extends App {
-    Config.spinal.generateVerilog(MatTransMxNStream())
+    Config.spinal.generateVerilog(MatTransMxNStream(8,8))
 }

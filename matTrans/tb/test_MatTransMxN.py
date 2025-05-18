@@ -17,9 +17,10 @@ def concatenate_uint32_row(row):
 
 # 根据硬件参数设置
 SIZE_K = 16    # 应匹配硬件中的sizeM
-SIZE_N = 8   # 应匹配硬件中的sizeN
+SIZE_N = 32   # 应匹配硬件中的sizeN
 SIZE_PE = 8    # 应匹配硬件中的sizePE
-WIDTH = 32     # 应匹配硬件中的width
+WIDTH = 8     # 应匹配硬件中的width
+# DTYPE = np.uint16  # 数据类型
 
 #%%
 @cocotb.test(timeout_time=10000, timeout_unit="ns")
@@ -48,6 +49,15 @@ async def matTransMxNStream_test(dut):
     else:
         raise ValueError("Unsupported SIZE_K and SIZE_N combination")
 
+    if WIDTH == 16:
+        DTYPE = np.uint16
+    elif WIDTH == 32:
+        DTYPE = np.uint32
+    elif WIDTH == 8:
+        DTYPE = np.uint8
+    else:
+        raise ValueError("Unsupported WIDTH")
+
 
     for _ in range(10):
         await RisingEdge(dut.clk)
@@ -59,10 +69,10 @@ async def matTransMxNStream_test(dut):
 
     # random_float32 = np.random.random((N, N)).astype(np.float32)
     # random_uint32 = random_float32.view(dtype=np.uint32)
-    random_uint32 = np.arange(1,M*N+1, dtype=np.uint32).reshape(M, N)
+    random_uint32 = np.arange(0,M*N, dtype=DTYPE).reshape(M, N)
     
     # 创建输出矩阵
-    output_matrix = np.zeros((N, M), dtype=np.uint32)
+    output_matrix = np.zeros((N, M), dtype=DTYPE)
     
     # 等待输入就绪
     while dut.io_input_ready.value == 0:
@@ -126,7 +136,9 @@ async def matTransMxNStream_test(dut):
                 len1 = len(dut.io_output_payload.value)
                 # print(f"\n第{row}行数据: {len1}\n")
                 # 将接收到的数据存储到输出矩阵中
-                output_matrix[row][start_index:end_index] = np.frombuffer(int(dut.io_output_payload.value).to_bytes(4*8, byteorder='little'), dtype=np.uint32)
+                # Calculate the correct byte size based on SIZE_PE and DTYPE
+                bytes_needed = SIZE_PE * np.dtype(DTYPE).itemsize
+                output_matrix[row][start_index:end_index] = np.frombuffer(int(dut.io_output_payload.value).to_bytes(bytes_needed, byteorder='little'), dtype=DTYPE)
                 # 等待一个时钟周期进入下一行
                 # print(f"\n第{row}行数据: {output_matrix[0][0]}\n")
                 

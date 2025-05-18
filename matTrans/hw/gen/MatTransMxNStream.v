@@ -1,16 +1,16 @@
 // Generator : SpinalHDL v1.12.0    git head : 1aa7d7b5732f11cca2dd83bacc2a4cb92ca8e5c9
 // Component : MatTransMxNStream
-// Git hash  : 462d98ea39cff6c22ed19f8d11488389f0a69236
+// Git hash  : 43916a8ca7f05642c4f8d55cfec1231f53832f67
 
 `timescale 1ns/1ps
 
 module MatTransMxNStream (
   input  wire          io_input_valid,
   output reg           io_input_ready,
-  input  wire [255:0]  io_input_payload,
+  input  wire [63:0]   io_input_payload,
   output reg           io_output_valid,
   input  wire          io_output_ready,
-  output reg  [255:0]  io_output_payload,
+  output reg  [63:0]   io_output_payload,
   input  wire [1:0]    io_op,
   input  wire          clk,
   input  wire          resetn
@@ -26,13 +26,13 @@ module MatTransMxNStream (
   localparam fsm_output_1 = 3'd4;
 
   reg                 peArray_0_io_input_valid;
-  reg        [255:0]  peArray_0_io_input_payload;
+  reg        [63:0]   peArray_0_io_input_payload;
   reg                 peArray_0_io_output_ready;
   reg                 peArray_1_io_input_valid;
-  reg        [255:0]  peArray_1_io_input_payload;
+  reg        [63:0]   peArray_1_io_input_payload;
   reg                 peArray_1_io_output_ready;
   reg        [6:0]    memory_io_ports_0_addr;
-  reg        [255:0]  memory_io_ports_0_din;
+  reg        [63:0]   memory_io_ports_0_din;
   reg                 memory_io_ports_0_we;
   reg                 memory_io_ports_0_en;
   reg        [6:0]    memory_io_ports_1_addr;
@@ -40,12 +40,12 @@ module MatTransMxNStream (
   reg                 memory_io_ports_1_en;
   wire                peArray_0_io_input_ready;
   wire                peArray_0_io_output_valid;
-  wire       [255:0]  peArray_0_io_output_payload;
+  wire       [63:0]   peArray_0_io_output_payload;
   wire                peArray_1_io_input_ready;
   wire                peArray_1_io_output_valid;
-  wire       [255:0]  peArray_1_io_output_payload;
-  wire       [255:0]  memory_io_ports_0_dout;
-  wire       [255:0]  memory_io_ports_1_dout;
+  wire       [63:0]   peArray_1_io_output_payload;
+  wire       [63:0]   memory_io_ports_0_dout;
+  wire       [63:0]   memory_io_ports_1_dout;
   wire       [6:0]    _zz_io_ports_0_addr_1;
   wire       [136:0]  _zz_io_ports_0_addr_2;
   wire       [133:0]  _zz_io_ports_0_addr_3;
@@ -74,14 +74,14 @@ module MatTransMxNStream (
   wire       [10:0]   _zz_io_ports_1_addr_2;
   wire       [10:0]   _zz_io_ports_1_addr_3;
   wire       [10:0]   _zz_io_ports_1_addr_4;
-  wire       [6:0]    _zz_when_MatTrans_l421;
-  wire       [6:0]    _zz_when_MatTrans_l421_1;
-  wire       [6:0]    _zz_when_MatTrans_l421_2;
-  wire       [1:0]    _zz_when_MatTrans_l421_3;
-  wire       [6:0]    _zz_when_MatTrans_l425;
-  wire       [6:0]    _zz_when_MatTrans_l425_1;
-  wire       [6:0]    _zz_when_MatTrans_l425_2;
-  wire       [1:0]    _zz_when_MatTrans_l425_3;
+  wire       [6:0]    _zz_when_MatTrans_l416;
+  wire       [6:0]    _zz_when_MatTrans_l416_1;
+  wire       [6:0]    _zz_when_MatTrans_l416_2;
+  wire       [1:0]    _zz_when_MatTrans_l416_3;
+  wire       [6:0]    _zz_when_MatTrans_l420;
+  wire       [6:0]    _zz_when_MatTrans_l420_1;
+  wire       [6:0]    _zz_when_MatTrans_l420_2;
+  wire       [1:0]    _zz_when_MatTrans_l420_3;
   reg        [1:0]    sizeMode;
   reg        [6:0]    sizeN;
   reg        [6:0]    sizeK;
@@ -98,11 +98,11 @@ module MatTransMxNStream (
   wire       [6:0]    _zz_io_ports_0_addr;
   wire                when_MatTrans_l364;
   wire                when_MatTrans_l373;
-  wire                when_MatTrans_l385;
-  wire                when_MatTrans_l392;
-  wire                when_MatTrans_l404;
-  wire                when_MatTrans_l421;
-  wire                when_MatTrans_l425;
+  wire                when_MatTrans_l380;
+  wire                when_MatTrans_l387;
+  wire                when_MatTrans_l399;
+  wire                when_MatTrans_l416;
+  wire                when_MatTrans_l420;
   wire                fsm_onExit_BOOT;
   wire                fsm_onExit_idle;
   wire                fsm_onExit_loadData2Mem;
@@ -149,47 +149,47 @@ module MatTransMxNStream (
   assign _zz_io_ports_1_addr_2 = {4'd0, fsm_count};
   assign _zz_io_ports_1_addr_3 = (4'b1000 * fsm_countBlock);
   assign _zz_io_ports_1_addr_4 = {4'd0, sizeN};
-  assign _zz_when_MatTrans_l421 = (_zz_when_MatTrans_l421_1 - 7'h01);
-  assign _zz_when_MatTrans_l421_1 = (sizeN >>> _zz_when_MatTrans_l421_2);
-  assign _zz_when_MatTrans_l421_3 = 2'b11;
-  assign _zz_when_MatTrans_l421_2 = {5'd0, _zz_when_MatTrans_l421_3};
-  assign _zz_when_MatTrans_l425 = (_zz_when_MatTrans_l425_1 - 7'h01);
-  assign _zz_when_MatTrans_l425_1 = (sizeN >>> _zz_when_MatTrans_l425_2);
-  assign _zz_when_MatTrans_l425_3 = 2'b11;
-  assign _zz_when_MatTrans_l425_2 = {5'd0, _zz_when_MatTrans_l425_3};
+  assign _zz_when_MatTrans_l416 = (_zz_when_MatTrans_l416_1 - 7'h01);
+  assign _zz_when_MatTrans_l416_1 = (sizeN >>> _zz_when_MatTrans_l416_2);
+  assign _zz_when_MatTrans_l416_3 = 2'b11;
+  assign _zz_when_MatTrans_l416_2 = {5'd0, _zz_when_MatTrans_l416_3};
+  assign _zz_when_MatTrans_l420 = (_zz_when_MatTrans_l420_1 - 7'h01);
+  assign _zz_when_MatTrans_l420_1 = (sizeN >>> _zz_when_MatTrans_l420_2);
+  assign _zz_when_MatTrans_l420_3 = 2'b11;
+  assign _zz_when_MatTrans_l420_2 = {5'd0, _zz_when_MatTrans_l420_3};
   MatTransNxNStream peArray_0 (
-    .io_input_valid    (peArray_0_io_input_valid          ), //i
-    .io_input_ready    (peArray_0_io_input_ready          ), //o
-    .io_input_payload  (peArray_0_io_input_payload[255:0] ), //i
-    .io_output_valid   (peArray_0_io_output_valid         ), //o
-    .io_output_ready   (peArray_0_io_output_ready         ), //i
-    .io_output_payload (peArray_0_io_output_payload[255:0]), //o
-    .clk               (clk                               ), //i
-    .resetn            (resetn                            )  //i
+    .io_input_valid    (peArray_0_io_input_valid         ), //i
+    .io_input_ready    (peArray_0_io_input_ready         ), //o
+    .io_input_payload  (peArray_0_io_input_payload[63:0] ), //i
+    .io_output_valid   (peArray_0_io_output_valid        ), //o
+    .io_output_ready   (peArray_0_io_output_ready        ), //i
+    .io_output_payload (peArray_0_io_output_payload[63:0]), //o
+    .clk               (clk                              ), //i
+    .resetn            (resetn                           )  //i
   );
   MatTransNxNStream_1 peArray_1 (
-    .io_input_valid    (peArray_1_io_input_valid          ), //i
-    .io_input_ready    (peArray_1_io_input_ready          ), //o
-    .io_input_payload  (peArray_1_io_input_payload[255:0] ), //i
-    .io_output_valid   (peArray_1_io_output_valid         ), //o
-    .io_output_ready   (peArray_1_io_output_ready         ), //i
-    .io_output_payload (peArray_1_io_output_payload[255:0]), //o
-    .clk               (clk                               ), //i
-    .resetn            (resetn                            )  //i
+    .io_input_valid    (peArray_1_io_input_valid         ), //i
+    .io_input_ready    (peArray_1_io_input_ready         ), //o
+    .io_input_payload  (peArray_1_io_input_payload[63:0] ), //i
+    .io_output_valid   (peArray_1_io_output_valid        ), //o
+    .io_output_ready   (peArray_1_io_output_ready        ), //i
+    .io_output_payload (peArray_1_io_output_payload[63:0]), //o
+    .clk               (clk                              ), //i
+    .resetn            (resetn                           )  //i
   );
   ram_t2p memory (
-    .io_ports_0_addr (memory_io_ports_0_addr[6:0]  ), //i
-    .io_ports_0_din  (memory_io_ports_0_din[255:0] ), //i
-    .io_ports_0_we   (memory_io_ports_0_we         ), //i
-    .io_ports_0_en   (memory_io_ports_0_en         ), //i
-    .io_ports_0_dout (memory_io_ports_0_dout[255:0]), //o
-    .io_ports_1_addr (memory_io_ports_1_addr[6:0]  ), //i
-    .io_ports_1_din  (256'h0                       ), //i
-    .io_ports_1_we   (memory_io_ports_1_we         ), //i
-    .io_ports_1_en   (memory_io_ports_1_en         ), //i
-    .io_ports_1_dout (memory_io_ports_1_dout[255:0]), //o
-    .clk             (clk                          ), //i
-    .resetn          (resetn                       )  //i
+    .io_ports_0_addr (memory_io_ports_0_addr[6:0] ), //i
+    .io_ports_0_din  (memory_io_ports_0_din[63:0] ), //i
+    .io_ports_0_we   (memory_io_ports_0_we        ), //i
+    .io_ports_0_en   (memory_io_ports_0_en        ), //i
+    .io_ports_0_dout (memory_io_ports_0_dout[63:0]), //o
+    .io_ports_1_addr (memory_io_ports_1_addr[6:0] ), //i
+    .io_ports_1_din  (64'h0                       ), //i
+    .io_ports_1_we   (memory_io_ports_1_we        ), //i
+    .io_ports_1_en   (memory_io_ports_1_en        ), //i
+    .io_ports_1_dout (memory_io_ports_1_dout[63:0]), //o
+    .clk             (clk                         ), //i
+    .resetn          (resetn                      )  //i
   );
   `ifndef SYNTHESIS
   always @(*) begin
@@ -318,7 +318,7 @@ module MatTransMxNStream (
   end
 
   always @(*) begin
-    memory_io_ports_0_din = 256'h0;
+    memory_io_ports_0_din = 64'h0;
     case(fsm_stateReg)
       fsm_idle : begin
       end
@@ -431,7 +431,7 @@ module MatTransMxNStream (
   end
 
   always @(*) begin
-    io_output_payload = 256'h0;
+    io_output_payload = 64'h0;
     case(fsm_stateReg)
       fsm_idle : begin
       end
@@ -441,7 +441,7 @@ module MatTransMxNStream (
       end
       fsm_output_1 : begin
         if(io_output_ready) begin
-          if(when_MatTrans_l404) begin
+          if(when_MatTrans_l399) begin
             io_output_payload = peArray_0_io_output_payload;
           end else begin
             io_output_payload = peArray_1_io_output_payload;
@@ -461,7 +461,7 @@ module MatTransMxNStream (
       fsm_loadData2Mem : begin
       end
       fsm_process_1 : begin
-        if(when_MatTrans_l385) begin
+        if(when_MatTrans_l380) begin
           peArray_0_io_input_valid = 1'b1;
         end
       end
@@ -483,7 +483,7 @@ module MatTransMxNStream (
       end
       fsm_output_1 : begin
         if(io_output_ready) begin
-          if(when_MatTrans_l404) begin
+          if(when_MatTrans_l399) begin
             peArray_0_io_output_ready = 1'b1;
           end else begin
             peArray_0_io_output_ready = 1'b0;
@@ -498,14 +498,14 @@ module MatTransMxNStream (
   end
 
   always @(*) begin
-    peArray_0_io_input_payload = 256'h0;
+    peArray_0_io_input_payload = 64'h0;
     case(fsm_stateReg)
       fsm_idle : begin
       end
       fsm_loadData2Mem : begin
       end
       fsm_process_1 : begin
-        if(when_MatTrans_l385) begin
+        if(when_MatTrans_l380) begin
           peArray_0_io_input_payload = memory_io_ports_0_dout;
         end
       end
@@ -524,7 +524,7 @@ module MatTransMxNStream (
       fsm_loadData2Mem : begin
       end
       fsm_process_1 : begin
-        if(when_MatTrans_l385) begin
+        if(when_MatTrans_l380) begin
           peArray_1_io_input_valid = 1'b1;
         end
       end
@@ -546,7 +546,7 @@ module MatTransMxNStream (
       end
       fsm_output_1 : begin
         if(io_output_ready) begin
-          if(when_MatTrans_l404) begin
+          if(when_MatTrans_l399) begin
             peArray_1_io_output_ready = 1'b0;
           end else begin
             peArray_1_io_output_ready = 1'b1;
@@ -561,14 +561,14 @@ module MatTransMxNStream (
   end
 
   always @(*) begin
-    peArray_1_io_input_payload = 256'h0;
+    peArray_1_io_input_payload = 64'h0;
     case(fsm_stateReg)
       fsm_idle : begin
       end
       fsm_loadData2Mem : begin
       end
       fsm_process_1 : begin
-        if(when_MatTrans_l385) begin
+        if(when_MatTrans_l380) begin
           peArray_1_io_input_payload = memory_io_ports_1_dout;
         end
       end
@@ -593,15 +593,15 @@ module MatTransMxNStream (
         end
       end
       fsm_process_1 : begin
-        if(when_MatTrans_l392) begin
+        if(when_MatTrans_l387) begin
           fsm_stateNext = fsm_output_1;
         end
       end
       fsm_output_1 : begin
-        if(when_MatTrans_l421) begin
+        if(when_MatTrans_l416) begin
           fsm_stateNext = fsm_loadData2Mem;
         end
-        if(when_MatTrans_l425) begin
+        if(when_MatTrans_l420) begin
           fsm_stateNext = fsm_process_1;
         end
       end
@@ -620,11 +620,11 @@ module MatTransMxNStream (
   assign _zz_io_ports_0_addr = (fsm_count >>> sizeN_bits);
   assign when_MatTrans_l364 = (_zz_when_MatTrans_l364 == _zz_when_MatTrans_l364_1);
   assign when_MatTrans_l373 = (peArray_0_io_input_ready && peArray_1_io_input_ready);
-  assign when_MatTrans_l385 = (fsm_count != 7'h0);
-  assign when_MatTrans_l392 = (fsm_count == 7'h08);
-  assign when_MatTrans_l404 = (fsm_count[0] == 1'b0);
-  assign when_MatTrans_l421 = ((fsm_countBlock == _zz_when_MatTrans_l421) && (fsm_count == 7'h0f));
-  assign when_MatTrans_l425 = ((fsm_countBlock != _zz_when_MatTrans_l425) && (fsm_count == 7'h0f));
+  assign when_MatTrans_l380 = (fsm_count != 7'h0);
+  assign when_MatTrans_l387 = (fsm_count == 7'h08);
+  assign when_MatTrans_l399 = (fsm_count[0] == 1'b0);
+  assign when_MatTrans_l416 = ((fsm_countBlock == _zz_when_MatTrans_l416) && (fsm_count == 7'h0f));
+  assign when_MatTrans_l420 = ((fsm_countBlock != _zz_when_MatTrans_l420) && (fsm_count == 7'h0f));
   assign fsm_onExit_BOOT = ((fsm_stateNext != fsm_BOOT) && (fsm_stateReg == fsm_BOOT));
   assign fsm_onExit_idle = ((fsm_stateNext != fsm_idle) && (fsm_stateReg == fsm_idle));
   assign fsm_onExit_loadData2Mem = ((fsm_stateNext != fsm_loadData2Mem) && (fsm_stateReg == fsm_loadData2Mem));
@@ -689,7 +689,7 @@ module MatTransMxNStream (
           if(io_output_ready) begin
             fsm_count <= (fsm_count + 7'h01);
           end
-          if(when_MatTrans_l425) begin
+          if(when_MatTrans_l420) begin
             fsm_countBlock <= (fsm_countBlock + 7'h01);
           end
         end
@@ -714,24 +714,24 @@ endmodule
 
 module ram_t2p (
   input  wire [6:0]    io_ports_0_addr,
-  input  wire [255:0]  io_ports_0_din,
+  input  wire [63:0]   io_ports_0_din,
   input  wire          io_ports_0_we,
   input  wire          io_ports_0_en,
-  output wire [255:0]  io_ports_0_dout,
+  output wire [63:0]   io_ports_0_dout,
   input  wire [6:0]    io_ports_1_addr,
-  input  wire [255:0]  io_ports_1_din,
+  input  wire [63:0]   io_ports_1_din,
   input  wire          io_ports_1_we,
   input  wire          io_ports_1_en,
-  output wire [255:0]  io_ports_1_dout,
+  output wire [63:0]   io_ports_1_dout,
   input  wire          clk,
   input  wire          resetn
 );
 
-  reg        [255:0]  mem_spinal_port0;
-  reg        [255:0]  mem_spinal_port1;
-  wire       [255:0]  _zz_io_ports_0_dout;
-  wire       [255:0]  _zz_io_ports_1_dout;
-  reg [255:0] mem [0:127];
+  reg        [63:0]   mem_spinal_port0;
+  reg        [63:0]   mem_spinal_port1;
+  wire       [63:0]   _zz_io_ports_0_dout;
+  wire       [63:0]   _zz_io_ports_1_dout;
+  reg [63:0] mem [0:127];
 
   always @(posedge clk) begin
     if(io_ports_0_en) begin
@@ -767,10 +767,10 @@ endmodule
 module MatTransNxNStream_1 (
   input  wire          io_input_valid,
   output reg           io_input_ready,
-  input  wire [255:0]  io_input_payload,
+  input  wire [63:0]   io_input_payload,
   output reg           io_output_valid,
   input  wire          io_output_ready,
-  output reg  [255:0]  io_output_payload,
+  output reg  [63:0]   io_output_payload,
   input  wire          clk,
   input  wire          resetn
 );
@@ -778,78 +778,78 @@ module MatTransNxNStream_1 (
   localparam fsm_1_input_1 = 2'd1;
   localparam fsm_1_output_1 = 2'd2;
 
-  wire       [31:0]   datapath_muxRegArray_0_0_io_inputH;
-  wire       [31:0]   datapath_muxRegArray_1_0_io_inputH;
-  wire       [31:0]   datapath_muxRegArray_2_0_io_inputH;
-  wire       [31:0]   datapath_muxRegArray_3_0_io_inputH;
-  wire       [31:0]   datapath_muxRegArray_4_0_io_inputH;
-  wire       [31:0]   datapath_muxRegArray_5_0_io_inputH;
-  wire       [31:0]   datapath_muxRegArray_6_0_io_inputH;
-  wire       [31:0]   datapath_muxRegArray_7_0_io_inputH;
-  wire       [31:0]   datapath_muxRegArray_0_0_io_output;
-  wire       [31:0]   datapath_muxRegArray_0_1_io_output;
-  wire       [31:0]   datapath_muxRegArray_0_2_io_output;
-  wire       [31:0]   datapath_muxRegArray_0_3_io_output;
-  wire       [31:0]   datapath_muxRegArray_0_4_io_output;
-  wire       [31:0]   datapath_muxRegArray_0_5_io_output;
-  wire       [31:0]   datapath_muxRegArray_0_6_io_output;
-  wire       [31:0]   datapath_muxRegArray_0_7_io_output;
-  wire       [31:0]   datapath_muxRegArray_1_0_io_output;
-  wire       [31:0]   datapath_muxRegArray_1_1_io_output;
-  wire       [31:0]   datapath_muxRegArray_1_2_io_output;
-  wire       [31:0]   datapath_muxRegArray_1_3_io_output;
-  wire       [31:0]   datapath_muxRegArray_1_4_io_output;
-  wire       [31:0]   datapath_muxRegArray_1_5_io_output;
-  wire       [31:0]   datapath_muxRegArray_1_6_io_output;
-  wire       [31:0]   datapath_muxRegArray_1_7_io_output;
-  wire       [31:0]   datapath_muxRegArray_2_0_io_output;
-  wire       [31:0]   datapath_muxRegArray_2_1_io_output;
-  wire       [31:0]   datapath_muxRegArray_2_2_io_output;
-  wire       [31:0]   datapath_muxRegArray_2_3_io_output;
-  wire       [31:0]   datapath_muxRegArray_2_4_io_output;
-  wire       [31:0]   datapath_muxRegArray_2_5_io_output;
-  wire       [31:0]   datapath_muxRegArray_2_6_io_output;
-  wire       [31:0]   datapath_muxRegArray_2_7_io_output;
-  wire       [31:0]   datapath_muxRegArray_3_0_io_output;
-  wire       [31:0]   datapath_muxRegArray_3_1_io_output;
-  wire       [31:0]   datapath_muxRegArray_3_2_io_output;
-  wire       [31:0]   datapath_muxRegArray_3_3_io_output;
-  wire       [31:0]   datapath_muxRegArray_3_4_io_output;
-  wire       [31:0]   datapath_muxRegArray_3_5_io_output;
-  wire       [31:0]   datapath_muxRegArray_3_6_io_output;
-  wire       [31:0]   datapath_muxRegArray_3_7_io_output;
-  wire       [31:0]   datapath_muxRegArray_4_0_io_output;
-  wire       [31:0]   datapath_muxRegArray_4_1_io_output;
-  wire       [31:0]   datapath_muxRegArray_4_2_io_output;
-  wire       [31:0]   datapath_muxRegArray_4_3_io_output;
-  wire       [31:0]   datapath_muxRegArray_4_4_io_output;
-  wire       [31:0]   datapath_muxRegArray_4_5_io_output;
-  wire       [31:0]   datapath_muxRegArray_4_6_io_output;
-  wire       [31:0]   datapath_muxRegArray_4_7_io_output;
-  wire       [31:0]   datapath_muxRegArray_5_0_io_output;
-  wire       [31:0]   datapath_muxRegArray_5_1_io_output;
-  wire       [31:0]   datapath_muxRegArray_5_2_io_output;
-  wire       [31:0]   datapath_muxRegArray_5_3_io_output;
-  wire       [31:0]   datapath_muxRegArray_5_4_io_output;
-  wire       [31:0]   datapath_muxRegArray_5_5_io_output;
-  wire       [31:0]   datapath_muxRegArray_5_6_io_output;
-  wire       [31:0]   datapath_muxRegArray_5_7_io_output;
-  wire       [31:0]   datapath_muxRegArray_6_0_io_output;
-  wire       [31:0]   datapath_muxRegArray_6_1_io_output;
-  wire       [31:0]   datapath_muxRegArray_6_2_io_output;
-  wire       [31:0]   datapath_muxRegArray_6_3_io_output;
-  wire       [31:0]   datapath_muxRegArray_6_4_io_output;
-  wire       [31:0]   datapath_muxRegArray_6_5_io_output;
-  wire       [31:0]   datapath_muxRegArray_6_6_io_output;
-  wire       [31:0]   datapath_muxRegArray_6_7_io_output;
-  wire       [31:0]   datapath_muxRegArray_7_0_io_output;
-  wire       [31:0]   datapath_muxRegArray_7_1_io_output;
-  wire       [31:0]   datapath_muxRegArray_7_2_io_output;
-  wire       [31:0]   datapath_muxRegArray_7_3_io_output;
-  wire       [31:0]   datapath_muxRegArray_7_4_io_output;
-  wire       [31:0]   datapath_muxRegArray_7_5_io_output;
-  wire       [31:0]   datapath_muxRegArray_7_6_io_output;
-  wire       [31:0]   datapath_muxRegArray_7_7_io_output;
+  wire       [7:0]    datapath_muxRegArray_0_0_io_inputH;
+  wire       [7:0]    datapath_muxRegArray_1_0_io_inputH;
+  wire       [7:0]    datapath_muxRegArray_2_0_io_inputH;
+  wire       [7:0]    datapath_muxRegArray_3_0_io_inputH;
+  wire       [7:0]    datapath_muxRegArray_4_0_io_inputH;
+  wire       [7:0]    datapath_muxRegArray_5_0_io_inputH;
+  wire       [7:0]    datapath_muxRegArray_6_0_io_inputH;
+  wire       [7:0]    datapath_muxRegArray_7_0_io_inputH;
+  wire       [7:0]    datapath_muxRegArray_0_0_io_output;
+  wire       [7:0]    datapath_muxRegArray_0_1_io_output;
+  wire       [7:0]    datapath_muxRegArray_0_2_io_output;
+  wire       [7:0]    datapath_muxRegArray_0_3_io_output;
+  wire       [7:0]    datapath_muxRegArray_0_4_io_output;
+  wire       [7:0]    datapath_muxRegArray_0_5_io_output;
+  wire       [7:0]    datapath_muxRegArray_0_6_io_output;
+  wire       [7:0]    datapath_muxRegArray_0_7_io_output;
+  wire       [7:0]    datapath_muxRegArray_1_0_io_output;
+  wire       [7:0]    datapath_muxRegArray_1_1_io_output;
+  wire       [7:0]    datapath_muxRegArray_1_2_io_output;
+  wire       [7:0]    datapath_muxRegArray_1_3_io_output;
+  wire       [7:0]    datapath_muxRegArray_1_4_io_output;
+  wire       [7:0]    datapath_muxRegArray_1_5_io_output;
+  wire       [7:0]    datapath_muxRegArray_1_6_io_output;
+  wire       [7:0]    datapath_muxRegArray_1_7_io_output;
+  wire       [7:0]    datapath_muxRegArray_2_0_io_output;
+  wire       [7:0]    datapath_muxRegArray_2_1_io_output;
+  wire       [7:0]    datapath_muxRegArray_2_2_io_output;
+  wire       [7:0]    datapath_muxRegArray_2_3_io_output;
+  wire       [7:0]    datapath_muxRegArray_2_4_io_output;
+  wire       [7:0]    datapath_muxRegArray_2_5_io_output;
+  wire       [7:0]    datapath_muxRegArray_2_6_io_output;
+  wire       [7:0]    datapath_muxRegArray_2_7_io_output;
+  wire       [7:0]    datapath_muxRegArray_3_0_io_output;
+  wire       [7:0]    datapath_muxRegArray_3_1_io_output;
+  wire       [7:0]    datapath_muxRegArray_3_2_io_output;
+  wire       [7:0]    datapath_muxRegArray_3_3_io_output;
+  wire       [7:0]    datapath_muxRegArray_3_4_io_output;
+  wire       [7:0]    datapath_muxRegArray_3_5_io_output;
+  wire       [7:0]    datapath_muxRegArray_3_6_io_output;
+  wire       [7:0]    datapath_muxRegArray_3_7_io_output;
+  wire       [7:0]    datapath_muxRegArray_4_0_io_output;
+  wire       [7:0]    datapath_muxRegArray_4_1_io_output;
+  wire       [7:0]    datapath_muxRegArray_4_2_io_output;
+  wire       [7:0]    datapath_muxRegArray_4_3_io_output;
+  wire       [7:0]    datapath_muxRegArray_4_4_io_output;
+  wire       [7:0]    datapath_muxRegArray_4_5_io_output;
+  wire       [7:0]    datapath_muxRegArray_4_6_io_output;
+  wire       [7:0]    datapath_muxRegArray_4_7_io_output;
+  wire       [7:0]    datapath_muxRegArray_5_0_io_output;
+  wire       [7:0]    datapath_muxRegArray_5_1_io_output;
+  wire       [7:0]    datapath_muxRegArray_5_2_io_output;
+  wire       [7:0]    datapath_muxRegArray_5_3_io_output;
+  wire       [7:0]    datapath_muxRegArray_5_4_io_output;
+  wire       [7:0]    datapath_muxRegArray_5_5_io_output;
+  wire       [7:0]    datapath_muxRegArray_5_6_io_output;
+  wire       [7:0]    datapath_muxRegArray_5_7_io_output;
+  wire       [7:0]    datapath_muxRegArray_6_0_io_output;
+  wire       [7:0]    datapath_muxRegArray_6_1_io_output;
+  wire       [7:0]    datapath_muxRegArray_6_2_io_output;
+  wire       [7:0]    datapath_muxRegArray_6_3_io_output;
+  wire       [7:0]    datapath_muxRegArray_6_4_io_output;
+  wire       [7:0]    datapath_muxRegArray_6_5_io_output;
+  wire       [7:0]    datapath_muxRegArray_6_6_io_output;
+  wire       [7:0]    datapath_muxRegArray_6_7_io_output;
+  wire       [7:0]    datapath_muxRegArray_7_0_io_output;
+  wire       [7:0]    datapath_muxRegArray_7_1_io_output;
+  wire       [7:0]    datapath_muxRegArray_7_2_io_output;
+  wire       [7:0]    datapath_muxRegArray_7_3_io_output;
+  wire       [7:0]    datapath_muxRegArray_7_4_io_output;
+  wire       [7:0]    datapath_muxRegArray_7_5_io_output;
+  wire       [7:0]    datapath_muxRegArray_7_6_io_output;
+  wire       [7:0]    datapath_muxRegArray_7_7_io_output;
   reg                 selH;
   wire                shiftEnb;
   wire                fsm_wantExit;
@@ -873,580 +873,580 @@ module MatTransNxNStream_1 (
 
 
   muxReg datapath_muxRegArray_0_0 (
-    .io_inputH   (datapath_muxRegArray_0_0_io_inputH[31:0]), //i
-    .io_inputV   (datapath_muxRegArray_1_0_io_output[31:0]), //i
-    .io_output   (datapath_muxRegArray_0_0_io_output[31:0]), //o
-    .io_selH     (selH                                    ), //i
-    .io_shiftEnb (shiftEnb                                ), //i
-    .clk         (clk                                     ), //i
-    .resetn      (resetn                                  )  //i
+    .io_inputH   (datapath_muxRegArray_0_0_io_inputH[7:0]), //i
+    .io_inputV   (datapath_muxRegArray_1_0_io_output[7:0]), //i
+    .io_output   (datapath_muxRegArray_0_0_io_output[7:0]), //o
+    .io_selH     (selH                                   ), //i
+    .io_shiftEnb (shiftEnb                               ), //i
+    .clk         (clk                                    ), //i
+    .resetn      (resetn                                 )  //i
   );
   muxReg datapath_muxRegArray_0_1 (
-    .io_inputH   (datapath_muxRegArray_0_0_io_output[31:0]), //i
-    .io_inputV   (datapath_muxRegArray_1_1_io_output[31:0]), //i
-    .io_output   (datapath_muxRegArray_0_1_io_output[31:0]), //o
-    .io_selH     (selH                                    ), //i
-    .io_shiftEnb (shiftEnb                                ), //i
-    .clk         (clk                                     ), //i
-    .resetn      (resetn                                  )  //i
+    .io_inputH   (datapath_muxRegArray_0_0_io_output[7:0]), //i
+    .io_inputV   (datapath_muxRegArray_1_1_io_output[7:0]), //i
+    .io_output   (datapath_muxRegArray_0_1_io_output[7:0]), //o
+    .io_selH     (selH                                   ), //i
+    .io_shiftEnb (shiftEnb                               ), //i
+    .clk         (clk                                    ), //i
+    .resetn      (resetn                                 )  //i
   );
   muxReg datapath_muxRegArray_0_2 (
-    .io_inputH   (datapath_muxRegArray_0_1_io_output[31:0]), //i
-    .io_inputV   (datapath_muxRegArray_1_2_io_output[31:0]), //i
-    .io_output   (datapath_muxRegArray_0_2_io_output[31:0]), //o
-    .io_selH     (selH                                    ), //i
-    .io_shiftEnb (shiftEnb                                ), //i
-    .clk         (clk                                     ), //i
-    .resetn      (resetn                                  )  //i
+    .io_inputH   (datapath_muxRegArray_0_1_io_output[7:0]), //i
+    .io_inputV   (datapath_muxRegArray_1_2_io_output[7:0]), //i
+    .io_output   (datapath_muxRegArray_0_2_io_output[7:0]), //o
+    .io_selH     (selH                                   ), //i
+    .io_shiftEnb (shiftEnb                               ), //i
+    .clk         (clk                                    ), //i
+    .resetn      (resetn                                 )  //i
   );
   muxReg datapath_muxRegArray_0_3 (
-    .io_inputH   (datapath_muxRegArray_0_2_io_output[31:0]), //i
-    .io_inputV   (datapath_muxRegArray_1_3_io_output[31:0]), //i
-    .io_output   (datapath_muxRegArray_0_3_io_output[31:0]), //o
-    .io_selH     (selH                                    ), //i
-    .io_shiftEnb (shiftEnb                                ), //i
-    .clk         (clk                                     ), //i
-    .resetn      (resetn                                  )  //i
+    .io_inputH   (datapath_muxRegArray_0_2_io_output[7:0]), //i
+    .io_inputV   (datapath_muxRegArray_1_3_io_output[7:0]), //i
+    .io_output   (datapath_muxRegArray_0_3_io_output[7:0]), //o
+    .io_selH     (selH                                   ), //i
+    .io_shiftEnb (shiftEnb                               ), //i
+    .clk         (clk                                    ), //i
+    .resetn      (resetn                                 )  //i
   );
   muxReg datapath_muxRegArray_0_4 (
-    .io_inputH   (datapath_muxRegArray_0_3_io_output[31:0]), //i
-    .io_inputV   (datapath_muxRegArray_1_4_io_output[31:0]), //i
-    .io_output   (datapath_muxRegArray_0_4_io_output[31:0]), //o
-    .io_selH     (selH                                    ), //i
-    .io_shiftEnb (shiftEnb                                ), //i
-    .clk         (clk                                     ), //i
-    .resetn      (resetn                                  )  //i
+    .io_inputH   (datapath_muxRegArray_0_3_io_output[7:0]), //i
+    .io_inputV   (datapath_muxRegArray_1_4_io_output[7:0]), //i
+    .io_output   (datapath_muxRegArray_0_4_io_output[7:0]), //o
+    .io_selH     (selH                                   ), //i
+    .io_shiftEnb (shiftEnb                               ), //i
+    .clk         (clk                                    ), //i
+    .resetn      (resetn                                 )  //i
   );
   muxReg datapath_muxRegArray_0_5 (
-    .io_inputH   (datapath_muxRegArray_0_4_io_output[31:0]), //i
-    .io_inputV   (datapath_muxRegArray_1_5_io_output[31:0]), //i
-    .io_output   (datapath_muxRegArray_0_5_io_output[31:0]), //o
-    .io_selH     (selH                                    ), //i
-    .io_shiftEnb (shiftEnb                                ), //i
-    .clk         (clk                                     ), //i
-    .resetn      (resetn                                  )  //i
+    .io_inputH   (datapath_muxRegArray_0_4_io_output[7:0]), //i
+    .io_inputV   (datapath_muxRegArray_1_5_io_output[7:0]), //i
+    .io_output   (datapath_muxRegArray_0_5_io_output[7:0]), //o
+    .io_selH     (selH                                   ), //i
+    .io_shiftEnb (shiftEnb                               ), //i
+    .clk         (clk                                    ), //i
+    .resetn      (resetn                                 )  //i
   );
   muxReg datapath_muxRegArray_0_6 (
-    .io_inputH   (datapath_muxRegArray_0_5_io_output[31:0]), //i
-    .io_inputV   (datapath_muxRegArray_1_6_io_output[31:0]), //i
-    .io_output   (datapath_muxRegArray_0_6_io_output[31:0]), //o
-    .io_selH     (selH                                    ), //i
-    .io_shiftEnb (shiftEnb                                ), //i
-    .clk         (clk                                     ), //i
-    .resetn      (resetn                                  )  //i
+    .io_inputH   (datapath_muxRegArray_0_5_io_output[7:0]), //i
+    .io_inputV   (datapath_muxRegArray_1_6_io_output[7:0]), //i
+    .io_output   (datapath_muxRegArray_0_6_io_output[7:0]), //o
+    .io_selH     (selH                                   ), //i
+    .io_shiftEnb (shiftEnb                               ), //i
+    .clk         (clk                                    ), //i
+    .resetn      (resetn                                 )  //i
   );
   muxReg datapath_muxRegArray_0_7 (
-    .io_inputH   (datapath_muxRegArray_0_6_io_output[31:0]), //i
-    .io_inputV   (datapath_muxRegArray_1_7_io_output[31:0]), //i
-    .io_output   (datapath_muxRegArray_0_7_io_output[31:0]), //o
-    .io_selH     (selH                                    ), //i
-    .io_shiftEnb (shiftEnb                                ), //i
-    .clk         (clk                                     ), //i
-    .resetn      (resetn                                  )  //i
+    .io_inputH   (datapath_muxRegArray_0_6_io_output[7:0]), //i
+    .io_inputV   (datapath_muxRegArray_1_7_io_output[7:0]), //i
+    .io_output   (datapath_muxRegArray_0_7_io_output[7:0]), //o
+    .io_selH     (selH                                   ), //i
+    .io_shiftEnb (shiftEnb                               ), //i
+    .clk         (clk                                    ), //i
+    .resetn      (resetn                                 )  //i
   );
   muxReg datapath_muxRegArray_1_0 (
-    .io_inputH   (datapath_muxRegArray_1_0_io_inputH[31:0]), //i
-    .io_inputV   (datapath_muxRegArray_2_0_io_output[31:0]), //i
-    .io_output   (datapath_muxRegArray_1_0_io_output[31:0]), //o
-    .io_selH     (selH                                    ), //i
-    .io_shiftEnb (shiftEnb                                ), //i
-    .clk         (clk                                     ), //i
-    .resetn      (resetn                                  )  //i
+    .io_inputH   (datapath_muxRegArray_1_0_io_inputH[7:0]), //i
+    .io_inputV   (datapath_muxRegArray_2_0_io_output[7:0]), //i
+    .io_output   (datapath_muxRegArray_1_0_io_output[7:0]), //o
+    .io_selH     (selH                                   ), //i
+    .io_shiftEnb (shiftEnb                               ), //i
+    .clk         (clk                                    ), //i
+    .resetn      (resetn                                 )  //i
   );
   muxReg datapath_muxRegArray_1_1 (
-    .io_inputH   (datapath_muxRegArray_1_0_io_output[31:0]), //i
-    .io_inputV   (datapath_muxRegArray_2_1_io_output[31:0]), //i
-    .io_output   (datapath_muxRegArray_1_1_io_output[31:0]), //o
-    .io_selH     (selH                                    ), //i
-    .io_shiftEnb (shiftEnb                                ), //i
-    .clk         (clk                                     ), //i
-    .resetn      (resetn                                  )  //i
+    .io_inputH   (datapath_muxRegArray_1_0_io_output[7:0]), //i
+    .io_inputV   (datapath_muxRegArray_2_1_io_output[7:0]), //i
+    .io_output   (datapath_muxRegArray_1_1_io_output[7:0]), //o
+    .io_selH     (selH                                   ), //i
+    .io_shiftEnb (shiftEnb                               ), //i
+    .clk         (clk                                    ), //i
+    .resetn      (resetn                                 )  //i
   );
   muxReg datapath_muxRegArray_1_2 (
-    .io_inputH   (datapath_muxRegArray_1_1_io_output[31:0]), //i
-    .io_inputV   (datapath_muxRegArray_2_2_io_output[31:0]), //i
-    .io_output   (datapath_muxRegArray_1_2_io_output[31:0]), //o
-    .io_selH     (selH                                    ), //i
-    .io_shiftEnb (shiftEnb                                ), //i
-    .clk         (clk                                     ), //i
-    .resetn      (resetn                                  )  //i
+    .io_inputH   (datapath_muxRegArray_1_1_io_output[7:0]), //i
+    .io_inputV   (datapath_muxRegArray_2_2_io_output[7:0]), //i
+    .io_output   (datapath_muxRegArray_1_2_io_output[7:0]), //o
+    .io_selH     (selH                                   ), //i
+    .io_shiftEnb (shiftEnb                               ), //i
+    .clk         (clk                                    ), //i
+    .resetn      (resetn                                 )  //i
   );
   muxReg datapath_muxRegArray_1_3 (
-    .io_inputH   (datapath_muxRegArray_1_2_io_output[31:0]), //i
-    .io_inputV   (datapath_muxRegArray_2_3_io_output[31:0]), //i
-    .io_output   (datapath_muxRegArray_1_3_io_output[31:0]), //o
-    .io_selH     (selH                                    ), //i
-    .io_shiftEnb (shiftEnb                                ), //i
-    .clk         (clk                                     ), //i
-    .resetn      (resetn                                  )  //i
+    .io_inputH   (datapath_muxRegArray_1_2_io_output[7:0]), //i
+    .io_inputV   (datapath_muxRegArray_2_3_io_output[7:0]), //i
+    .io_output   (datapath_muxRegArray_1_3_io_output[7:0]), //o
+    .io_selH     (selH                                   ), //i
+    .io_shiftEnb (shiftEnb                               ), //i
+    .clk         (clk                                    ), //i
+    .resetn      (resetn                                 )  //i
   );
   muxReg datapath_muxRegArray_1_4 (
-    .io_inputH   (datapath_muxRegArray_1_3_io_output[31:0]), //i
-    .io_inputV   (datapath_muxRegArray_2_4_io_output[31:0]), //i
-    .io_output   (datapath_muxRegArray_1_4_io_output[31:0]), //o
-    .io_selH     (selH                                    ), //i
-    .io_shiftEnb (shiftEnb                                ), //i
-    .clk         (clk                                     ), //i
-    .resetn      (resetn                                  )  //i
+    .io_inputH   (datapath_muxRegArray_1_3_io_output[7:0]), //i
+    .io_inputV   (datapath_muxRegArray_2_4_io_output[7:0]), //i
+    .io_output   (datapath_muxRegArray_1_4_io_output[7:0]), //o
+    .io_selH     (selH                                   ), //i
+    .io_shiftEnb (shiftEnb                               ), //i
+    .clk         (clk                                    ), //i
+    .resetn      (resetn                                 )  //i
   );
   muxReg datapath_muxRegArray_1_5 (
-    .io_inputH   (datapath_muxRegArray_1_4_io_output[31:0]), //i
-    .io_inputV   (datapath_muxRegArray_2_5_io_output[31:0]), //i
-    .io_output   (datapath_muxRegArray_1_5_io_output[31:0]), //o
-    .io_selH     (selH                                    ), //i
-    .io_shiftEnb (shiftEnb                                ), //i
-    .clk         (clk                                     ), //i
-    .resetn      (resetn                                  )  //i
+    .io_inputH   (datapath_muxRegArray_1_4_io_output[7:0]), //i
+    .io_inputV   (datapath_muxRegArray_2_5_io_output[7:0]), //i
+    .io_output   (datapath_muxRegArray_1_5_io_output[7:0]), //o
+    .io_selH     (selH                                   ), //i
+    .io_shiftEnb (shiftEnb                               ), //i
+    .clk         (clk                                    ), //i
+    .resetn      (resetn                                 )  //i
   );
   muxReg datapath_muxRegArray_1_6 (
-    .io_inputH   (datapath_muxRegArray_1_5_io_output[31:0]), //i
-    .io_inputV   (datapath_muxRegArray_2_6_io_output[31:0]), //i
-    .io_output   (datapath_muxRegArray_1_6_io_output[31:0]), //o
-    .io_selH     (selH                                    ), //i
-    .io_shiftEnb (shiftEnb                                ), //i
-    .clk         (clk                                     ), //i
-    .resetn      (resetn                                  )  //i
+    .io_inputH   (datapath_muxRegArray_1_5_io_output[7:0]), //i
+    .io_inputV   (datapath_muxRegArray_2_6_io_output[7:0]), //i
+    .io_output   (datapath_muxRegArray_1_6_io_output[7:0]), //o
+    .io_selH     (selH                                   ), //i
+    .io_shiftEnb (shiftEnb                               ), //i
+    .clk         (clk                                    ), //i
+    .resetn      (resetn                                 )  //i
   );
   muxReg datapath_muxRegArray_1_7 (
-    .io_inputH   (datapath_muxRegArray_1_6_io_output[31:0]), //i
-    .io_inputV   (datapath_muxRegArray_2_7_io_output[31:0]), //i
-    .io_output   (datapath_muxRegArray_1_7_io_output[31:0]), //o
-    .io_selH     (selH                                    ), //i
-    .io_shiftEnb (shiftEnb                                ), //i
-    .clk         (clk                                     ), //i
-    .resetn      (resetn                                  )  //i
+    .io_inputH   (datapath_muxRegArray_1_6_io_output[7:0]), //i
+    .io_inputV   (datapath_muxRegArray_2_7_io_output[7:0]), //i
+    .io_output   (datapath_muxRegArray_1_7_io_output[7:0]), //o
+    .io_selH     (selH                                   ), //i
+    .io_shiftEnb (shiftEnb                               ), //i
+    .clk         (clk                                    ), //i
+    .resetn      (resetn                                 )  //i
   );
   muxReg datapath_muxRegArray_2_0 (
-    .io_inputH   (datapath_muxRegArray_2_0_io_inputH[31:0]), //i
-    .io_inputV   (datapath_muxRegArray_3_0_io_output[31:0]), //i
-    .io_output   (datapath_muxRegArray_2_0_io_output[31:0]), //o
-    .io_selH     (selH                                    ), //i
-    .io_shiftEnb (shiftEnb                                ), //i
-    .clk         (clk                                     ), //i
-    .resetn      (resetn                                  )  //i
+    .io_inputH   (datapath_muxRegArray_2_0_io_inputH[7:0]), //i
+    .io_inputV   (datapath_muxRegArray_3_0_io_output[7:0]), //i
+    .io_output   (datapath_muxRegArray_2_0_io_output[7:0]), //o
+    .io_selH     (selH                                   ), //i
+    .io_shiftEnb (shiftEnb                               ), //i
+    .clk         (clk                                    ), //i
+    .resetn      (resetn                                 )  //i
   );
   muxReg datapath_muxRegArray_2_1 (
-    .io_inputH   (datapath_muxRegArray_2_0_io_output[31:0]), //i
-    .io_inputV   (datapath_muxRegArray_3_1_io_output[31:0]), //i
-    .io_output   (datapath_muxRegArray_2_1_io_output[31:0]), //o
-    .io_selH     (selH                                    ), //i
-    .io_shiftEnb (shiftEnb                                ), //i
-    .clk         (clk                                     ), //i
-    .resetn      (resetn                                  )  //i
+    .io_inputH   (datapath_muxRegArray_2_0_io_output[7:0]), //i
+    .io_inputV   (datapath_muxRegArray_3_1_io_output[7:0]), //i
+    .io_output   (datapath_muxRegArray_2_1_io_output[7:0]), //o
+    .io_selH     (selH                                   ), //i
+    .io_shiftEnb (shiftEnb                               ), //i
+    .clk         (clk                                    ), //i
+    .resetn      (resetn                                 )  //i
   );
   muxReg datapath_muxRegArray_2_2 (
-    .io_inputH   (datapath_muxRegArray_2_1_io_output[31:0]), //i
-    .io_inputV   (datapath_muxRegArray_3_2_io_output[31:0]), //i
-    .io_output   (datapath_muxRegArray_2_2_io_output[31:0]), //o
-    .io_selH     (selH                                    ), //i
-    .io_shiftEnb (shiftEnb                                ), //i
-    .clk         (clk                                     ), //i
-    .resetn      (resetn                                  )  //i
+    .io_inputH   (datapath_muxRegArray_2_1_io_output[7:0]), //i
+    .io_inputV   (datapath_muxRegArray_3_2_io_output[7:0]), //i
+    .io_output   (datapath_muxRegArray_2_2_io_output[7:0]), //o
+    .io_selH     (selH                                   ), //i
+    .io_shiftEnb (shiftEnb                               ), //i
+    .clk         (clk                                    ), //i
+    .resetn      (resetn                                 )  //i
   );
   muxReg datapath_muxRegArray_2_3 (
-    .io_inputH   (datapath_muxRegArray_2_2_io_output[31:0]), //i
-    .io_inputV   (datapath_muxRegArray_3_3_io_output[31:0]), //i
-    .io_output   (datapath_muxRegArray_2_3_io_output[31:0]), //o
-    .io_selH     (selH                                    ), //i
-    .io_shiftEnb (shiftEnb                                ), //i
-    .clk         (clk                                     ), //i
-    .resetn      (resetn                                  )  //i
+    .io_inputH   (datapath_muxRegArray_2_2_io_output[7:0]), //i
+    .io_inputV   (datapath_muxRegArray_3_3_io_output[7:0]), //i
+    .io_output   (datapath_muxRegArray_2_3_io_output[7:0]), //o
+    .io_selH     (selH                                   ), //i
+    .io_shiftEnb (shiftEnb                               ), //i
+    .clk         (clk                                    ), //i
+    .resetn      (resetn                                 )  //i
   );
   muxReg datapath_muxRegArray_2_4 (
-    .io_inputH   (datapath_muxRegArray_2_3_io_output[31:0]), //i
-    .io_inputV   (datapath_muxRegArray_3_4_io_output[31:0]), //i
-    .io_output   (datapath_muxRegArray_2_4_io_output[31:0]), //o
-    .io_selH     (selH                                    ), //i
-    .io_shiftEnb (shiftEnb                                ), //i
-    .clk         (clk                                     ), //i
-    .resetn      (resetn                                  )  //i
+    .io_inputH   (datapath_muxRegArray_2_3_io_output[7:0]), //i
+    .io_inputV   (datapath_muxRegArray_3_4_io_output[7:0]), //i
+    .io_output   (datapath_muxRegArray_2_4_io_output[7:0]), //o
+    .io_selH     (selH                                   ), //i
+    .io_shiftEnb (shiftEnb                               ), //i
+    .clk         (clk                                    ), //i
+    .resetn      (resetn                                 )  //i
   );
   muxReg datapath_muxRegArray_2_5 (
-    .io_inputH   (datapath_muxRegArray_2_4_io_output[31:0]), //i
-    .io_inputV   (datapath_muxRegArray_3_5_io_output[31:0]), //i
-    .io_output   (datapath_muxRegArray_2_5_io_output[31:0]), //o
-    .io_selH     (selH                                    ), //i
-    .io_shiftEnb (shiftEnb                                ), //i
-    .clk         (clk                                     ), //i
-    .resetn      (resetn                                  )  //i
+    .io_inputH   (datapath_muxRegArray_2_4_io_output[7:0]), //i
+    .io_inputV   (datapath_muxRegArray_3_5_io_output[7:0]), //i
+    .io_output   (datapath_muxRegArray_2_5_io_output[7:0]), //o
+    .io_selH     (selH                                   ), //i
+    .io_shiftEnb (shiftEnb                               ), //i
+    .clk         (clk                                    ), //i
+    .resetn      (resetn                                 )  //i
   );
   muxReg datapath_muxRegArray_2_6 (
-    .io_inputH   (datapath_muxRegArray_2_5_io_output[31:0]), //i
-    .io_inputV   (datapath_muxRegArray_3_6_io_output[31:0]), //i
-    .io_output   (datapath_muxRegArray_2_6_io_output[31:0]), //o
-    .io_selH     (selH                                    ), //i
-    .io_shiftEnb (shiftEnb                                ), //i
-    .clk         (clk                                     ), //i
-    .resetn      (resetn                                  )  //i
+    .io_inputH   (datapath_muxRegArray_2_5_io_output[7:0]), //i
+    .io_inputV   (datapath_muxRegArray_3_6_io_output[7:0]), //i
+    .io_output   (datapath_muxRegArray_2_6_io_output[7:0]), //o
+    .io_selH     (selH                                   ), //i
+    .io_shiftEnb (shiftEnb                               ), //i
+    .clk         (clk                                    ), //i
+    .resetn      (resetn                                 )  //i
   );
   muxReg datapath_muxRegArray_2_7 (
-    .io_inputH   (datapath_muxRegArray_2_6_io_output[31:0]), //i
-    .io_inputV   (datapath_muxRegArray_3_7_io_output[31:0]), //i
-    .io_output   (datapath_muxRegArray_2_7_io_output[31:0]), //o
-    .io_selH     (selH                                    ), //i
-    .io_shiftEnb (shiftEnb                                ), //i
-    .clk         (clk                                     ), //i
-    .resetn      (resetn                                  )  //i
+    .io_inputH   (datapath_muxRegArray_2_6_io_output[7:0]), //i
+    .io_inputV   (datapath_muxRegArray_3_7_io_output[7:0]), //i
+    .io_output   (datapath_muxRegArray_2_7_io_output[7:0]), //o
+    .io_selH     (selH                                   ), //i
+    .io_shiftEnb (shiftEnb                               ), //i
+    .clk         (clk                                    ), //i
+    .resetn      (resetn                                 )  //i
   );
   muxReg datapath_muxRegArray_3_0 (
-    .io_inputH   (datapath_muxRegArray_3_0_io_inputH[31:0]), //i
-    .io_inputV   (datapath_muxRegArray_4_0_io_output[31:0]), //i
-    .io_output   (datapath_muxRegArray_3_0_io_output[31:0]), //o
-    .io_selH     (selH                                    ), //i
-    .io_shiftEnb (shiftEnb                                ), //i
-    .clk         (clk                                     ), //i
-    .resetn      (resetn                                  )  //i
+    .io_inputH   (datapath_muxRegArray_3_0_io_inputH[7:0]), //i
+    .io_inputV   (datapath_muxRegArray_4_0_io_output[7:0]), //i
+    .io_output   (datapath_muxRegArray_3_0_io_output[7:0]), //o
+    .io_selH     (selH                                   ), //i
+    .io_shiftEnb (shiftEnb                               ), //i
+    .clk         (clk                                    ), //i
+    .resetn      (resetn                                 )  //i
   );
   muxReg datapath_muxRegArray_3_1 (
-    .io_inputH   (datapath_muxRegArray_3_0_io_output[31:0]), //i
-    .io_inputV   (datapath_muxRegArray_4_1_io_output[31:0]), //i
-    .io_output   (datapath_muxRegArray_3_1_io_output[31:0]), //o
-    .io_selH     (selH                                    ), //i
-    .io_shiftEnb (shiftEnb                                ), //i
-    .clk         (clk                                     ), //i
-    .resetn      (resetn                                  )  //i
+    .io_inputH   (datapath_muxRegArray_3_0_io_output[7:0]), //i
+    .io_inputV   (datapath_muxRegArray_4_1_io_output[7:0]), //i
+    .io_output   (datapath_muxRegArray_3_1_io_output[7:0]), //o
+    .io_selH     (selH                                   ), //i
+    .io_shiftEnb (shiftEnb                               ), //i
+    .clk         (clk                                    ), //i
+    .resetn      (resetn                                 )  //i
   );
   muxReg datapath_muxRegArray_3_2 (
-    .io_inputH   (datapath_muxRegArray_3_1_io_output[31:0]), //i
-    .io_inputV   (datapath_muxRegArray_4_2_io_output[31:0]), //i
-    .io_output   (datapath_muxRegArray_3_2_io_output[31:0]), //o
-    .io_selH     (selH                                    ), //i
-    .io_shiftEnb (shiftEnb                                ), //i
-    .clk         (clk                                     ), //i
-    .resetn      (resetn                                  )  //i
+    .io_inputH   (datapath_muxRegArray_3_1_io_output[7:0]), //i
+    .io_inputV   (datapath_muxRegArray_4_2_io_output[7:0]), //i
+    .io_output   (datapath_muxRegArray_3_2_io_output[7:0]), //o
+    .io_selH     (selH                                   ), //i
+    .io_shiftEnb (shiftEnb                               ), //i
+    .clk         (clk                                    ), //i
+    .resetn      (resetn                                 )  //i
   );
   muxReg datapath_muxRegArray_3_3 (
-    .io_inputH   (datapath_muxRegArray_3_2_io_output[31:0]), //i
-    .io_inputV   (datapath_muxRegArray_4_3_io_output[31:0]), //i
-    .io_output   (datapath_muxRegArray_3_3_io_output[31:0]), //o
-    .io_selH     (selH                                    ), //i
-    .io_shiftEnb (shiftEnb                                ), //i
-    .clk         (clk                                     ), //i
-    .resetn      (resetn                                  )  //i
+    .io_inputH   (datapath_muxRegArray_3_2_io_output[7:0]), //i
+    .io_inputV   (datapath_muxRegArray_4_3_io_output[7:0]), //i
+    .io_output   (datapath_muxRegArray_3_3_io_output[7:0]), //o
+    .io_selH     (selH                                   ), //i
+    .io_shiftEnb (shiftEnb                               ), //i
+    .clk         (clk                                    ), //i
+    .resetn      (resetn                                 )  //i
   );
   muxReg datapath_muxRegArray_3_4 (
-    .io_inputH   (datapath_muxRegArray_3_3_io_output[31:0]), //i
-    .io_inputV   (datapath_muxRegArray_4_4_io_output[31:0]), //i
-    .io_output   (datapath_muxRegArray_3_4_io_output[31:0]), //o
-    .io_selH     (selH                                    ), //i
-    .io_shiftEnb (shiftEnb                                ), //i
-    .clk         (clk                                     ), //i
-    .resetn      (resetn                                  )  //i
+    .io_inputH   (datapath_muxRegArray_3_3_io_output[7:0]), //i
+    .io_inputV   (datapath_muxRegArray_4_4_io_output[7:0]), //i
+    .io_output   (datapath_muxRegArray_3_4_io_output[7:0]), //o
+    .io_selH     (selH                                   ), //i
+    .io_shiftEnb (shiftEnb                               ), //i
+    .clk         (clk                                    ), //i
+    .resetn      (resetn                                 )  //i
   );
   muxReg datapath_muxRegArray_3_5 (
-    .io_inputH   (datapath_muxRegArray_3_4_io_output[31:0]), //i
-    .io_inputV   (datapath_muxRegArray_4_5_io_output[31:0]), //i
-    .io_output   (datapath_muxRegArray_3_5_io_output[31:0]), //o
-    .io_selH     (selH                                    ), //i
-    .io_shiftEnb (shiftEnb                                ), //i
-    .clk         (clk                                     ), //i
-    .resetn      (resetn                                  )  //i
+    .io_inputH   (datapath_muxRegArray_3_4_io_output[7:0]), //i
+    .io_inputV   (datapath_muxRegArray_4_5_io_output[7:0]), //i
+    .io_output   (datapath_muxRegArray_3_5_io_output[7:0]), //o
+    .io_selH     (selH                                   ), //i
+    .io_shiftEnb (shiftEnb                               ), //i
+    .clk         (clk                                    ), //i
+    .resetn      (resetn                                 )  //i
   );
   muxReg datapath_muxRegArray_3_6 (
-    .io_inputH   (datapath_muxRegArray_3_5_io_output[31:0]), //i
-    .io_inputV   (datapath_muxRegArray_4_6_io_output[31:0]), //i
-    .io_output   (datapath_muxRegArray_3_6_io_output[31:0]), //o
-    .io_selH     (selH                                    ), //i
-    .io_shiftEnb (shiftEnb                                ), //i
-    .clk         (clk                                     ), //i
-    .resetn      (resetn                                  )  //i
+    .io_inputH   (datapath_muxRegArray_3_5_io_output[7:0]), //i
+    .io_inputV   (datapath_muxRegArray_4_6_io_output[7:0]), //i
+    .io_output   (datapath_muxRegArray_3_6_io_output[7:0]), //o
+    .io_selH     (selH                                   ), //i
+    .io_shiftEnb (shiftEnb                               ), //i
+    .clk         (clk                                    ), //i
+    .resetn      (resetn                                 )  //i
   );
   muxReg datapath_muxRegArray_3_7 (
-    .io_inputH   (datapath_muxRegArray_3_6_io_output[31:0]), //i
-    .io_inputV   (datapath_muxRegArray_4_7_io_output[31:0]), //i
-    .io_output   (datapath_muxRegArray_3_7_io_output[31:0]), //o
-    .io_selH     (selH                                    ), //i
-    .io_shiftEnb (shiftEnb                                ), //i
-    .clk         (clk                                     ), //i
-    .resetn      (resetn                                  )  //i
+    .io_inputH   (datapath_muxRegArray_3_6_io_output[7:0]), //i
+    .io_inputV   (datapath_muxRegArray_4_7_io_output[7:0]), //i
+    .io_output   (datapath_muxRegArray_3_7_io_output[7:0]), //o
+    .io_selH     (selH                                   ), //i
+    .io_shiftEnb (shiftEnb                               ), //i
+    .clk         (clk                                    ), //i
+    .resetn      (resetn                                 )  //i
   );
   muxReg datapath_muxRegArray_4_0 (
-    .io_inputH   (datapath_muxRegArray_4_0_io_inputH[31:0]), //i
-    .io_inputV   (datapath_muxRegArray_5_0_io_output[31:0]), //i
-    .io_output   (datapath_muxRegArray_4_0_io_output[31:0]), //o
-    .io_selH     (selH                                    ), //i
-    .io_shiftEnb (shiftEnb                                ), //i
-    .clk         (clk                                     ), //i
-    .resetn      (resetn                                  )  //i
+    .io_inputH   (datapath_muxRegArray_4_0_io_inputH[7:0]), //i
+    .io_inputV   (datapath_muxRegArray_5_0_io_output[7:0]), //i
+    .io_output   (datapath_muxRegArray_4_0_io_output[7:0]), //o
+    .io_selH     (selH                                   ), //i
+    .io_shiftEnb (shiftEnb                               ), //i
+    .clk         (clk                                    ), //i
+    .resetn      (resetn                                 )  //i
   );
   muxReg datapath_muxRegArray_4_1 (
-    .io_inputH   (datapath_muxRegArray_4_0_io_output[31:0]), //i
-    .io_inputV   (datapath_muxRegArray_5_1_io_output[31:0]), //i
-    .io_output   (datapath_muxRegArray_4_1_io_output[31:0]), //o
-    .io_selH     (selH                                    ), //i
-    .io_shiftEnb (shiftEnb                                ), //i
-    .clk         (clk                                     ), //i
-    .resetn      (resetn                                  )  //i
+    .io_inputH   (datapath_muxRegArray_4_0_io_output[7:0]), //i
+    .io_inputV   (datapath_muxRegArray_5_1_io_output[7:0]), //i
+    .io_output   (datapath_muxRegArray_4_1_io_output[7:0]), //o
+    .io_selH     (selH                                   ), //i
+    .io_shiftEnb (shiftEnb                               ), //i
+    .clk         (clk                                    ), //i
+    .resetn      (resetn                                 )  //i
   );
   muxReg datapath_muxRegArray_4_2 (
-    .io_inputH   (datapath_muxRegArray_4_1_io_output[31:0]), //i
-    .io_inputV   (datapath_muxRegArray_5_2_io_output[31:0]), //i
-    .io_output   (datapath_muxRegArray_4_2_io_output[31:0]), //o
-    .io_selH     (selH                                    ), //i
-    .io_shiftEnb (shiftEnb                                ), //i
-    .clk         (clk                                     ), //i
-    .resetn      (resetn                                  )  //i
+    .io_inputH   (datapath_muxRegArray_4_1_io_output[7:0]), //i
+    .io_inputV   (datapath_muxRegArray_5_2_io_output[7:0]), //i
+    .io_output   (datapath_muxRegArray_4_2_io_output[7:0]), //o
+    .io_selH     (selH                                   ), //i
+    .io_shiftEnb (shiftEnb                               ), //i
+    .clk         (clk                                    ), //i
+    .resetn      (resetn                                 )  //i
   );
   muxReg datapath_muxRegArray_4_3 (
-    .io_inputH   (datapath_muxRegArray_4_2_io_output[31:0]), //i
-    .io_inputV   (datapath_muxRegArray_5_3_io_output[31:0]), //i
-    .io_output   (datapath_muxRegArray_4_3_io_output[31:0]), //o
-    .io_selH     (selH                                    ), //i
-    .io_shiftEnb (shiftEnb                                ), //i
-    .clk         (clk                                     ), //i
-    .resetn      (resetn                                  )  //i
+    .io_inputH   (datapath_muxRegArray_4_2_io_output[7:0]), //i
+    .io_inputV   (datapath_muxRegArray_5_3_io_output[7:0]), //i
+    .io_output   (datapath_muxRegArray_4_3_io_output[7:0]), //o
+    .io_selH     (selH                                   ), //i
+    .io_shiftEnb (shiftEnb                               ), //i
+    .clk         (clk                                    ), //i
+    .resetn      (resetn                                 )  //i
   );
   muxReg datapath_muxRegArray_4_4 (
-    .io_inputH   (datapath_muxRegArray_4_3_io_output[31:0]), //i
-    .io_inputV   (datapath_muxRegArray_5_4_io_output[31:0]), //i
-    .io_output   (datapath_muxRegArray_4_4_io_output[31:0]), //o
-    .io_selH     (selH                                    ), //i
-    .io_shiftEnb (shiftEnb                                ), //i
-    .clk         (clk                                     ), //i
-    .resetn      (resetn                                  )  //i
+    .io_inputH   (datapath_muxRegArray_4_3_io_output[7:0]), //i
+    .io_inputV   (datapath_muxRegArray_5_4_io_output[7:0]), //i
+    .io_output   (datapath_muxRegArray_4_4_io_output[7:0]), //o
+    .io_selH     (selH                                   ), //i
+    .io_shiftEnb (shiftEnb                               ), //i
+    .clk         (clk                                    ), //i
+    .resetn      (resetn                                 )  //i
   );
   muxReg datapath_muxRegArray_4_5 (
-    .io_inputH   (datapath_muxRegArray_4_4_io_output[31:0]), //i
-    .io_inputV   (datapath_muxRegArray_5_5_io_output[31:0]), //i
-    .io_output   (datapath_muxRegArray_4_5_io_output[31:0]), //o
-    .io_selH     (selH                                    ), //i
-    .io_shiftEnb (shiftEnb                                ), //i
-    .clk         (clk                                     ), //i
-    .resetn      (resetn                                  )  //i
+    .io_inputH   (datapath_muxRegArray_4_4_io_output[7:0]), //i
+    .io_inputV   (datapath_muxRegArray_5_5_io_output[7:0]), //i
+    .io_output   (datapath_muxRegArray_4_5_io_output[7:0]), //o
+    .io_selH     (selH                                   ), //i
+    .io_shiftEnb (shiftEnb                               ), //i
+    .clk         (clk                                    ), //i
+    .resetn      (resetn                                 )  //i
   );
   muxReg datapath_muxRegArray_4_6 (
-    .io_inputH   (datapath_muxRegArray_4_5_io_output[31:0]), //i
-    .io_inputV   (datapath_muxRegArray_5_6_io_output[31:0]), //i
-    .io_output   (datapath_muxRegArray_4_6_io_output[31:0]), //o
-    .io_selH     (selH                                    ), //i
-    .io_shiftEnb (shiftEnb                                ), //i
-    .clk         (clk                                     ), //i
-    .resetn      (resetn                                  )  //i
+    .io_inputH   (datapath_muxRegArray_4_5_io_output[7:0]), //i
+    .io_inputV   (datapath_muxRegArray_5_6_io_output[7:0]), //i
+    .io_output   (datapath_muxRegArray_4_6_io_output[7:0]), //o
+    .io_selH     (selH                                   ), //i
+    .io_shiftEnb (shiftEnb                               ), //i
+    .clk         (clk                                    ), //i
+    .resetn      (resetn                                 )  //i
   );
   muxReg datapath_muxRegArray_4_7 (
-    .io_inputH   (datapath_muxRegArray_4_6_io_output[31:0]), //i
-    .io_inputV   (datapath_muxRegArray_5_7_io_output[31:0]), //i
-    .io_output   (datapath_muxRegArray_4_7_io_output[31:0]), //o
-    .io_selH     (selH                                    ), //i
-    .io_shiftEnb (shiftEnb                                ), //i
-    .clk         (clk                                     ), //i
-    .resetn      (resetn                                  )  //i
+    .io_inputH   (datapath_muxRegArray_4_6_io_output[7:0]), //i
+    .io_inputV   (datapath_muxRegArray_5_7_io_output[7:0]), //i
+    .io_output   (datapath_muxRegArray_4_7_io_output[7:0]), //o
+    .io_selH     (selH                                   ), //i
+    .io_shiftEnb (shiftEnb                               ), //i
+    .clk         (clk                                    ), //i
+    .resetn      (resetn                                 )  //i
   );
   muxReg datapath_muxRegArray_5_0 (
-    .io_inputH   (datapath_muxRegArray_5_0_io_inputH[31:0]), //i
-    .io_inputV   (datapath_muxRegArray_6_0_io_output[31:0]), //i
-    .io_output   (datapath_muxRegArray_5_0_io_output[31:0]), //o
-    .io_selH     (selH                                    ), //i
-    .io_shiftEnb (shiftEnb                                ), //i
-    .clk         (clk                                     ), //i
-    .resetn      (resetn                                  )  //i
+    .io_inputH   (datapath_muxRegArray_5_0_io_inputH[7:0]), //i
+    .io_inputV   (datapath_muxRegArray_6_0_io_output[7:0]), //i
+    .io_output   (datapath_muxRegArray_5_0_io_output[7:0]), //o
+    .io_selH     (selH                                   ), //i
+    .io_shiftEnb (shiftEnb                               ), //i
+    .clk         (clk                                    ), //i
+    .resetn      (resetn                                 )  //i
   );
   muxReg datapath_muxRegArray_5_1 (
-    .io_inputH   (datapath_muxRegArray_5_0_io_output[31:0]), //i
-    .io_inputV   (datapath_muxRegArray_6_1_io_output[31:0]), //i
-    .io_output   (datapath_muxRegArray_5_1_io_output[31:0]), //o
-    .io_selH     (selH                                    ), //i
-    .io_shiftEnb (shiftEnb                                ), //i
-    .clk         (clk                                     ), //i
-    .resetn      (resetn                                  )  //i
+    .io_inputH   (datapath_muxRegArray_5_0_io_output[7:0]), //i
+    .io_inputV   (datapath_muxRegArray_6_1_io_output[7:0]), //i
+    .io_output   (datapath_muxRegArray_5_1_io_output[7:0]), //o
+    .io_selH     (selH                                   ), //i
+    .io_shiftEnb (shiftEnb                               ), //i
+    .clk         (clk                                    ), //i
+    .resetn      (resetn                                 )  //i
   );
   muxReg datapath_muxRegArray_5_2 (
-    .io_inputH   (datapath_muxRegArray_5_1_io_output[31:0]), //i
-    .io_inputV   (datapath_muxRegArray_6_2_io_output[31:0]), //i
-    .io_output   (datapath_muxRegArray_5_2_io_output[31:0]), //o
-    .io_selH     (selH                                    ), //i
-    .io_shiftEnb (shiftEnb                                ), //i
-    .clk         (clk                                     ), //i
-    .resetn      (resetn                                  )  //i
+    .io_inputH   (datapath_muxRegArray_5_1_io_output[7:0]), //i
+    .io_inputV   (datapath_muxRegArray_6_2_io_output[7:0]), //i
+    .io_output   (datapath_muxRegArray_5_2_io_output[7:0]), //o
+    .io_selH     (selH                                   ), //i
+    .io_shiftEnb (shiftEnb                               ), //i
+    .clk         (clk                                    ), //i
+    .resetn      (resetn                                 )  //i
   );
   muxReg datapath_muxRegArray_5_3 (
-    .io_inputH   (datapath_muxRegArray_5_2_io_output[31:0]), //i
-    .io_inputV   (datapath_muxRegArray_6_3_io_output[31:0]), //i
-    .io_output   (datapath_muxRegArray_5_3_io_output[31:0]), //o
-    .io_selH     (selH                                    ), //i
-    .io_shiftEnb (shiftEnb                                ), //i
-    .clk         (clk                                     ), //i
-    .resetn      (resetn                                  )  //i
+    .io_inputH   (datapath_muxRegArray_5_2_io_output[7:0]), //i
+    .io_inputV   (datapath_muxRegArray_6_3_io_output[7:0]), //i
+    .io_output   (datapath_muxRegArray_5_3_io_output[7:0]), //o
+    .io_selH     (selH                                   ), //i
+    .io_shiftEnb (shiftEnb                               ), //i
+    .clk         (clk                                    ), //i
+    .resetn      (resetn                                 )  //i
   );
   muxReg datapath_muxRegArray_5_4 (
-    .io_inputH   (datapath_muxRegArray_5_3_io_output[31:0]), //i
-    .io_inputV   (datapath_muxRegArray_6_4_io_output[31:0]), //i
-    .io_output   (datapath_muxRegArray_5_4_io_output[31:0]), //o
-    .io_selH     (selH                                    ), //i
-    .io_shiftEnb (shiftEnb                                ), //i
-    .clk         (clk                                     ), //i
-    .resetn      (resetn                                  )  //i
+    .io_inputH   (datapath_muxRegArray_5_3_io_output[7:0]), //i
+    .io_inputV   (datapath_muxRegArray_6_4_io_output[7:0]), //i
+    .io_output   (datapath_muxRegArray_5_4_io_output[7:0]), //o
+    .io_selH     (selH                                   ), //i
+    .io_shiftEnb (shiftEnb                               ), //i
+    .clk         (clk                                    ), //i
+    .resetn      (resetn                                 )  //i
   );
   muxReg datapath_muxRegArray_5_5 (
-    .io_inputH   (datapath_muxRegArray_5_4_io_output[31:0]), //i
-    .io_inputV   (datapath_muxRegArray_6_5_io_output[31:0]), //i
-    .io_output   (datapath_muxRegArray_5_5_io_output[31:0]), //o
-    .io_selH     (selH                                    ), //i
-    .io_shiftEnb (shiftEnb                                ), //i
-    .clk         (clk                                     ), //i
-    .resetn      (resetn                                  )  //i
+    .io_inputH   (datapath_muxRegArray_5_4_io_output[7:0]), //i
+    .io_inputV   (datapath_muxRegArray_6_5_io_output[7:0]), //i
+    .io_output   (datapath_muxRegArray_5_5_io_output[7:0]), //o
+    .io_selH     (selH                                   ), //i
+    .io_shiftEnb (shiftEnb                               ), //i
+    .clk         (clk                                    ), //i
+    .resetn      (resetn                                 )  //i
   );
   muxReg datapath_muxRegArray_5_6 (
-    .io_inputH   (datapath_muxRegArray_5_5_io_output[31:0]), //i
-    .io_inputV   (datapath_muxRegArray_6_6_io_output[31:0]), //i
-    .io_output   (datapath_muxRegArray_5_6_io_output[31:0]), //o
-    .io_selH     (selH                                    ), //i
-    .io_shiftEnb (shiftEnb                                ), //i
-    .clk         (clk                                     ), //i
-    .resetn      (resetn                                  )  //i
+    .io_inputH   (datapath_muxRegArray_5_5_io_output[7:0]), //i
+    .io_inputV   (datapath_muxRegArray_6_6_io_output[7:0]), //i
+    .io_output   (datapath_muxRegArray_5_6_io_output[7:0]), //o
+    .io_selH     (selH                                   ), //i
+    .io_shiftEnb (shiftEnb                               ), //i
+    .clk         (clk                                    ), //i
+    .resetn      (resetn                                 )  //i
   );
   muxReg datapath_muxRegArray_5_7 (
-    .io_inputH   (datapath_muxRegArray_5_6_io_output[31:0]), //i
-    .io_inputV   (datapath_muxRegArray_6_7_io_output[31:0]), //i
-    .io_output   (datapath_muxRegArray_5_7_io_output[31:0]), //o
-    .io_selH     (selH                                    ), //i
-    .io_shiftEnb (shiftEnb                                ), //i
-    .clk         (clk                                     ), //i
-    .resetn      (resetn                                  )  //i
+    .io_inputH   (datapath_muxRegArray_5_6_io_output[7:0]), //i
+    .io_inputV   (datapath_muxRegArray_6_7_io_output[7:0]), //i
+    .io_output   (datapath_muxRegArray_5_7_io_output[7:0]), //o
+    .io_selH     (selH                                   ), //i
+    .io_shiftEnb (shiftEnb                               ), //i
+    .clk         (clk                                    ), //i
+    .resetn      (resetn                                 )  //i
   );
   muxReg datapath_muxRegArray_6_0 (
-    .io_inputH   (datapath_muxRegArray_6_0_io_inputH[31:0]), //i
-    .io_inputV   (datapath_muxRegArray_7_0_io_output[31:0]), //i
-    .io_output   (datapath_muxRegArray_6_0_io_output[31:0]), //o
-    .io_selH     (selH                                    ), //i
-    .io_shiftEnb (shiftEnb                                ), //i
-    .clk         (clk                                     ), //i
-    .resetn      (resetn                                  )  //i
+    .io_inputH   (datapath_muxRegArray_6_0_io_inputH[7:0]), //i
+    .io_inputV   (datapath_muxRegArray_7_0_io_output[7:0]), //i
+    .io_output   (datapath_muxRegArray_6_0_io_output[7:0]), //o
+    .io_selH     (selH                                   ), //i
+    .io_shiftEnb (shiftEnb                               ), //i
+    .clk         (clk                                    ), //i
+    .resetn      (resetn                                 )  //i
   );
   muxReg datapath_muxRegArray_6_1 (
-    .io_inputH   (datapath_muxRegArray_6_0_io_output[31:0]), //i
-    .io_inputV   (datapath_muxRegArray_7_1_io_output[31:0]), //i
-    .io_output   (datapath_muxRegArray_6_1_io_output[31:0]), //o
-    .io_selH     (selH                                    ), //i
-    .io_shiftEnb (shiftEnb                                ), //i
-    .clk         (clk                                     ), //i
-    .resetn      (resetn                                  )  //i
+    .io_inputH   (datapath_muxRegArray_6_0_io_output[7:0]), //i
+    .io_inputV   (datapath_muxRegArray_7_1_io_output[7:0]), //i
+    .io_output   (datapath_muxRegArray_6_1_io_output[7:0]), //o
+    .io_selH     (selH                                   ), //i
+    .io_shiftEnb (shiftEnb                               ), //i
+    .clk         (clk                                    ), //i
+    .resetn      (resetn                                 )  //i
   );
   muxReg datapath_muxRegArray_6_2 (
-    .io_inputH   (datapath_muxRegArray_6_1_io_output[31:0]), //i
-    .io_inputV   (datapath_muxRegArray_7_2_io_output[31:0]), //i
-    .io_output   (datapath_muxRegArray_6_2_io_output[31:0]), //o
-    .io_selH     (selH                                    ), //i
-    .io_shiftEnb (shiftEnb                                ), //i
-    .clk         (clk                                     ), //i
-    .resetn      (resetn                                  )  //i
+    .io_inputH   (datapath_muxRegArray_6_1_io_output[7:0]), //i
+    .io_inputV   (datapath_muxRegArray_7_2_io_output[7:0]), //i
+    .io_output   (datapath_muxRegArray_6_2_io_output[7:0]), //o
+    .io_selH     (selH                                   ), //i
+    .io_shiftEnb (shiftEnb                               ), //i
+    .clk         (clk                                    ), //i
+    .resetn      (resetn                                 )  //i
   );
   muxReg datapath_muxRegArray_6_3 (
-    .io_inputH   (datapath_muxRegArray_6_2_io_output[31:0]), //i
-    .io_inputV   (datapath_muxRegArray_7_3_io_output[31:0]), //i
-    .io_output   (datapath_muxRegArray_6_3_io_output[31:0]), //o
-    .io_selH     (selH                                    ), //i
-    .io_shiftEnb (shiftEnb                                ), //i
-    .clk         (clk                                     ), //i
-    .resetn      (resetn                                  )  //i
+    .io_inputH   (datapath_muxRegArray_6_2_io_output[7:0]), //i
+    .io_inputV   (datapath_muxRegArray_7_3_io_output[7:0]), //i
+    .io_output   (datapath_muxRegArray_6_3_io_output[7:0]), //o
+    .io_selH     (selH                                   ), //i
+    .io_shiftEnb (shiftEnb                               ), //i
+    .clk         (clk                                    ), //i
+    .resetn      (resetn                                 )  //i
   );
   muxReg datapath_muxRegArray_6_4 (
-    .io_inputH   (datapath_muxRegArray_6_3_io_output[31:0]), //i
-    .io_inputV   (datapath_muxRegArray_7_4_io_output[31:0]), //i
-    .io_output   (datapath_muxRegArray_6_4_io_output[31:0]), //o
-    .io_selH     (selH                                    ), //i
-    .io_shiftEnb (shiftEnb                                ), //i
-    .clk         (clk                                     ), //i
-    .resetn      (resetn                                  )  //i
+    .io_inputH   (datapath_muxRegArray_6_3_io_output[7:0]), //i
+    .io_inputV   (datapath_muxRegArray_7_4_io_output[7:0]), //i
+    .io_output   (datapath_muxRegArray_6_4_io_output[7:0]), //o
+    .io_selH     (selH                                   ), //i
+    .io_shiftEnb (shiftEnb                               ), //i
+    .clk         (clk                                    ), //i
+    .resetn      (resetn                                 )  //i
   );
   muxReg datapath_muxRegArray_6_5 (
-    .io_inputH   (datapath_muxRegArray_6_4_io_output[31:0]), //i
-    .io_inputV   (datapath_muxRegArray_7_5_io_output[31:0]), //i
-    .io_output   (datapath_muxRegArray_6_5_io_output[31:0]), //o
-    .io_selH     (selH                                    ), //i
-    .io_shiftEnb (shiftEnb                                ), //i
-    .clk         (clk                                     ), //i
-    .resetn      (resetn                                  )  //i
+    .io_inputH   (datapath_muxRegArray_6_4_io_output[7:0]), //i
+    .io_inputV   (datapath_muxRegArray_7_5_io_output[7:0]), //i
+    .io_output   (datapath_muxRegArray_6_5_io_output[7:0]), //o
+    .io_selH     (selH                                   ), //i
+    .io_shiftEnb (shiftEnb                               ), //i
+    .clk         (clk                                    ), //i
+    .resetn      (resetn                                 )  //i
   );
   muxReg datapath_muxRegArray_6_6 (
-    .io_inputH   (datapath_muxRegArray_6_5_io_output[31:0]), //i
-    .io_inputV   (datapath_muxRegArray_7_6_io_output[31:0]), //i
-    .io_output   (datapath_muxRegArray_6_6_io_output[31:0]), //o
-    .io_selH     (selH                                    ), //i
-    .io_shiftEnb (shiftEnb                                ), //i
-    .clk         (clk                                     ), //i
-    .resetn      (resetn                                  )  //i
+    .io_inputH   (datapath_muxRegArray_6_5_io_output[7:0]), //i
+    .io_inputV   (datapath_muxRegArray_7_6_io_output[7:0]), //i
+    .io_output   (datapath_muxRegArray_6_6_io_output[7:0]), //o
+    .io_selH     (selH                                   ), //i
+    .io_shiftEnb (shiftEnb                               ), //i
+    .clk         (clk                                    ), //i
+    .resetn      (resetn                                 )  //i
   );
   muxReg datapath_muxRegArray_6_7 (
-    .io_inputH   (datapath_muxRegArray_6_6_io_output[31:0]), //i
-    .io_inputV   (datapath_muxRegArray_7_7_io_output[31:0]), //i
-    .io_output   (datapath_muxRegArray_6_7_io_output[31:0]), //o
-    .io_selH     (selH                                    ), //i
-    .io_shiftEnb (shiftEnb                                ), //i
-    .clk         (clk                                     ), //i
-    .resetn      (resetn                                  )  //i
+    .io_inputH   (datapath_muxRegArray_6_6_io_output[7:0]), //i
+    .io_inputV   (datapath_muxRegArray_7_7_io_output[7:0]), //i
+    .io_output   (datapath_muxRegArray_6_7_io_output[7:0]), //o
+    .io_selH     (selH                                   ), //i
+    .io_shiftEnb (shiftEnb                               ), //i
+    .clk         (clk                                    ), //i
+    .resetn      (resetn                                 )  //i
   );
   muxReg datapath_muxRegArray_7_0 (
-    .io_inputH   (datapath_muxRegArray_7_0_io_inputH[31:0]), //i
-    .io_inputV   (32'h0                                   ), //i
-    .io_output   (datapath_muxRegArray_7_0_io_output[31:0]), //o
-    .io_selH     (selH                                    ), //i
-    .io_shiftEnb (shiftEnb                                ), //i
-    .clk         (clk                                     ), //i
-    .resetn      (resetn                                  )  //i
+    .io_inputH   (datapath_muxRegArray_7_0_io_inputH[7:0]), //i
+    .io_inputV   (8'h0                                   ), //i
+    .io_output   (datapath_muxRegArray_7_0_io_output[7:0]), //o
+    .io_selH     (selH                                   ), //i
+    .io_shiftEnb (shiftEnb                               ), //i
+    .clk         (clk                                    ), //i
+    .resetn      (resetn                                 )  //i
   );
   muxReg datapath_muxRegArray_7_1 (
-    .io_inputH   (datapath_muxRegArray_7_0_io_output[31:0]), //i
-    .io_inputV   (32'h0                                   ), //i
-    .io_output   (datapath_muxRegArray_7_1_io_output[31:0]), //o
-    .io_selH     (selH                                    ), //i
-    .io_shiftEnb (shiftEnb                                ), //i
-    .clk         (clk                                     ), //i
-    .resetn      (resetn                                  )  //i
+    .io_inputH   (datapath_muxRegArray_7_0_io_output[7:0]), //i
+    .io_inputV   (8'h0                                   ), //i
+    .io_output   (datapath_muxRegArray_7_1_io_output[7:0]), //o
+    .io_selH     (selH                                   ), //i
+    .io_shiftEnb (shiftEnb                               ), //i
+    .clk         (clk                                    ), //i
+    .resetn      (resetn                                 )  //i
   );
   muxReg datapath_muxRegArray_7_2 (
-    .io_inputH   (datapath_muxRegArray_7_1_io_output[31:0]), //i
-    .io_inputV   (32'h0                                   ), //i
-    .io_output   (datapath_muxRegArray_7_2_io_output[31:0]), //o
-    .io_selH     (selH                                    ), //i
-    .io_shiftEnb (shiftEnb                                ), //i
-    .clk         (clk                                     ), //i
-    .resetn      (resetn                                  )  //i
+    .io_inputH   (datapath_muxRegArray_7_1_io_output[7:0]), //i
+    .io_inputV   (8'h0                                   ), //i
+    .io_output   (datapath_muxRegArray_7_2_io_output[7:0]), //o
+    .io_selH     (selH                                   ), //i
+    .io_shiftEnb (shiftEnb                               ), //i
+    .clk         (clk                                    ), //i
+    .resetn      (resetn                                 )  //i
   );
   muxReg datapath_muxRegArray_7_3 (
-    .io_inputH   (datapath_muxRegArray_7_2_io_output[31:0]), //i
-    .io_inputV   (32'h0                                   ), //i
-    .io_output   (datapath_muxRegArray_7_3_io_output[31:0]), //o
-    .io_selH     (selH                                    ), //i
-    .io_shiftEnb (shiftEnb                                ), //i
-    .clk         (clk                                     ), //i
-    .resetn      (resetn                                  )  //i
+    .io_inputH   (datapath_muxRegArray_7_2_io_output[7:0]), //i
+    .io_inputV   (8'h0                                   ), //i
+    .io_output   (datapath_muxRegArray_7_3_io_output[7:0]), //o
+    .io_selH     (selH                                   ), //i
+    .io_shiftEnb (shiftEnb                               ), //i
+    .clk         (clk                                    ), //i
+    .resetn      (resetn                                 )  //i
   );
   muxReg datapath_muxRegArray_7_4 (
-    .io_inputH   (datapath_muxRegArray_7_3_io_output[31:0]), //i
-    .io_inputV   (32'h0                                   ), //i
-    .io_output   (datapath_muxRegArray_7_4_io_output[31:0]), //o
-    .io_selH     (selH                                    ), //i
-    .io_shiftEnb (shiftEnb                                ), //i
-    .clk         (clk                                     ), //i
-    .resetn      (resetn                                  )  //i
+    .io_inputH   (datapath_muxRegArray_7_3_io_output[7:0]), //i
+    .io_inputV   (8'h0                                   ), //i
+    .io_output   (datapath_muxRegArray_7_4_io_output[7:0]), //o
+    .io_selH     (selH                                   ), //i
+    .io_shiftEnb (shiftEnb                               ), //i
+    .clk         (clk                                    ), //i
+    .resetn      (resetn                                 )  //i
   );
   muxReg datapath_muxRegArray_7_5 (
-    .io_inputH   (datapath_muxRegArray_7_4_io_output[31:0]), //i
-    .io_inputV   (32'h0                                   ), //i
-    .io_output   (datapath_muxRegArray_7_5_io_output[31:0]), //o
-    .io_selH     (selH                                    ), //i
-    .io_shiftEnb (shiftEnb                                ), //i
-    .clk         (clk                                     ), //i
-    .resetn      (resetn                                  )  //i
+    .io_inputH   (datapath_muxRegArray_7_4_io_output[7:0]), //i
+    .io_inputV   (8'h0                                   ), //i
+    .io_output   (datapath_muxRegArray_7_5_io_output[7:0]), //o
+    .io_selH     (selH                                   ), //i
+    .io_shiftEnb (shiftEnb                               ), //i
+    .clk         (clk                                    ), //i
+    .resetn      (resetn                                 )  //i
   );
   muxReg datapath_muxRegArray_7_6 (
-    .io_inputH   (datapath_muxRegArray_7_5_io_output[31:0]), //i
-    .io_inputV   (32'h0                                   ), //i
-    .io_output   (datapath_muxRegArray_7_6_io_output[31:0]), //o
-    .io_selH     (selH                                    ), //i
-    .io_shiftEnb (shiftEnb                                ), //i
-    .clk         (clk                                     ), //i
-    .resetn      (resetn                                  )  //i
+    .io_inputH   (datapath_muxRegArray_7_5_io_output[7:0]), //i
+    .io_inputV   (8'h0                                   ), //i
+    .io_output   (datapath_muxRegArray_7_6_io_output[7:0]), //o
+    .io_selH     (selH                                   ), //i
+    .io_shiftEnb (shiftEnb                               ), //i
+    .clk         (clk                                    ), //i
+    .resetn      (resetn                                 )  //i
   );
   muxReg datapath_muxRegArray_7_7 (
-    .io_inputH   (datapath_muxRegArray_7_6_io_output[31:0]), //i
-    .io_inputV   (32'h0                                   ), //i
-    .io_output   (datapath_muxRegArray_7_7_io_output[31:0]), //o
-    .io_selH     (selH                                    ), //i
-    .io_shiftEnb (shiftEnb                                ), //i
-    .clk         (clk                                     ), //i
-    .resetn      (resetn                                  )  //i
+    .io_inputH   (datapath_muxRegArray_7_6_io_output[7:0]), //i
+    .io_inputV   (8'h0                                   ), //i
+    .io_output   (datapath_muxRegArray_7_7_io_output[7:0]), //o
+    .io_selH     (selH                                   ), //i
+    .io_shiftEnb (shiftEnb                               ), //i
+    .clk         (clk                                    ), //i
+    .resetn      (resetn                                 )  //i
   );
   `ifndef SYNTHESIS
   always @(*) begin
@@ -1468,25 +1468,25 @@ module MatTransNxNStream_1 (
   `endif
 
   assign shiftEnb = ((io_output_valid && io_output_ready) || (io_input_valid && io_input_ready));
-  assign datapath_muxRegArray_0_0_io_inputH = io_input_payload[31 : 0];
+  assign datapath_muxRegArray_0_0_io_inputH = io_input_payload[7 : 0];
   always @(*) begin
-    io_output_payload[255 : 224] = datapath_muxRegArray_0_0_io_output;
-    io_output_payload[223 : 192] = datapath_muxRegArray_0_1_io_output;
-    io_output_payload[191 : 160] = datapath_muxRegArray_0_2_io_output;
-    io_output_payload[159 : 128] = datapath_muxRegArray_0_3_io_output;
-    io_output_payload[127 : 96] = datapath_muxRegArray_0_4_io_output;
-    io_output_payload[95 : 64] = datapath_muxRegArray_0_5_io_output;
-    io_output_payload[63 : 32] = datapath_muxRegArray_0_6_io_output;
-    io_output_payload[31 : 0] = datapath_muxRegArray_0_7_io_output;
+    io_output_payload[63 : 56] = datapath_muxRegArray_0_0_io_output;
+    io_output_payload[55 : 48] = datapath_muxRegArray_0_1_io_output;
+    io_output_payload[47 : 40] = datapath_muxRegArray_0_2_io_output;
+    io_output_payload[39 : 32] = datapath_muxRegArray_0_3_io_output;
+    io_output_payload[31 : 24] = datapath_muxRegArray_0_4_io_output;
+    io_output_payload[23 : 16] = datapath_muxRegArray_0_5_io_output;
+    io_output_payload[15 : 8] = datapath_muxRegArray_0_6_io_output;
+    io_output_payload[7 : 0] = datapath_muxRegArray_0_7_io_output;
   end
 
-  assign datapath_muxRegArray_1_0_io_inputH = io_input_payload[63 : 32];
-  assign datapath_muxRegArray_2_0_io_inputH = io_input_payload[95 : 64];
-  assign datapath_muxRegArray_3_0_io_inputH = io_input_payload[127 : 96];
-  assign datapath_muxRegArray_4_0_io_inputH = io_input_payload[159 : 128];
-  assign datapath_muxRegArray_5_0_io_inputH = io_input_payload[191 : 160];
-  assign datapath_muxRegArray_6_0_io_inputH = io_input_payload[223 : 192];
-  assign datapath_muxRegArray_7_0_io_inputH = io_input_payload[255 : 224];
+  assign datapath_muxRegArray_1_0_io_inputH = io_input_payload[15 : 8];
+  assign datapath_muxRegArray_2_0_io_inputH = io_input_payload[23 : 16];
+  assign datapath_muxRegArray_3_0_io_inputH = io_input_payload[31 : 24];
+  assign datapath_muxRegArray_4_0_io_inputH = io_input_payload[39 : 32];
+  assign datapath_muxRegArray_5_0_io_inputH = io_input_payload[47 : 40];
+  assign datapath_muxRegArray_6_0_io_inputH = io_input_payload[55 : 48];
+  assign datapath_muxRegArray_7_0_io_inputH = io_input_payload[63 : 56];
   assign fsm_wantExit = 1'b0;
   always @(*) begin
     fsm_wantStart = 1'b0;
@@ -1605,10 +1605,10 @@ endmodule
 module MatTransNxNStream (
   input  wire          io_input_valid,
   output reg           io_input_ready,
-  input  wire [255:0]  io_input_payload,
+  input  wire [63:0]   io_input_payload,
   output reg           io_output_valid,
   input  wire          io_output_ready,
-  output reg  [255:0]  io_output_payload,
+  output reg  [63:0]   io_output_payload,
   input  wire          clk,
   input  wire          resetn
 );
@@ -1616,78 +1616,78 @@ module MatTransNxNStream (
   localparam fsm_1_input_1 = 2'd1;
   localparam fsm_1_output_1 = 2'd2;
 
-  wire       [31:0]   datapath_muxRegArray_0_0_io_inputH;
-  wire       [31:0]   datapath_muxRegArray_1_0_io_inputH;
-  wire       [31:0]   datapath_muxRegArray_2_0_io_inputH;
-  wire       [31:0]   datapath_muxRegArray_3_0_io_inputH;
-  wire       [31:0]   datapath_muxRegArray_4_0_io_inputH;
-  wire       [31:0]   datapath_muxRegArray_5_0_io_inputH;
-  wire       [31:0]   datapath_muxRegArray_6_0_io_inputH;
-  wire       [31:0]   datapath_muxRegArray_7_0_io_inputH;
-  wire       [31:0]   datapath_muxRegArray_0_0_io_output;
-  wire       [31:0]   datapath_muxRegArray_0_1_io_output;
-  wire       [31:0]   datapath_muxRegArray_0_2_io_output;
-  wire       [31:0]   datapath_muxRegArray_0_3_io_output;
-  wire       [31:0]   datapath_muxRegArray_0_4_io_output;
-  wire       [31:0]   datapath_muxRegArray_0_5_io_output;
-  wire       [31:0]   datapath_muxRegArray_0_6_io_output;
-  wire       [31:0]   datapath_muxRegArray_0_7_io_output;
-  wire       [31:0]   datapath_muxRegArray_1_0_io_output;
-  wire       [31:0]   datapath_muxRegArray_1_1_io_output;
-  wire       [31:0]   datapath_muxRegArray_1_2_io_output;
-  wire       [31:0]   datapath_muxRegArray_1_3_io_output;
-  wire       [31:0]   datapath_muxRegArray_1_4_io_output;
-  wire       [31:0]   datapath_muxRegArray_1_5_io_output;
-  wire       [31:0]   datapath_muxRegArray_1_6_io_output;
-  wire       [31:0]   datapath_muxRegArray_1_7_io_output;
-  wire       [31:0]   datapath_muxRegArray_2_0_io_output;
-  wire       [31:0]   datapath_muxRegArray_2_1_io_output;
-  wire       [31:0]   datapath_muxRegArray_2_2_io_output;
-  wire       [31:0]   datapath_muxRegArray_2_3_io_output;
-  wire       [31:0]   datapath_muxRegArray_2_4_io_output;
-  wire       [31:0]   datapath_muxRegArray_2_5_io_output;
-  wire       [31:0]   datapath_muxRegArray_2_6_io_output;
-  wire       [31:0]   datapath_muxRegArray_2_7_io_output;
-  wire       [31:0]   datapath_muxRegArray_3_0_io_output;
-  wire       [31:0]   datapath_muxRegArray_3_1_io_output;
-  wire       [31:0]   datapath_muxRegArray_3_2_io_output;
-  wire       [31:0]   datapath_muxRegArray_3_3_io_output;
-  wire       [31:0]   datapath_muxRegArray_3_4_io_output;
-  wire       [31:0]   datapath_muxRegArray_3_5_io_output;
-  wire       [31:0]   datapath_muxRegArray_3_6_io_output;
-  wire       [31:0]   datapath_muxRegArray_3_7_io_output;
-  wire       [31:0]   datapath_muxRegArray_4_0_io_output;
-  wire       [31:0]   datapath_muxRegArray_4_1_io_output;
-  wire       [31:0]   datapath_muxRegArray_4_2_io_output;
-  wire       [31:0]   datapath_muxRegArray_4_3_io_output;
-  wire       [31:0]   datapath_muxRegArray_4_4_io_output;
-  wire       [31:0]   datapath_muxRegArray_4_5_io_output;
-  wire       [31:0]   datapath_muxRegArray_4_6_io_output;
-  wire       [31:0]   datapath_muxRegArray_4_7_io_output;
-  wire       [31:0]   datapath_muxRegArray_5_0_io_output;
-  wire       [31:0]   datapath_muxRegArray_5_1_io_output;
-  wire       [31:0]   datapath_muxRegArray_5_2_io_output;
-  wire       [31:0]   datapath_muxRegArray_5_3_io_output;
-  wire       [31:0]   datapath_muxRegArray_5_4_io_output;
-  wire       [31:0]   datapath_muxRegArray_5_5_io_output;
-  wire       [31:0]   datapath_muxRegArray_5_6_io_output;
-  wire       [31:0]   datapath_muxRegArray_5_7_io_output;
-  wire       [31:0]   datapath_muxRegArray_6_0_io_output;
-  wire       [31:0]   datapath_muxRegArray_6_1_io_output;
-  wire       [31:0]   datapath_muxRegArray_6_2_io_output;
-  wire       [31:0]   datapath_muxRegArray_6_3_io_output;
-  wire       [31:0]   datapath_muxRegArray_6_4_io_output;
-  wire       [31:0]   datapath_muxRegArray_6_5_io_output;
-  wire       [31:0]   datapath_muxRegArray_6_6_io_output;
-  wire       [31:0]   datapath_muxRegArray_6_7_io_output;
-  wire       [31:0]   datapath_muxRegArray_7_0_io_output;
-  wire       [31:0]   datapath_muxRegArray_7_1_io_output;
-  wire       [31:0]   datapath_muxRegArray_7_2_io_output;
-  wire       [31:0]   datapath_muxRegArray_7_3_io_output;
-  wire       [31:0]   datapath_muxRegArray_7_4_io_output;
-  wire       [31:0]   datapath_muxRegArray_7_5_io_output;
-  wire       [31:0]   datapath_muxRegArray_7_6_io_output;
-  wire       [31:0]   datapath_muxRegArray_7_7_io_output;
+  wire       [7:0]    datapath_muxRegArray_0_0_io_inputH;
+  wire       [7:0]    datapath_muxRegArray_1_0_io_inputH;
+  wire       [7:0]    datapath_muxRegArray_2_0_io_inputH;
+  wire       [7:0]    datapath_muxRegArray_3_0_io_inputH;
+  wire       [7:0]    datapath_muxRegArray_4_0_io_inputH;
+  wire       [7:0]    datapath_muxRegArray_5_0_io_inputH;
+  wire       [7:0]    datapath_muxRegArray_6_0_io_inputH;
+  wire       [7:0]    datapath_muxRegArray_7_0_io_inputH;
+  wire       [7:0]    datapath_muxRegArray_0_0_io_output;
+  wire       [7:0]    datapath_muxRegArray_0_1_io_output;
+  wire       [7:0]    datapath_muxRegArray_0_2_io_output;
+  wire       [7:0]    datapath_muxRegArray_0_3_io_output;
+  wire       [7:0]    datapath_muxRegArray_0_4_io_output;
+  wire       [7:0]    datapath_muxRegArray_0_5_io_output;
+  wire       [7:0]    datapath_muxRegArray_0_6_io_output;
+  wire       [7:0]    datapath_muxRegArray_0_7_io_output;
+  wire       [7:0]    datapath_muxRegArray_1_0_io_output;
+  wire       [7:0]    datapath_muxRegArray_1_1_io_output;
+  wire       [7:0]    datapath_muxRegArray_1_2_io_output;
+  wire       [7:0]    datapath_muxRegArray_1_3_io_output;
+  wire       [7:0]    datapath_muxRegArray_1_4_io_output;
+  wire       [7:0]    datapath_muxRegArray_1_5_io_output;
+  wire       [7:0]    datapath_muxRegArray_1_6_io_output;
+  wire       [7:0]    datapath_muxRegArray_1_7_io_output;
+  wire       [7:0]    datapath_muxRegArray_2_0_io_output;
+  wire       [7:0]    datapath_muxRegArray_2_1_io_output;
+  wire       [7:0]    datapath_muxRegArray_2_2_io_output;
+  wire       [7:0]    datapath_muxRegArray_2_3_io_output;
+  wire       [7:0]    datapath_muxRegArray_2_4_io_output;
+  wire       [7:0]    datapath_muxRegArray_2_5_io_output;
+  wire       [7:0]    datapath_muxRegArray_2_6_io_output;
+  wire       [7:0]    datapath_muxRegArray_2_7_io_output;
+  wire       [7:0]    datapath_muxRegArray_3_0_io_output;
+  wire       [7:0]    datapath_muxRegArray_3_1_io_output;
+  wire       [7:0]    datapath_muxRegArray_3_2_io_output;
+  wire       [7:0]    datapath_muxRegArray_3_3_io_output;
+  wire       [7:0]    datapath_muxRegArray_3_4_io_output;
+  wire       [7:0]    datapath_muxRegArray_3_5_io_output;
+  wire       [7:0]    datapath_muxRegArray_3_6_io_output;
+  wire       [7:0]    datapath_muxRegArray_3_7_io_output;
+  wire       [7:0]    datapath_muxRegArray_4_0_io_output;
+  wire       [7:0]    datapath_muxRegArray_4_1_io_output;
+  wire       [7:0]    datapath_muxRegArray_4_2_io_output;
+  wire       [7:0]    datapath_muxRegArray_4_3_io_output;
+  wire       [7:0]    datapath_muxRegArray_4_4_io_output;
+  wire       [7:0]    datapath_muxRegArray_4_5_io_output;
+  wire       [7:0]    datapath_muxRegArray_4_6_io_output;
+  wire       [7:0]    datapath_muxRegArray_4_7_io_output;
+  wire       [7:0]    datapath_muxRegArray_5_0_io_output;
+  wire       [7:0]    datapath_muxRegArray_5_1_io_output;
+  wire       [7:0]    datapath_muxRegArray_5_2_io_output;
+  wire       [7:0]    datapath_muxRegArray_5_3_io_output;
+  wire       [7:0]    datapath_muxRegArray_5_4_io_output;
+  wire       [7:0]    datapath_muxRegArray_5_5_io_output;
+  wire       [7:0]    datapath_muxRegArray_5_6_io_output;
+  wire       [7:0]    datapath_muxRegArray_5_7_io_output;
+  wire       [7:0]    datapath_muxRegArray_6_0_io_output;
+  wire       [7:0]    datapath_muxRegArray_6_1_io_output;
+  wire       [7:0]    datapath_muxRegArray_6_2_io_output;
+  wire       [7:0]    datapath_muxRegArray_6_3_io_output;
+  wire       [7:0]    datapath_muxRegArray_6_4_io_output;
+  wire       [7:0]    datapath_muxRegArray_6_5_io_output;
+  wire       [7:0]    datapath_muxRegArray_6_6_io_output;
+  wire       [7:0]    datapath_muxRegArray_6_7_io_output;
+  wire       [7:0]    datapath_muxRegArray_7_0_io_output;
+  wire       [7:0]    datapath_muxRegArray_7_1_io_output;
+  wire       [7:0]    datapath_muxRegArray_7_2_io_output;
+  wire       [7:0]    datapath_muxRegArray_7_3_io_output;
+  wire       [7:0]    datapath_muxRegArray_7_4_io_output;
+  wire       [7:0]    datapath_muxRegArray_7_5_io_output;
+  wire       [7:0]    datapath_muxRegArray_7_6_io_output;
+  wire       [7:0]    datapath_muxRegArray_7_7_io_output;
   reg                 selH;
   wire                shiftEnb;
   wire                fsm_wantExit;
@@ -1711,580 +1711,580 @@ module MatTransNxNStream (
 
 
   muxReg datapath_muxRegArray_0_0 (
-    .io_inputH   (datapath_muxRegArray_0_0_io_inputH[31:0]), //i
-    .io_inputV   (datapath_muxRegArray_1_0_io_output[31:0]), //i
-    .io_output   (datapath_muxRegArray_0_0_io_output[31:0]), //o
-    .io_selH     (selH                                    ), //i
-    .io_shiftEnb (shiftEnb                                ), //i
-    .clk         (clk                                     ), //i
-    .resetn      (resetn                                  )  //i
+    .io_inputH   (datapath_muxRegArray_0_0_io_inputH[7:0]), //i
+    .io_inputV   (datapath_muxRegArray_1_0_io_output[7:0]), //i
+    .io_output   (datapath_muxRegArray_0_0_io_output[7:0]), //o
+    .io_selH     (selH                                   ), //i
+    .io_shiftEnb (shiftEnb                               ), //i
+    .clk         (clk                                    ), //i
+    .resetn      (resetn                                 )  //i
   );
   muxReg datapath_muxRegArray_0_1 (
-    .io_inputH   (datapath_muxRegArray_0_0_io_output[31:0]), //i
-    .io_inputV   (datapath_muxRegArray_1_1_io_output[31:0]), //i
-    .io_output   (datapath_muxRegArray_0_1_io_output[31:0]), //o
-    .io_selH     (selH                                    ), //i
-    .io_shiftEnb (shiftEnb                                ), //i
-    .clk         (clk                                     ), //i
-    .resetn      (resetn                                  )  //i
+    .io_inputH   (datapath_muxRegArray_0_0_io_output[7:0]), //i
+    .io_inputV   (datapath_muxRegArray_1_1_io_output[7:0]), //i
+    .io_output   (datapath_muxRegArray_0_1_io_output[7:0]), //o
+    .io_selH     (selH                                   ), //i
+    .io_shiftEnb (shiftEnb                               ), //i
+    .clk         (clk                                    ), //i
+    .resetn      (resetn                                 )  //i
   );
   muxReg datapath_muxRegArray_0_2 (
-    .io_inputH   (datapath_muxRegArray_0_1_io_output[31:0]), //i
-    .io_inputV   (datapath_muxRegArray_1_2_io_output[31:0]), //i
-    .io_output   (datapath_muxRegArray_0_2_io_output[31:0]), //o
-    .io_selH     (selH                                    ), //i
-    .io_shiftEnb (shiftEnb                                ), //i
-    .clk         (clk                                     ), //i
-    .resetn      (resetn                                  )  //i
+    .io_inputH   (datapath_muxRegArray_0_1_io_output[7:0]), //i
+    .io_inputV   (datapath_muxRegArray_1_2_io_output[7:0]), //i
+    .io_output   (datapath_muxRegArray_0_2_io_output[7:0]), //o
+    .io_selH     (selH                                   ), //i
+    .io_shiftEnb (shiftEnb                               ), //i
+    .clk         (clk                                    ), //i
+    .resetn      (resetn                                 )  //i
   );
   muxReg datapath_muxRegArray_0_3 (
-    .io_inputH   (datapath_muxRegArray_0_2_io_output[31:0]), //i
-    .io_inputV   (datapath_muxRegArray_1_3_io_output[31:0]), //i
-    .io_output   (datapath_muxRegArray_0_3_io_output[31:0]), //o
-    .io_selH     (selH                                    ), //i
-    .io_shiftEnb (shiftEnb                                ), //i
-    .clk         (clk                                     ), //i
-    .resetn      (resetn                                  )  //i
+    .io_inputH   (datapath_muxRegArray_0_2_io_output[7:0]), //i
+    .io_inputV   (datapath_muxRegArray_1_3_io_output[7:0]), //i
+    .io_output   (datapath_muxRegArray_0_3_io_output[7:0]), //o
+    .io_selH     (selH                                   ), //i
+    .io_shiftEnb (shiftEnb                               ), //i
+    .clk         (clk                                    ), //i
+    .resetn      (resetn                                 )  //i
   );
   muxReg datapath_muxRegArray_0_4 (
-    .io_inputH   (datapath_muxRegArray_0_3_io_output[31:0]), //i
-    .io_inputV   (datapath_muxRegArray_1_4_io_output[31:0]), //i
-    .io_output   (datapath_muxRegArray_0_4_io_output[31:0]), //o
-    .io_selH     (selH                                    ), //i
-    .io_shiftEnb (shiftEnb                                ), //i
-    .clk         (clk                                     ), //i
-    .resetn      (resetn                                  )  //i
+    .io_inputH   (datapath_muxRegArray_0_3_io_output[7:0]), //i
+    .io_inputV   (datapath_muxRegArray_1_4_io_output[7:0]), //i
+    .io_output   (datapath_muxRegArray_0_4_io_output[7:0]), //o
+    .io_selH     (selH                                   ), //i
+    .io_shiftEnb (shiftEnb                               ), //i
+    .clk         (clk                                    ), //i
+    .resetn      (resetn                                 )  //i
   );
   muxReg datapath_muxRegArray_0_5 (
-    .io_inputH   (datapath_muxRegArray_0_4_io_output[31:0]), //i
-    .io_inputV   (datapath_muxRegArray_1_5_io_output[31:0]), //i
-    .io_output   (datapath_muxRegArray_0_5_io_output[31:0]), //o
-    .io_selH     (selH                                    ), //i
-    .io_shiftEnb (shiftEnb                                ), //i
-    .clk         (clk                                     ), //i
-    .resetn      (resetn                                  )  //i
+    .io_inputH   (datapath_muxRegArray_0_4_io_output[7:0]), //i
+    .io_inputV   (datapath_muxRegArray_1_5_io_output[7:0]), //i
+    .io_output   (datapath_muxRegArray_0_5_io_output[7:0]), //o
+    .io_selH     (selH                                   ), //i
+    .io_shiftEnb (shiftEnb                               ), //i
+    .clk         (clk                                    ), //i
+    .resetn      (resetn                                 )  //i
   );
   muxReg datapath_muxRegArray_0_6 (
-    .io_inputH   (datapath_muxRegArray_0_5_io_output[31:0]), //i
-    .io_inputV   (datapath_muxRegArray_1_6_io_output[31:0]), //i
-    .io_output   (datapath_muxRegArray_0_6_io_output[31:0]), //o
-    .io_selH     (selH                                    ), //i
-    .io_shiftEnb (shiftEnb                                ), //i
-    .clk         (clk                                     ), //i
-    .resetn      (resetn                                  )  //i
+    .io_inputH   (datapath_muxRegArray_0_5_io_output[7:0]), //i
+    .io_inputV   (datapath_muxRegArray_1_6_io_output[7:0]), //i
+    .io_output   (datapath_muxRegArray_0_6_io_output[7:0]), //o
+    .io_selH     (selH                                   ), //i
+    .io_shiftEnb (shiftEnb                               ), //i
+    .clk         (clk                                    ), //i
+    .resetn      (resetn                                 )  //i
   );
   muxReg datapath_muxRegArray_0_7 (
-    .io_inputH   (datapath_muxRegArray_0_6_io_output[31:0]), //i
-    .io_inputV   (datapath_muxRegArray_1_7_io_output[31:0]), //i
-    .io_output   (datapath_muxRegArray_0_7_io_output[31:0]), //o
-    .io_selH     (selH                                    ), //i
-    .io_shiftEnb (shiftEnb                                ), //i
-    .clk         (clk                                     ), //i
-    .resetn      (resetn                                  )  //i
+    .io_inputH   (datapath_muxRegArray_0_6_io_output[7:0]), //i
+    .io_inputV   (datapath_muxRegArray_1_7_io_output[7:0]), //i
+    .io_output   (datapath_muxRegArray_0_7_io_output[7:0]), //o
+    .io_selH     (selH                                   ), //i
+    .io_shiftEnb (shiftEnb                               ), //i
+    .clk         (clk                                    ), //i
+    .resetn      (resetn                                 )  //i
   );
   muxReg datapath_muxRegArray_1_0 (
-    .io_inputH   (datapath_muxRegArray_1_0_io_inputH[31:0]), //i
-    .io_inputV   (datapath_muxRegArray_2_0_io_output[31:0]), //i
-    .io_output   (datapath_muxRegArray_1_0_io_output[31:0]), //o
-    .io_selH     (selH                                    ), //i
-    .io_shiftEnb (shiftEnb                                ), //i
-    .clk         (clk                                     ), //i
-    .resetn      (resetn                                  )  //i
+    .io_inputH   (datapath_muxRegArray_1_0_io_inputH[7:0]), //i
+    .io_inputV   (datapath_muxRegArray_2_0_io_output[7:0]), //i
+    .io_output   (datapath_muxRegArray_1_0_io_output[7:0]), //o
+    .io_selH     (selH                                   ), //i
+    .io_shiftEnb (shiftEnb                               ), //i
+    .clk         (clk                                    ), //i
+    .resetn      (resetn                                 )  //i
   );
   muxReg datapath_muxRegArray_1_1 (
-    .io_inputH   (datapath_muxRegArray_1_0_io_output[31:0]), //i
-    .io_inputV   (datapath_muxRegArray_2_1_io_output[31:0]), //i
-    .io_output   (datapath_muxRegArray_1_1_io_output[31:0]), //o
-    .io_selH     (selH                                    ), //i
-    .io_shiftEnb (shiftEnb                                ), //i
-    .clk         (clk                                     ), //i
-    .resetn      (resetn                                  )  //i
+    .io_inputH   (datapath_muxRegArray_1_0_io_output[7:0]), //i
+    .io_inputV   (datapath_muxRegArray_2_1_io_output[7:0]), //i
+    .io_output   (datapath_muxRegArray_1_1_io_output[7:0]), //o
+    .io_selH     (selH                                   ), //i
+    .io_shiftEnb (shiftEnb                               ), //i
+    .clk         (clk                                    ), //i
+    .resetn      (resetn                                 )  //i
   );
   muxReg datapath_muxRegArray_1_2 (
-    .io_inputH   (datapath_muxRegArray_1_1_io_output[31:0]), //i
-    .io_inputV   (datapath_muxRegArray_2_2_io_output[31:0]), //i
-    .io_output   (datapath_muxRegArray_1_2_io_output[31:0]), //o
-    .io_selH     (selH                                    ), //i
-    .io_shiftEnb (shiftEnb                                ), //i
-    .clk         (clk                                     ), //i
-    .resetn      (resetn                                  )  //i
+    .io_inputH   (datapath_muxRegArray_1_1_io_output[7:0]), //i
+    .io_inputV   (datapath_muxRegArray_2_2_io_output[7:0]), //i
+    .io_output   (datapath_muxRegArray_1_2_io_output[7:0]), //o
+    .io_selH     (selH                                   ), //i
+    .io_shiftEnb (shiftEnb                               ), //i
+    .clk         (clk                                    ), //i
+    .resetn      (resetn                                 )  //i
   );
   muxReg datapath_muxRegArray_1_3 (
-    .io_inputH   (datapath_muxRegArray_1_2_io_output[31:0]), //i
-    .io_inputV   (datapath_muxRegArray_2_3_io_output[31:0]), //i
-    .io_output   (datapath_muxRegArray_1_3_io_output[31:0]), //o
-    .io_selH     (selH                                    ), //i
-    .io_shiftEnb (shiftEnb                                ), //i
-    .clk         (clk                                     ), //i
-    .resetn      (resetn                                  )  //i
+    .io_inputH   (datapath_muxRegArray_1_2_io_output[7:0]), //i
+    .io_inputV   (datapath_muxRegArray_2_3_io_output[7:0]), //i
+    .io_output   (datapath_muxRegArray_1_3_io_output[7:0]), //o
+    .io_selH     (selH                                   ), //i
+    .io_shiftEnb (shiftEnb                               ), //i
+    .clk         (clk                                    ), //i
+    .resetn      (resetn                                 )  //i
   );
   muxReg datapath_muxRegArray_1_4 (
-    .io_inputH   (datapath_muxRegArray_1_3_io_output[31:0]), //i
-    .io_inputV   (datapath_muxRegArray_2_4_io_output[31:0]), //i
-    .io_output   (datapath_muxRegArray_1_4_io_output[31:0]), //o
-    .io_selH     (selH                                    ), //i
-    .io_shiftEnb (shiftEnb                                ), //i
-    .clk         (clk                                     ), //i
-    .resetn      (resetn                                  )  //i
+    .io_inputH   (datapath_muxRegArray_1_3_io_output[7:0]), //i
+    .io_inputV   (datapath_muxRegArray_2_4_io_output[7:0]), //i
+    .io_output   (datapath_muxRegArray_1_4_io_output[7:0]), //o
+    .io_selH     (selH                                   ), //i
+    .io_shiftEnb (shiftEnb                               ), //i
+    .clk         (clk                                    ), //i
+    .resetn      (resetn                                 )  //i
   );
   muxReg datapath_muxRegArray_1_5 (
-    .io_inputH   (datapath_muxRegArray_1_4_io_output[31:0]), //i
-    .io_inputV   (datapath_muxRegArray_2_5_io_output[31:0]), //i
-    .io_output   (datapath_muxRegArray_1_5_io_output[31:0]), //o
-    .io_selH     (selH                                    ), //i
-    .io_shiftEnb (shiftEnb                                ), //i
-    .clk         (clk                                     ), //i
-    .resetn      (resetn                                  )  //i
+    .io_inputH   (datapath_muxRegArray_1_4_io_output[7:0]), //i
+    .io_inputV   (datapath_muxRegArray_2_5_io_output[7:0]), //i
+    .io_output   (datapath_muxRegArray_1_5_io_output[7:0]), //o
+    .io_selH     (selH                                   ), //i
+    .io_shiftEnb (shiftEnb                               ), //i
+    .clk         (clk                                    ), //i
+    .resetn      (resetn                                 )  //i
   );
   muxReg datapath_muxRegArray_1_6 (
-    .io_inputH   (datapath_muxRegArray_1_5_io_output[31:0]), //i
-    .io_inputV   (datapath_muxRegArray_2_6_io_output[31:0]), //i
-    .io_output   (datapath_muxRegArray_1_6_io_output[31:0]), //o
-    .io_selH     (selH                                    ), //i
-    .io_shiftEnb (shiftEnb                                ), //i
-    .clk         (clk                                     ), //i
-    .resetn      (resetn                                  )  //i
+    .io_inputH   (datapath_muxRegArray_1_5_io_output[7:0]), //i
+    .io_inputV   (datapath_muxRegArray_2_6_io_output[7:0]), //i
+    .io_output   (datapath_muxRegArray_1_6_io_output[7:0]), //o
+    .io_selH     (selH                                   ), //i
+    .io_shiftEnb (shiftEnb                               ), //i
+    .clk         (clk                                    ), //i
+    .resetn      (resetn                                 )  //i
   );
   muxReg datapath_muxRegArray_1_7 (
-    .io_inputH   (datapath_muxRegArray_1_6_io_output[31:0]), //i
-    .io_inputV   (datapath_muxRegArray_2_7_io_output[31:0]), //i
-    .io_output   (datapath_muxRegArray_1_7_io_output[31:0]), //o
-    .io_selH     (selH                                    ), //i
-    .io_shiftEnb (shiftEnb                                ), //i
-    .clk         (clk                                     ), //i
-    .resetn      (resetn                                  )  //i
+    .io_inputH   (datapath_muxRegArray_1_6_io_output[7:0]), //i
+    .io_inputV   (datapath_muxRegArray_2_7_io_output[7:0]), //i
+    .io_output   (datapath_muxRegArray_1_7_io_output[7:0]), //o
+    .io_selH     (selH                                   ), //i
+    .io_shiftEnb (shiftEnb                               ), //i
+    .clk         (clk                                    ), //i
+    .resetn      (resetn                                 )  //i
   );
   muxReg datapath_muxRegArray_2_0 (
-    .io_inputH   (datapath_muxRegArray_2_0_io_inputH[31:0]), //i
-    .io_inputV   (datapath_muxRegArray_3_0_io_output[31:0]), //i
-    .io_output   (datapath_muxRegArray_2_0_io_output[31:0]), //o
-    .io_selH     (selH                                    ), //i
-    .io_shiftEnb (shiftEnb                                ), //i
-    .clk         (clk                                     ), //i
-    .resetn      (resetn                                  )  //i
+    .io_inputH   (datapath_muxRegArray_2_0_io_inputH[7:0]), //i
+    .io_inputV   (datapath_muxRegArray_3_0_io_output[7:0]), //i
+    .io_output   (datapath_muxRegArray_2_0_io_output[7:0]), //o
+    .io_selH     (selH                                   ), //i
+    .io_shiftEnb (shiftEnb                               ), //i
+    .clk         (clk                                    ), //i
+    .resetn      (resetn                                 )  //i
   );
   muxReg datapath_muxRegArray_2_1 (
-    .io_inputH   (datapath_muxRegArray_2_0_io_output[31:0]), //i
-    .io_inputV   (datapath_muxRegArray_3_1_io_output[31:0]), //i
-    .io_output   (datapath_muxRegArray_2_1_io_output[31:0]), //o
-    .io_selH     (selH                                    ), //i
-    .io_shiftEnb (shiftEnb                                ), //i
-    .clk         (clk                                     ), //i
-    .resetn      (resetn                                  )  //i
+    .io_inputH   (datapath_muxRegArray_2_0_io_output[7:0]), //i
+    .io_inputV   (datapath_muxRegArray_3_1_io_output[7:0]), //i
+    .io_output   (datapath_muxRegArray_2_1_io_output[7:0]), //o
+    .io_selH     (selH                                   ), //i
+    .io_shiftEnb (shiftEnb                               ), //i
+    .clk         (clk                                    ), //i
+    .resetn      (resetn                                 )  //i
   );
   muxReg datapath_muxRegArray_2_2 (
-    .io_inputH   (datapath_muxRegArray_2_1_io_output[31:0]), //i
-    .io_inputV   (datapath_muxRegArray_3_2_io_output[31:0]), //i
-    .io_output   (datapath_muxRegArray_2_2_io_output[31:0]), //o
-    .io_selH     (selH                                    ), //i
-    .io_shiftEnb (shiftEnb                                ), //i
-    .clk         (clk                                     ), //i
-    .resetn      (resetn                                  )  //i
+    .io_inputH   (datapath_muxRegArray_2_1_io_output[7:0]), //i
+    .io_inputV   (datapath_muxRegArray_3_2_io_output[7:0]), //i
+    .io_output   (datapath_muxRegArray_2_2_io_output[7:0]), //o
+    .io_selH     (selH                                   ), //i
+    .io_shiftEnb (shiftEnb                               ), //i
+    .clk         (clk                                    ), //i
+    .resetn      (resetn                                 )  //i
   );
   muxReg datapath_muxRegArray_2_3 (
-    .io_inputH   (datapath_muxRegArray_2_2_io_output[31:0]), //i
-    .io_inputV   (datapath_muxRegArray_3_3_io_output[31:0]), //i
-    .io_output   (datapath_muxRegArray_2_3_io_output[31:0]), //o
-    .io_selH     (selH                                    ), //i
-    .io_shiftEnb (shiftEnb                                ), //i
-    .clk         (clk                                     ), //i
-    .resetn      (resetn                                  )  //i
+    .io_inputH   (datapath_muxRegArray_2_2_io_output[7:0]), //i
+    .io_inputV   (datapath_muxRegArray_3_3_io_output[7:0]), //i
+    .io_output   (datapath_muxRegArray_2_3_io_output[7:0]), //o
+    .io_selH     (selH                                   ), //i
+    .io_shiftEnb (shiftEnb                               ), //i
+    .clk         (clk                                    ), //i
+    .resetn      (resetn                                 )  //i
   );
   muxReg datapath_muxRegArray_2_4 (
-    .io_inputH   (datapath_muxRegArray_2_3_io_output[31:0]), //i
-    .io_inputV   (datapath_muxRegArray_3_4_io_output[31:0]), //i
-    .io_output   (datapath_muxRegArray_2_4_io_output[31:0]), //o
-    .io_selH     (selH                                    ), //i
-    .io_shiftEnb (shiftEnb                                ), //i
-    .clk         (clk                                     ), //i
-    .resetn      (resetn                                  )  //i
+    .io_inputH   (datapath_muxRegArray_2_3_io_output[7:0]), //i
+    .io_inputV   (datapath_muxRegArray_3_4_io_output[7:0]), //i
+    .io_output   (datapath_muxRegArray_2_4_io_output[7:0]), //o
+    .io_selH     (selH                                   ), //i
+    .io_shiftEnb (shiftEnb                               ), //i
+    .clk         (clk                                    ), //i
+    .resetn      (resetn                                 )  //i
   );
   muxReg datapath_muxRegArray_2_5 (
-    .io_inputH   (datapath_muxRegArray_2_4_io_output[31:0]), //i
-    .io_inputV   (datapath_muxRegArray_3_5_io_output[31:0]), //i
-    .io_output   (datapath_muxRegArray_2_5_io_output[31:0]), //o
-    .io_selH     (selH                                    ), //i
-    .io_shiftEnb (shiftEnb                                ), //i
-    .clk         (clk                                     ), //i
-    .resetn      (resetn                                  )  //i
+    .io_inputH   (datapath_muxRegArray_2_4_io_output[7:0]), //i
+    .io_inputV   (datapath_muxRegArray_3_5_io_output[7:0]), //i
+    .io_output   (datapath_muxRegArray_2_5_io_output[7:0]), //o
+    .io_selH     (selH                                   ), //i
+    .io_shiftEnb (shiftEnb                               ), //i
+    .clk         (clk                                    ), //i
+    .resetn      (resetn                                 )  //i
   );
   muxReg datapath_muxRegArray_2_6 (
-    .io_inputH   (datapath_muxRegArray_2_5_io_output[31:0]), //i
-    .io_inputV   (datapath_muxRegArray_3_6_io_output[31:0]), //i
-    .io_output   (datapath_muxRegArray_2_6_io_output[31:0]), //o
-    .io_selH     (selH                                    ), //i
-    .io_shiftEnb (shiftEnb                                ), //i
-    .clk         (clk                                     ), //i
-    .resetn      (resetn                                  )  //i
+    .io_inputH   (datapath_muxRegArray_2_5_io_output[7:0]), //i
+    .io_inputV   (datapath_muxRegArray_3_6_io_output[7:0]), //i
+    .io_output   (datapath_muxRegArray_2_6_io_output[7:0]), //o
+    .io_selH     (selH                                   ), //i
+    .io_shiftEnb (shiftEnb                               ), //i
+    .clk         (clk                                    ), //i
+    .resetn      (resetn                                 )  //i
   );
   muxReg datapath_muxRegArray_2_7 (
-    .io_inputH   (datapath_muxRegArray_2_6_io_output[31:0]), //i
-    .io_inputV   (datapath_muxRegArray_3_7_io_output[31:0]), //i
-    .io_output   (datapath_muxRegArray_2_7_io_output[31:0]), //o
-    .io_selH     (selH                                    ), //i
-    .io_shiftEnb (shiftEnb                                ), //i
-    .clk         (clk                                     ), //i
-    .resetn      (resetn                                  )  //i
+    .io_inputH   (datapath_muxRegArray_2_6_io_output[7:0]), //i
+    .io_inputV   (datapath_muxRegArray_3_7_io_output[7:0]), //i
+    .io_output   (datapath_muxRegArray_2_7_io_output[7:0]), //o
+    .io_selH     (selH                                   ), //i
+    .io_shiftEnb (shiftEnb                               ), //i
+    .clk         (clk                                    ), //i
+    .resetn      (resetn                                 )  //i
   );
   muxReg datapath_muxRegArray_3_0 (
-    .io_inputH   (datapath_muxRegArray_3_0_io_inputH[31:0]), //i
-    .io_inputV   (datapath_muxRegArray_4_0_io_output[31:0]), //i
-    .io_output   (datapath_muxRegArray_3_0_io_output[31:0]), //o
-    .io_selH     (selH                                    ), //i
-    .io_shiftEnb (shiftEnb                                ), //i
-    .clk         (clk                                     ), //i
-    .resetn      (resetn                                  )  //i
+    .io_inputH   (datapath_muxRegArray_3_0_io_inputH[7:0]), //i
+    .io_inputV   (datapath_muxRegArray_4_0_io_output[7:0]), //i
+    .io_output   (datapath_muxRegArray_3_0_io_output[7:0]), //o
+    .io_selH     (selH                                   ), //i
+    .io_shiftEnb (shiftEnb                               ), //i
+    .clk         (clk                                    ), //i
+    .resetn      (resetn                                 )  //i
   );
   muxReg datapath_muxRegArray_3_1 (
-    .io_inputH   (datapath_muxRegArray_3_0_io_output[31:0]), //i
-    .io_inputV   (datapath_muxRegArray_4_1_io_output[31:0]), //i
-    .io_output   (datapath_muxRegArray_3_1_io_output[31:0]), //o
-    .io_selH     (selH                                    ), //i
-    .io_shiftEnb (shiftEnb                                ), //i
-    .clk         (clk                                     ), //i
-    .resetn      (resetn                                  )  //i
+    .io_inputH   (datapath_muxRegArray_3_0_io_output[7:0]), //i
+    .io_inputV   (datapath_muxRegArray_4_1_io_output[7:0]), //i
+    .io_output   (datapath_muxRegArray_3_1_io_output[7:0]), //o
+    .io_selH     (selH                                   ), //i
+    .io_shiftEnb (shiftEnb                               ), //i
+    .clk         (clk                                    ), //i
+    .resetn      (resetn                                 )  //i
   );
   muxReg datapath_muxRegArray_3_2 (
-    .io_inputH   (datapath_muxRegArray_3_1_io_output[31:0]), //i
-    .io_inputV   (datapath_muxRegArray_4_2_io_output[31:0]), //i
-    .io_output   (datapath_muxRegArray_3_2_io_output[31:0]), //o
-    .io_selH     (selH                                    ), //i
-    .io_shiftEnb (shiftEnb                                ), //i
-    .clk         (clk                                     ), //i
-    .resetn      (resetn                                  )  //i
+    .io_inputH   (datapath_muxRegArray_3_1_io_output[7:0]), //i
+    .io_inputV   (datapath_muxRegArray_4_2_io_output[7:0]), //i
+    .io_output   (datapath_muxRegArray_3_2_io_output[7:0]), //o
+    .io_selH     (selH                                   ), //i
+    .io_shiftEnb (shiftEnb                               ), //i
+    .clk         (clk                                    ), //i
+    .resetn      (resetn                                 )  //i
   );
   muxReg datapath_muxRegArray_3_3 (
-    .io_inputH   (datapath_muxRegArray_3_2_io_output[31:0]), //i
-    .io_inputV   (datapath_muxRegArray_4_3_io_output[31:0]), //i
-    .io_output   (datapath_muxRegArray_3_3_io_output[31:0]), //o
-    .io_selH     (selH                                    ), //i
-    .io_shiftEnb (shiftEnb                                ), //i
-    .clk         (clk                                     ), //i
-    .resetn      (resetn                                  )  //i
+    .io_inputH   (datapath_muxRegArray_3_2_io_output[7:0]), //i
+    .io_inputV   (datapath_muxRegArray_4_3_io_output[7:0]), //i
+    .io_output   (datapath_muxRegArray_3_3_io_output[7:0]), //o
+    .io_selH     (selH                                   ), //i
+    .io_shiftEnb (shiftEnb                               ), //i
+    .clk         (clk                                    ), //i
+    .resetn      (resetn                                 )  //i
   );
   muxReg datapath_muxRegArray_3_4 (
-    .io_inputH   (datapath_muxRegArray_3_3_io_output[31:0]), //i
-    .io_inputV   (datapath_muxRegArray_4_4_io_output[31:0]), //i
-    .io_output   (datapath_muxRegArray_3_4_io_output[31:0]), //o
-    .io_selH     (selH                                    ), //i
-    .io_shiftEnb (shiftEnb                                ), //i
-    .clk         (clk                                     ), //i
-    .resetn      (resetn                                  )  //i
+    .io_inputH   (datapath_muxRegArray_3_3_io_output[7:0]), //i
+    .io_inputV   (datapath_muxRegArray_4_4_io_output[7:0]), //i
+    .io_output   (datapath_muxRegArray_3_4_io_output[7:0]), //o
+    .io_selH     (selH                                   ), //i
+    .io_shiftEnb (shiftEnb                               ), //i
+    .clk         (clk                                    ), //i
+    .resetn      (resetn                                 )  //i
   );
   muxReg datapath_muxRegArray_3_5 (
-    .io_inputH   (datapath_muxRegArray_3_4_io_output[31:0]), //i
-    .io_inputV   (datapath_muxRegArray_4_5_io_output[31:0]), //i
-    .io_output   (datapath_muxRegArray_3_5_io_output[31:0]), //o
-    .io_selH     (selH                                    ), //i
-    .io_shiftEnb (shiftEnb                                ), //i
-    .clk         (clk                                     ), //i
-    .resetn      (resetn                                  )  //i
+    .io_inputH   (datapath_muxRegArray_3_4_io_output[7:0]), //i
+    .io_inputV   (datapath_muxRegArray_4_5_io_output[7:0]), //i
+    .io_output   (datapath_muxRegArray_3_5_io_output[7:0]), //o
+    .io_selH     (selH                                   ), //i
+    .io_shiftEnb (shiftEnb                               ), //i
+    .clk         (clk                                    ), //i
+    .resetn      (resetn                                 )  //i
   );
   muxReg datapath_muxRegArray_3_6 (
-    .io_inputH   (datapath_muxRegArray_3_5_io_output[31:0]), //i
-    .io_inputV   (datapath_muxRegArray_4_6_io_output[31:0]), //i
-    .io_output   (datapath_muxRegArray_3_6_io_output[31:0]), //o
-    .io_selH     (selH                                    ), //i
-    .io_shiftEnb (shiftEnb                                ), //i
-    .clk         (clk                                     ), //i
-    .resetn      (resetn                                  )  //i
+    .io_inputH   (datapath_muxRegArray_3_5_io_output[7:0]), //i
+    .io_inputV   (datapath_muxRegArray_4_6_io_output[7:0]), //i
+    .io_output   (datapath_muxRegArray_3_6_io_output[7:0]), //o
+    .io_selH     (selH                                   ), //i
+    .io_shiftEnb (shiftEnb                               ), //i
+    .clk         (clk                                    ), //i
+    .resetn      (resetn                                 )  //i
   );
   muxReg datapath_muxRegArray_3_7 (
-    .io_inputH   (datapath_muxRegArray_3_6_io_output[31:0]), //i
-    .io_inputV   (datapath_muxRegArray_4_7_io_output[31:0]), //i
-    .io_output   (datapath_muxRegArray_3_7_io_output[31:0]), //o
-    .io_selH     (selH                                    ), //i
-    .io_shiftEnb (shiftEnb                                ), //i
-    .clk         (clk                                     ), //i
-    .resetn      (resetn                                  )  //i
+    .io_inputH   (datapath_muxRegArray_3_6_io_output[7:0]), //i
+    .io_inputV   (datapath_muxRegArray_4_7_io_output[7:0]), //i
+    .io_output   (datapath_muxRegArray_3_7_io_output[7:0]), //o
+    .io_selH     (selH                                   ), //i
+    .io_shiftEnb (shiftEnb                               ), //i
+    .clk         (clk                                    ), //i
+    .resetn      (resetn                                 )  //i
   );
   muxReg datapath_muxRegArray_4_0 (
-    .io_inputH   (datapath_muxRegArray_4_0_io_inputH[31:0]), //i
-    .io_inputV   (datapath_muxRegArray_5_0_io_output[31:0]), //i
-    .io_output   (datapath_muxRegArray_4_0_io_output[31:0]), //o
-    .io_selH     (selH                                    ), //i
-    .io_shiftEnb (shiftEnb                                ), //i
-    .clk         (clk                                     ), //i
-    .resetn      (resetn                                  )  //i
+    .io_inputH   (datapath_muxRegArray_4_0_io_inputH[7:0]), //i
+    .io_inputV   (datapath_muxRegArray_5_0_io_output[7:0]), //i
+    .io_output   (datapath_muxRegArray_4_0_io_output[7:0]), //o
+    .io_selH     (selH                                   ), //i
+    .io_shiftEnb (shiftEnb                               ), //i
+    .clk         (clk                                    ), //i
+    .resetn      (resetn                                 )  //i
   );
   muxReg datapath_muxRegArray_4_1 (
-    .io_inputH   (datapath_muxRegArray_4_0_io_output[31:0]), //i
-    .io_inputV   (datapath_muxRegArray_5_1_io_output[31:0]), //i
-    .io_output   (datapath_muxRegArray_4_1_io_output[31:0]), //o
-    .io_selH     (selH                                    ), //i
-    .io_shiftEnb (shiftEnb                                ), //i
-    .clk         (clk                                     ), //i
-    .resetn      (resetn                                  )  //i
+    .io_inputH   (datapath_muxRegArray_4_0_io_output[7:0]), //i
+    .io_inputV   (datapath_muxRegArray_5_1_io_output[7:0]), //i
+    .io_output   (datapath_muxRegArray_4_1_io_output[7:0]), //o
+    .io_selH     (selH                                   ), //i
+    .io_shiftEnb (shiftEnb                               ), //i
+    .clk         (clk                                    ), //i
+    .resetn      (resetn                                 )  //i
   );
   muxReg datapath_muxRegArray_4_2 (
-    .io_inputH   (datapath_muxRegArray_4_1_io_output[31:0]), //i
-    .io_inputV   (datapath_muxRegArray_5_2_io_output[31:0]), //i
-    .io_output   (datapath_muxRegArray_4_2_io_output[31:0]), //o
-    .io_selH     (selH                                    ), //i
-    .io_shiftEnb (shiftEnb                                ), //i
-    .clk         (clk                                     ), //i
-    .resetn      (resetn                                  )  //i
+    .io_inputH   (datapath_muxRegArray_4_1_io_output[7:0]), //i
+    .io_inputV   (datapath_muxRegArray_5_2_io_output[7:0]), //i
+    .io_output   (datapath_muxRegArray_4_2_io_output[7:0]), //o
+    .io_selH     (selH                                   ), //i
+    .io_shiftEnb (shiftEnb                               ), //i
+    .clk         (clk                                    ), //i
+    .resetn      (resetn                                 )  //i
   );
   muxReg datapath_muxRegArray_4_3 (
-    .io_inputH   (datapath_muxRegArray_4_2_io_output[31:0]), //i
-    .io_inputV   (datapath_muxRegArray_5_3_io_output[31:0]), //i
-    .io_output   (datapath_muxRegArray_4_3_io_output[31:0]), //o
-    .io_selH     (selH                                    ), //i
-    .io_shiftEnb (shiftEnb                                ), //i
-    .clk         (clk                                     ), //i
-    .resetn      (resetn                                  )  //i
+    .io_inputH   (datapath_muxRegArray_4_2_io_output[7:0]), //i
+    .io_inputV   (datapath_muxRegArray_5_3_io_output[7:0]), //i
+    .io_output   (datapath_muxRegArray_4_3_io_output[7:0]), //o
+    .io_selH     (selH                                   ), //i
+    .io_shiftEnb (shiftEnb                               ), //i
+    .clk         (clk                                    ), //i
+    .resetn      (resetn                                 )  //i
   );
   muxReg datapath_muxRegArray_4_4 (
-    .io_inputH   (datapath_muxRegArray_4_3_io_output[31:0]), //i
-    .io_inputV   (datapath_muxRegArray_5_4_io_output[31:0]), //i
-    .io_output   (datapath_muxRegArray_4_4_io_output[31:0]), //o
-    .io_selH     (selH                                    ), //i
-    .io_shiftEnb (shiftEnb                                ), //i
-    .clk         (clk                                     ), //i
-    .resetn      (resetn                                  )  //i
+    .io_inputH   (datapath_muxRegArray_4_3_io_output[7:0]), //i
+    .io_inputV   (datapath_muxRegArray_5_4_io_output[7:0]), //i
+    .io_output   (datapath_muxRegArray_4_4_io_output[7:0]), //o
+    .io_selH     (selH                                   ), //i
+    .io_shiftEnb (shiftEnb                               ), //i
+    .clk         (clk                                    ), //i
+    .resetn      (resetn                                 )  //i
   );
   muxReg datapath_muxRegArray_4_5 (
-    .io_inputH   (datapath_muxRegArray_4_4_io_output[31:0]), //i
-    .io_inputV   (datapath_muxRegArray_5_5_io_output[31:0]), //i
-    .io_output   (datapath_muxRegArray_4_5_io_output[31:0]), //o
-    .io_selH     (selH                                    ), //i
-    .io_shiftEnb (shiftEnb                                ), //i
-    .clk         (clk                                     ), //i
-    .resetn      (resetn                                  )  //i
+    .io_inputH   (datapath_muxRegArray_4_4_io_output[7:0]), //i
+    .io_inputV   (datapath_muxRegArray_5_5_io_output[7:0]), //i
+    .io_output   (datapath_muxRegArray_4_5_io_output[7:0]), //o
+    .io_selH     (selH                                   ), //i
+    .io_shiftEnb (shiftEnb                               ), //i
+    .clk         (clk                                    ), //i
+    .resetn      (resetn                                 )  //i
   );
   muxReg datapath_muxRegArray_4_6 (
-    .io_inputH   (datapath_muxRegArray_4_5_io_output[31:0]), //i
-    .io_inputV   (datapath_muxRegArray_5_6_io_output[31:0]), //i
-    .io_output   (datapath_muxRegArray_4_6_io_output[31:0]), //o
-    .io_selH     (selH                                    ), //i
-    .io_shiftEnb (shiftEnb                                ), //i
-    .clk         (clk                                     ), //i
-    .resetn      (resetn                                  )  //i
+    .io_inputH   (datapath_muxRegArray_4_5_io_output[7:0]), //i
+    .io_inputV   (datapath_muxRegArray_5_6_io_output[7:0]), //i
+    .io_output   (datapath_muxRegArray_4_6_io_output[7:0]), //o
+    .io_selH     (selH                                   ), //i
+    .io_shiftEnb (shiftEnb                               ), //i
+    .clk         (clk                                    ), //i
+    .resetn      (resetn                                 )  //i
   );
   muxReg datapath_muxRegArray_4_7 (
-    .io_inputH   (datapath_muxRegArray_4_6_io_output[31:0]), //i
-    .io_inputV   (datapath_muxRegArray_5_7_io_output[31:0]), //i
-    .io_output   (datapath_muxRegArray_4_7_io_output[31:0]), //o
-    .io_selH     (selH                                    ), //i
-    .io_shiftEnb (shiftEnb                                ), //i
-    .clk         (clk                                     ), //i
-    .resetn      (resetn                                  )  //i
+    .io_inputH   (datapath_muxRegArray_4_6_io_output[7:0]), //i
+    .io_inputV   (datapath_muxRegArray_5_7_io_output[7:0]), //i
+    .io_output   (datapath_muxRegArray_4_7_io_output[7:0]), //o
+    .io_selH     (selH                                   ), //i
+    .io_shiftEnb (shiftEnb                               ), //i
+    .clk         (clk                                    ), //i
+    .resetn      (resetn                                 )  //i
   );
   muxReg datapath_muxRegArray_5_0 (
-    .io_inputH   (datapath_muxRegArray_5_0_io_inputH[31:0]), //i
-    .io_inputV   (datapath_muxRegArray_6_0_io_output[31:0]), //i
-    .io_output   (datapath_muxRegArray_5_0_io_output[31:0]), //o
-    .io_selH     (selH                                    ), //i
-    .io_shiftEnb (shiftEnb                                ), //i
-    .clk         (clk                                     ), //i
-    .resetn      (resetn                                  )  //i
+    .io_inputH   (datapath_muxRegArray_5_0_io_inputH[7:0]), //i
+    .io_inputV   (datapath_muxRegArray_6_0_io_output[7:0]), //i
+    .io_output   (datapath_muxRegArray_5_0_io_output[7:0]), //o
+    .io_selH     (selH                                   ), //i
+    .io_shiftEnb (shiftEnb                               ), //i
+    .clk         (clk                                    ), //i
+    .resetn      (resetn                                 )  //i
   );
   muxReg datapath_muxRegArray_5_1 (
-    .io_inputH   (datapath_muxRegArray_5_0_io_output[31:0]), //i
-    .io_inputV   (datapath_muxRegArray_6_1_io_output[31:0]), //i
-    .io_output   (datapath_muxRegArray_5_1_io_output[31:0]), //o
-    .io_selH     (selH                                    ), //i
-    .io_shiftEnb (shiftEnb                                ), //i
-    .clk         (clk                                     ), //i
-    .resetn      (resetn                                  )  //i
+    .io_inputH   (datapath_muxRegArray_5_0_io_output[7:0]), //i
+    .io_inputV   (datapath_muxRegArray_6_1_io_output[7:0]), //i
+    .io_output   (datapath_muxRegArray_5_1_io_output[7:0]), //o
+    .io_selH     (selH                                   ), //i
+    .io_shiftEnb (shiftEnb                               ), //i
+    .clk         (clk                                    ), //i
+    .resetn      (resetn                                 )  //i
   );
   muxReg datapath_muxRegArray_5_2 (
-    .io_inputH   (datapath_muxRegArray_5_1_io_output[31:0]), //i
-    .io_inputV   (datapath_muxRegArray_6_2_io_output[31:0]), //i
-    .io_output   (datapath_muxRegArray_5_2_io_output[31:0]), //o
-    .io_selH     (selH                                    ), //i
-    .io_shiftEnb (shiftEnb                                ), //i
-    .clk         (clk                                     ), //i
-    .resetn      (resetn                                  )  //i
+    .io_inputH   (datapath_muxRegArray_5_1_io_output[7:0]), //i
+    .io_inputV   (datapath_muxRegArray_6_2_io_output[7:0]), //i
+    .io_output   (datapath_muxRegArray_5_2_io_output[7:0]), //o
+    .io_selH     (selH                                   ), //i
+    .io_shiftEnb (shiftEnb                               ), //i
+    .clk         (clk                                    ), //i
+    .resetn      (resetn                                 )  //i
   );
   muxReg datapath_muxRegArray_5_3 (
-    .io_inputH   (datapath_muxRegArray_5_2_io_output[31:0]), //i
-    .io_inputV   (datapath_muxRegArray_6_3_io_output[31:0]), //i
-    .io_output   (datapath_muxRegArray_5_3_io_output[31:0]), //o
-    .io_selH     (selH                                    ), //i
-    .io_shiftEnb (shiftEnb                                ), //i
-    .clk         (clk                                     ), //i
-    .resetn      (resetn                                  )  //i
+    .io_inputH   (datapath_muxRegArray_5_2_io_output[7:0]), //i
+    .io_inputV   (datapath_muxRegArray_6_3_io_output[7:0]), //i
+    .io_output   (datapath_muxRegArray_5_3_io_output[7:0]), //o
+    .io_selH     (selH                                   ), //i
+    .io_shiftEnb (shiftEnb                               ), //i
+    .clk         (clk                                    ), //i
+    .resetn      (resetn                                 )  //i
   );
   muxReg datapath_muxRegArray_5_4 (
-    .io_inputH   (datapath_muxRegArray_5_3_io_output[31:0]), //i
-    .io_inputV   (datapath_muxRegArray_6_4_io_output[31:0]), //i
-    .io_output   (datapath_muxRegArray_5_4_io_output[31:0]), //o
-    .io_selH     (selH                                    ), //i
-    .io_shiftEnb (shiftEnb                                ), //i
-    .clk         (clk                                     ), //i
-    .resetn      (resetn                                  )  //i
+    .io_inputH   (datapath_muxRegArray_5_3_io_output[7:0]), //i
+    .io_inputV   (datapath_muxRegArray_6_4_io_output[7:0]), //i
+    .io_output   (datapath_muxRegArray_5_4_io_output[7:0]), //o
+    .io_selH     (selH                                   ), //i
+    .io_shiftEnb (shiftEnb                               ), //i
+    .clk         (clk                                    ), //i
+    .resetn      (resetn                                 )  //i
   );
   muxReg datapath_muxRegArray_5_5 (
-    .io_inputH   (datapath_muxRegArray_5_4_io_output[31:0]), //i
-    .io_inputV   (datapath_muxRegArray_6_5_io_output[31:0]), //i
-    .io_output   (datapath_muxRegArray_5_5_io_output[31:0]), //o
-    .io_selH     (selH                                    ), //i
-    .io_shiftEnb (shiftEnb                                ), //i
-    .clk         (clk                                     ), //i
-    .resetn      (resetn                                  )  //i
+    .io_inputH   (datapath_muxRegArray_5_4_io_output[7:0]), //i
+    .io_inputV   (datapath_muxRegArray_6_5_io_output[7:0]), //i
+    .io_output   (datapath_muxRegArray_5_5_io_output[7:0]), //o
+    .io_selH     (selH                                   ), //i
+    .io_shiftEnb (shiftEnb                               ), //i
+    .clk         (clk                                    ), //i
+    .resetn      (resetn                                 )  //i
   );
   muxReg datapath_muxRegArray_5_6 (
-    .io_inputH   (datapath_muxRegArray_5_5_io_output[31:0]), //i
-    .io_inputV   (datapath_muxRegArray_6_6_io_output[31:0]), //i
-    .io_output   (datapath_muxRegArray_5_6_io_output[31:0]), //o
-    .io_selH     (selH                                    ), //i
-    .io_shiftEnb (shiftEnb                                ), //i
-    .clk         (clk                                     ), //i
-    .resetn      (resetn                                  )  //i
+    .io_inputH   (datapath_muxRegArray_5_5_io_output[7:0]), //i
+    .io_inputV   (datapath_muxRegArray_6_6_io_output[7:0]), //i
+    .io_output   (datapath_muxRegArray_5_6_io_output[7:0]), //o
+    .io_selH     (selH                                   ), //i
+    .io_shiftEnb (shiftEnb                               ), //i
+    .clk         (clk                                    ), //i
+    .resetn      (resetn                                 )  //i
   );
   muxReg datapath_muxRegArray_5_7 (
-    .io_inputH   (datapath_muxRegArray_5_6_io_output[31:0]), //i
-    .io_inputV   (datapath_muxRegArray_6_7_io_output[31:0]), //i
-    .io_output   (datapath_muxRegArray_5_7_io_output[31:0]), //o
-    .io_selH     (selH                                    ), //i
-    .io_shiftEnb (shiftEnb                                ), //i
-    .clk         (clk                                     ), //i
-    .resetn      (resetn                                  )  //i
+    .io_inputH   (datapath_muxRegArray_5_6_io_output[7:0]), //i
+    .io_inputV   (datapath_muxRegArray_6_7_io_output[7:0]), //i
+    .io_output   (datapath_muxRegArray_5_7_io_output[7:0]), //o
+    .io_selH     (selH                                   ), //i
+    .io_shiftEnb (shiftEnb                               ), //i
+    .clk         (clk                                    ), //i
+    .resetn      (resetn                                 )  //i
   );
   muxReg datapath_muxRegArray_6_0 (
-    .io_inputH   (datapath_muxRegArray_6_0_io_inputH[31:0]), //i
-    .io_inputV   (datapath_muxRegArray_7_0_io_output[31:0]), //i
-    .io_output   (datapath_muxRegArray_6_0_io_output[31:0]), //o
-    .io_selH     (selH                                    ), //i
-    .io_shiftEnb (shiftEnb                                ), //i
-    .clk         (clk                                     ), //i
-    .resetn      (resetn                                  )  //i
+    .io_inputH   (datapath_muxRegArray_6_0_io_inputH[7:0]), //i
+    .io_inputV   (datapath_muxRegArray_7_0_io_output[7:0]), //i
+    .io_output   (datapath_muxRegArray_6_0_io_output[7:0]), //o
+    .io_selH     (selH                                   ), //i
+    .io_shiftEnb (shiftEnb                               ), //i
+    .clk         (clk                                    ), //i
+    .resetn      (resetn                                 )  //i
   );
   muxReg datapath_muxRegArray_6_1 (
-    .io_inputH   (datapath_muxRegArray_6_0_io_output[31:0]), //i
-    .io_inputV   (datapath_muxRegArray_7_1_io_output[31:0]), //i
-    .io_output   (datapath_muxRegArray_6_1_io_output[31:0]), //o
-    .io_selH     (selH                                    ), //i
-    .io_shiftEnb (shiftEnb                                ), //i
-    .clk         (clk                                     ), //i
-    .resetn      (resetn                                  )  //i
+    .io_inputH   (datapath_muxRegArray_6_0_io_output[7:0]), //i
+    .io_inputV   (datapath_muxRegArray_7_1_io_output[7:0]), //i
+    .io_output   (datapath_muxRegArray_6_1_io_output[7:0]), //o
+    .io_selH     (selH                                   ), //i
+    .io_shiftEnb (shiftEnb                               ), //i
+    .clk         (clk                                    ), //i
+    .resetn      (resetn                                 )  //i
   );
   muxReg datapath_muxRegArray_6_2 (
-    .io_inputH   (datapath_muxRegArray_6_1_io_output[31:0]), //i
-    .io_inputV   (datapath_muxRegArray_7_2_io_output[31:0]), //i
-    .io_output   (datapath_muxRegArray_6_2_io_output[31:0]), //o
-    .io_selH     (selH                                    ), //i
-    .io_shiftEnb (shiftEnb                                ), //i
-    .clk         (clk                                     ), //i
-    .resetn      (resetn                                  )  //i
+    .io_inputH   (datapath_muxRegArray_6_1_io_output[7:0]), //i
+    .io_inputV   (datapath_muxRegArray_7_2_io_output[7:0]), //i
+    .io_output   (datapath_muxRegArray_6_2_io_output[7:0]), //o
+    .io_selH     (selH                                   ), //i
+    .io_shiftEnb (shiftEnb                               ), //i
+    .clk         (clk                                    ), //i
+    .resetn      (resetn                                 )  //i
   );
   muxReg datapath_muxRegArray_6_3 (
-    .io_inputH   (datapath_muxRegArray_6_2_io_output[31:0]), //i
-    .io_inputV   (datapath_muxRegArray_7_3_io_output[31:0]), //i
-    .io_output   (datapath_muxRegArray_6_3_io_output[31:0]), //o
-    .io_selH     (selH                                    ), //i
-    .io_shiftEnb (shiftEnb                                ), //i
-    .clk         (clk                                     ), //i
-    .resetn      (resetn                                  )  //i
+    .io_inputH   (datapath_muxRegArray_6_2_io_output[7:0]), //i
+    .io_inputV   (datapath_muxRegArray_7_3_io_output[7:0]), //i
+    .io_output   (datapath_muxRegArray_6_3_io_output[7:0]), //o
+    .io_selH     (selH                                   ), //i
+    .io_shiftEnb (shiftEnb                               ), //i
+    .clk         (clk                                    ), //i
+    .resetn      (resetn                                 )  //i
   );
   muxReg datapath_muxRegArray_6_4 (
-    .io_inputH   (datapath_muxRegArray_6_3_io_output[31:0]), //i
-    .io_inputV   (datapath_muxRegArray_7_4_io_output[31:0]), //i
-    .io_output   (datapath_muxRegArray_6_4_io_output[31:0]), //o
-    .io_selH     (selH                                    ), //i
-    .io_shiftEnb (shiftEnb                                ), //i
-    .clk         (clk                                     ), //i
-    .resetn      (resetn                                  )  //i
+    .io_inputH   (datapath_muxRegArray_6_3_io_output[7:0]), //i
+    .io_inputV   (datapath_muxRegArray_7_4_io_output[7:0]), //i
+    .io_output   (datapath_muxRegArray_6_4_io_output[7:0]), //o
+    .io_selH     (selH                                   ), //i
+    .io_shiftEnb (shiftEnb                               ), //i
+    .clk         (clk                                    ), //i
+    .resetn      (resetn                                 )  //i
   );
   muxReg datapath_muxRegArray_6_5 (
-    .io_inputH   (datapath_muxRegArray_6_4_io_output[31:0]), //i
-    .io_inputV   (datapath_muxRegArray_7_5_io_output[31:0]), //i
-    .io_output   (datapath_muxRegArray_6_5_io_output[31:0]), //o
-    .io_selH     (selH                                    ), //i
-    .io_shiftEnb (shiftEnb                                ), //i
-    .clk         (clk                                     ), //i
-    .resetn      (resetn                                  )  //i
+    .io_inputH   (datapath_muxRegArray_6_4_io_output[7:0]), //i
+    .io_inputV   (datapath_muxRegArray_7_5_io_output[7:0]), //i
+    .io_output   (datapath_muxRegArray_6_5_io_output[7:0]), //o
+    .io_selH     (selH                                   ), //i
+    .io_shiftEnb (shiftEnb                               ), //i
+    .clk         (clk                                    ), //i
+    .resetn      (resetn                                 )  //i
   );
   muxReg datapath_muxRegArray_6_6 (
-    .io_inputH   (datapath_muxRegArray_6_5_io_output[31:0]), //i
-    .io_inputV   (datapath_muxRegArray_7_6_io_output[31:0]), //i
-    .io_output   (datapath_muxRegArray_6_6_io_output[31:0]), //o
-    .io_selH     (selH                                    ), //i
-    .io_shiftEnb (shiftEnb                                ), //i
-    .clk         (clk                                     ), //i
-    .resetn      (resetn                                  )  //i
+    .io_inputH   (datapath_muxRegArray_6_5_io_output[7:0]), //i
+    .io_inputV   (datapath_muxRegArray_7_6_io_output[7:0]), //i
+    .io_output   (datapath_muxRegArray_6_6_io_output[7:0]), //o
+    .io_selH     (selH                                   ), //i
+    .io_shiftEnb (shiftEnb                               ), //i
+    .clk         (clk                                    ), //i
+    .resetn      (resetn                                 )  //i
   );
   muxReg datapath_muxRegArray_6_7 (
-    .io_inputH   (datapath_muxRegArray_6_6_io_output[31:0]), //i
-    .io_inputV   (datapath_muxRegArray_7_7_io_output[31:0]), //i
-    .io_output   (datapath_muxRegArray_6_7_io_output[31:0]), //o
-    .io_selH     (selH                                    ), //i
-    .io_shiftEnb (shiftEnb                                ), //i
-    .clk         (clk                                     ), //i
-    .resetn      (resetn                                  )  //i
+    .io_inputH   (datapath_muxRegArray_6_6_io_output[7:0]), //i
+    .io_inputV   (datapath_muxRegArray_7_7_io_output[7:0]), //i
+    .io_output   (datapath_muxRegArray_6_7_io_output[7:0]), //o
+    .io_selH     (selH                                   ), //i
+    .io_shiftEnb (shiftEnb                               ), //i
+    .clk         (clk                                    ), //i
+    .resetn      (resetn                                 )  //i
   );
   muxReg datapath_muxRegArray_7_0 (
-    .io_inputH   (datapath_muxRegArray_7_0_io_inputH[31:0]), //i
-    .io_inputV   (32'h0                                   ), //i
-    .io_output   (datapath_muxRegArray_7_0_io_output[31:0]), //o
-    .io_selH     (selH                                    ), //i
-    .io_shiftEnb (shiftEnb                                ), //i
-    .clk         (clk                                     ), //i
-    .resetn      (resetn                                  )  //i
+    .io_inputH   (datapath_muxRegArray_7_0_io_inputH[7:0]), //i
+    .io_inputV   (8'h0                                   ), //i
+    .io_output   (datapath_muxRegArray_7_0_io_output[7:0]), //o
+    .io_selH     (selH                                   ), //i
+    .io_shiftEnb (shiftEnb                               ), //i
+    .clk         (clk                                    ), //i
+    .resetn      (resetn                                 )  //i
   );
   muxReg datapath_muxRegArray_7_1 (
-    .io_inputH   (datapath_muxRegArray_7_0_io_output[31:0]), //i
-    .io_inputV   (32'h0                                   ), //i
-    .io_output   (datapath_muxRegArray_7_1_io_output[31:0]), //o
-    .io_selH     (selH                                    ), //i
-    .io_shiftEnb (shiftEnb                                ), //i
-    .clk         (clk                                     ), //i
-    .resetn      (resetn                                  )  //i
+    .io_inputH   (datapath_muxRegArray_7_0_io_output[7:0]), //i
+    .io_inputV   (8'h0                                   ), //i
+    .io_output   (datapath_muxRegArray_7_1_io_output[7:0]), //o
+    .io_selH     (selH                                   ), //i
+    .io_shiftEnb (shiftEnb                               ), //i
+    .clk         (clk                                    ), //i
+    .resetn      (resetn                                 )  //i
   );
   muxReg datapath_muxRegArray_7_2 (
-    .io_inputH   (datapath_muxRegArray_7_1_io_output[31:0]), //i
-    .io_inputV   (32'h0                                   ), //i
-    .io_output   (datapath_muxRegArray_7_2_io_output[31:0]), //o
-    .io_selH     (selH                                    ), //i
-    .io_shiftEnb (shiftEnb                                ), //i
-    .clk         (clk                                     ), //i
-    .resetn      (resetn                                  )  //i
+    .io_inputH   (datapath_muxRegArray_7_1_io_output[7:0]), //i
+    .io_inputV   (8'h0                                   ), //i
+    .io_output   (datapath_muxRegArray_7_2_io_output[7:0]), //o
+    .io_selH     (selH                                   ), //i
+    .io_shiftEnb (shiftEnb                               ), //i
+    .clk         (clk                                    ), //i
+    .resetn      (resetn                                 )  //i
   );
   muxReg datapath_muxRegArray_7_3 (
-    .io_inputH   (datapath_muxRegArray_7_2_io_output[31:0]), //i
-    .io_inputV   (32'h0                                   ), //i
-    .io_output   (datapath_muxRegArray_7_3_io_output[31:0]), //o
-    .io_selH     (selH                                    ), //i
-    .io_shiftEnb (shiftEnb                                ), //i
-    .clk         (clk                                     ), //i
-    .resetn      (resetn                                  )  //i
+    .io_inputH   (datapath_muxRegArray_7_2_io_output[7:0]), //i
+    .io_inputV   (8'h0                                   ), //i
+    .io_output   (datapath_muxRegArray_7_3_io_output[7:0]), //o
+    .io_selH     (selH                                   ), //i
+    .io_shiftEnb (shiftEnb                               ), //i
+    .clk         (clk                                    ), //i
+    .resetn      (resetn                                 )  //i
   );
   muxReg datapath_muxRegArray_7_4 (
-    .io_inputH   (datapath_muxRegArray_7_3_io_output[31:0]), //i
-    .io_inputV   (32'h0                                   ), //i
-    .io_output   (datapath_muxRegArray_7_4_io_output[31:0]), //o
-    .io_selH     (selH                                    ), //i
-    .io_shiftEnb (shiftEnb                                ), //i
-    .clk         (clk                                     ), //i
-    .resetn      (resetn                                  )  //i
+    .io_inputH   (datapath_muxRegArray_7_3_io_output[7:0]), //i
+    .io_inputV   (8'h0                                   ), //i
+    .io_output   (datapath_muxRegArray_7_4_io_output[7:0]), //o
+    .io_selH     (selH                                   ), //i
+    .io_shiftEnb (shiftEnb                               ), //i
+    .clk         (clk                                    ), //i
+    .resetn      (resetn                                 )  //i
   );
   muxReg datapath_muxRegArray_7_5 (
-    .io_inputH   (datapath_muxRegArray_7_4_io_output[31:0]), //i
-    .io_inputV   (32'h0                                   ), //i
-    .io_output   (datapath_muxRegArray_7_5_io_output[31:0]), //o
-    .io_selH     (selH                                    ), //i
-    .io_shiftEnb (shiftEnb                                ), //i
-    .clk         (clk                                     ), //i
-    .resetn      (resetn                                  )  //i
+    .io_inputH   (datapath_muxRegArray_7_4_io_output[7:0]), //i
+    .io_inputV   (8'h0                                   ), //i
+    .io_output   (datapath_muxRegArray_7_5_io_output[7:0]), //o
+    .io_selH     (selH                                   ), //i
+    .io_shiftEnb (shiftEnb                               ), //i
+    .clk         (clk                                    ), //i
+    .resetn      (resetn                                 )  //i
   );
   muxReg datapath_muxRegArray_7_6 (
-    .io_inputH   (datapath_muxRegArray_7_5_io_output[31:0]), //i
-    .io_inputV   (32'h0                                   ), //i
-    .io_output   (datapath_muxRegArray_7_6_io_output[31:0]), //o
-    .io_selH     (selH                                    ), //i
-    .io_shiftEnb (shiftEnb                                ), //i
-    .clk         (clk                                     ), //i
-    .resetn      (resetn                                  )  //i
+    .io_inputH   (datapath_muxRegArray_7_5_io_output[7:0]), //i
+    .io_inputV   (8'h0                                   ), //i
+    .io_output   (datapath_muxRegArray_7_6_io_output[7:0]), //o
+    .io_selH     (selH                                   ), //i
+    .io_shiftEnb (shiftEnb                               ), //i
+    .clk         (clk                                    ), //i
+    .resetn      (resetn                                 )  //i
   );
   muxReg datapath_muxRegArray_7_7 (
-    .io_inputH   (datapath_muxRegArray_7_6_io_output[31:0]), //i
-    .io_inputV   (32'h0                                   ), //i
-    .io_output   (datapath_muxRegArray_7_7_io_output[31:0]), //o
-    .io_selH     (selH                                    ), //i
-    .io_shiftEnb (shiftEnb                                ), //i
-    .clk         (clk                                     ), //i
-    .resetn      (resetn                                  )  //i
+    .io_inputH   (datapath_muxRegArray_7_6_io_output[7:0]), //i
+    .io_inputV   (8'h0                                   ), //i
+    .io_output   (datapath_muxRegArray_7_7_io_output[7:0]), //o
+    .io_selH     (selH                                   ), //i
+    .io_shiftEnb (shiftEnb                               ), //i
+    .clk         (clk                                    ), //i
+    .resetn      (resetn                                 )  //i
   );
   `ifndef SYNTHESIS
   always @(*) begin
@@ -2306,25 +2306,25 @@ module MatTransNxNStream (
   `endif
 
   assign shiftEnb = ((io_output_valid && io_output_ready) || (io_input_valid && io_input_ready));
-  assign datapath_muxRegArray_0_0_io_inputH = io_input_payload[31 : 0];
+  assign datapath_muxRegArray_0_0_io_inputH = io_input_payload[7 : 0];
   always @(*) begin
-    io_output_payload[255 : 224] = datapath_muxRegArray_0_0_io_output;
-    io_output_payload[223 : 192] = datapath_muxRegArray_0_1_io_output;
-    io_output_payload[191 : 160] = datapath_muxRegArray_0_2_io_output;
-    io_output_payload[159 : 128] = datapath_muxRegArray_0_3_io_output;
-    io_output_payload[127 : 96] = datapath_muxRegArray_0_4_io_output;
-    io_output_payload[95 : 64] = datapath_muxRegArray_0_5_io_output;
-    io_output_payload[63 : 32] = datapath_muxRegArray_0_6_io_output;
-    io_output_payload[31 : 0] = datapath_muxRegArray_0_7_io_output;
+    io_output_payload[63 : 56] = datapath_muxRegArray_0_0_io_output;
+    io_output_payload[55 : 48] = datapath_muxRegArray_0_1_io_output;
+    io_output_payload[47 : 40] = datapath_muxRegArray_0_2_io_output;
+    io_output_payload[39 : 32] = datapath_muxRegArray_0_3_io_output;
+    io_output_payload[31 : 24] = datapath_muxRegArray_0_4_io_output;
+    io_output_payload[23 : 16] = datapath_muxRegArray_0_5_io_output;
+    io_output_payload[15 : 8] = datapath_muxRegArray_0_6_io_output;
+    io_output_payload[7 : 0] = datapath_muxRegArray_0_7_io_output;
   end
 
-  assign datapath_muxRegArray_1_0_io_inputH = io_input_payload[63 : 32];
-  assign datapath_muxRegArray_2_0_io_inputH = io_input_payload[95 : 64];
-  assign datapath_muxRegArray_3_0_io_inputH = io_input_payload[127 : 96];
-  assign datapath_muxRegArray_4_0_io_inputH = io_input_payload[159 : 128];
-  assign datapath_muxRegArray_5_0_io_inputH = io_input_payload[191 : 160];
-  assign datapath_muxRegArray_6_0_io_inputH = io_input_payload[223 : 192];
-  assign datapath_muxRegArray_7_0_io_inputH = io_input_payload[255 : 224];
+  assign datapath_muxRegArray_1_0_io_inputH = io_input_payload[15 : 8];
+  assign datapath_muxRegArray_2_0_io_inputH = io_input_payload[23 : 16];
+  assign datapath_muxRegArray_3_0_io_inputH = io_input_payload[31 : 24];
+  assign datapath_muxRegArray_4_0_io_inputH = io_input_payload[39 : 32];
+  assign datapath_muxRegArray_5_0_io_inputH = io_input_payload[47 : 40];
+  assign datapath_muxRegArray_6_0_io_inputH = io_input_payload[55 : 48];
+  assign datapath_muxRegArray_7_0_io_inputH = io_input_payload[63 : 56];
   assign fsm_wantExit = 1'b0;
   always @(*) begin
     fsm_wantStart = 1'b0;
@@ -2695,21 +2695,21 @@ endmodule
 //muxReg_1 replaced by muxReg
 
 module muxReg (
-  input  wire [31:0]   io_inputH,
-  input  wire [31:0]   io_inputV,
-  output wire [31:0]   io_output,
+  input  wire [7:0]    io_inputH,
+  input  wire [7:0]    io_inputV,
+  output wire [7:0]    io_output,
   input  wire          io_selH,
   input  wire          io_shiftEnb,
   input  wire          clk,
   input  wire          resetn
 );
 
-  reg        [31:0]   reg_1;
+  reg        [7:0]    reg_1;
 
   assign io_output = reg_1;
   always @(posedge clk or negedge resetn) begin
     if(!resetn) begin
-      reg_1 <= 32'h0;
+      reg_1 <= 8'h0;
     end else begin
       if(io_shiftEnb) begin
         if(io_selH) begin
