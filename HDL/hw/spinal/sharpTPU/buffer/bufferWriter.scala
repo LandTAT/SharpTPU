@@ -47,7 +47,7 @@ case class bufD_Writer(addrWidth : Int = 5, dataWidth : Int = 256) extends Compo
     val maskWidth = dataWidth / 32
 
     val work = Reg(Bool)
-    val addr = Reg(UInt(addrWidth bits), init = U(0))
+    val addr = Reg(UInt(8 bits), init = U(0))
     val mask = Reg(Bits(maskWidth bits), init = B(0))
     val arithMode = RegNextWhen(io.arith, cond = io.start)
     val rdFlw = Flow(Fragment(Bits(4 * 32 bits)))
@@ -104,7 +104,7 @@ case class bufD_Writer(addrWidth : Int = 5, dataWidth : Int = 256) extends Compo
 
     val wrMem = Stream(streamRAM_wrCmd(addrWidth, dataWidth, 32))
     wrMem.valid := work & rdFlw.fire
-    wrMem.payload.addr := addr |>> rshA
+    wrMem.payload.addr := (addr |>> rshA)(0, addrWidth bits)
     wrMem.payload.mask := mask
     wrMem.payload.data := arithMode.mux(
         ArithOp.FP32     -> data_fp32,

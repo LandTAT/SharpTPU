@@ -63,8 +63,8 @@ case class bufA_Loader(addrWidth : Int = 5, dataWidth : Int = 512, readLatency :
         work := io.start
     }
 
-    val data_fp16_i = io.rdMem.payload.subdivideIn(2 slices)(rowA(0, 1 bits))
-    val data_int8_i = io.rdMem.payload.subdivideIn(4 slices)(rowA(0, 2 bits))
+    val data_fp16_i = io.rdMem.payload.subdivideIn(2 slices)(Delay(rowA(0, 1 bits), readLatency))
+    val data_int8_i = io.rdMem.payload.subdivideIn(4 slices)(Delay(rowA(0, 2 bits), readLatency))
     val data_fp32_o = io.rdMem.payload
     val data_fp16_o = Bits(dataWidth bits)
     val data_int8_o = Bits(dataWidth bits)
@@ -204,9 +204,9 @@ case class bufC_Loader(addrWidth : Int = 5, dataWidth : Int = 256, readLatency :
         work := io.start
     }
 
-    val data_mux2 = io.rdMem.payload.subdivideIn(2 slices)(addr(0, 1 bits)) // 128 Bits
-    val data_mux4 = io.rdMem.payload.subdivideIn(4 slices)(addr(0, 2 bits)) //  64 Bits
-    val data_mux8 = io.rdMem.payload.subdivideIn(8 slices)(addr(0, 3 bits)) //  32 Bits
+    val data_mux2 = io.rdMem.payload.subdivideIn(2 slices)(Delay(addr(0, 1 bits), readLatency)) // 128 Bits
+    val data_mux4 = io.rdMem.payload.subdivideIn(4 slices)(Delay(addr(0, 2 bits), readLatency)) //  64 Bits
+    val data_mux8 = io.rdMem.payload.subdivideIn(8 slices)(Delay(addr(0, 3 bits), readLatency)) //  32 Bits
     val wrflw = Flow(Fragment(Bits(4 * 32 bits)))
     wrflw.payload.fragment := arithMode.mux(
         ArithOp.FP32     -> B"96'b0" ## data_mux8,

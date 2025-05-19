@@ -138,8 +138,8 @@ case class sharpTPUTop() extends Component {
     U_bufD_Writer.io.arith := U_regIF.io.arith
     U_bufD_Writer.io.start := U_fsm.state === mState.LOAD && U_fsm.nextState === mState.CALC
     U_bufD_Writer.io.rdFlw.payload.fragment := U_prod.io.vecD
-    U_bufD_Writer.io.rdFlw.payload.last := U_delay.valid
-    U_bufD_Writer.io.rdFlw.valid := U_delay.last
+    U_bufD_Writer.io.rdFlw.payload.last := U_delay.last
+    U_bufD_Writer.io.rdFlw.valid := U_delay.valid
     U_bufD_Writer.io.wrMem >> U_bufD.io.aw
     // U_bufD_Writer.io.done
 
@@ -152,7 +152,7 @@ case class sharpTPUTop() extends Component {
     U_axiAWIssuer.io.arith := U_regIF.io.arith
     U_axiAWIssuer.io.shape := U_regIF.io.shape
     U_axiAWIssuer.io.start := U_fsm.state === mState.CALC && U_fsm.nextState === mState.STORE
-    U_axiAWIssuer.io.addrD := U_regIF.io.addrA
+    U_axiAWIssuer.io.addrD := U_regIF.io.addrD
     U_axiAWIssuer.io.axiAw >> io.axi.aw
     io.axi.w.payload.data := U_bufD_Loader.io.wrStm.payload.fragment
     io.axi.w.payload.last := U_bufD_Loader.io.wrStm.payload.last
