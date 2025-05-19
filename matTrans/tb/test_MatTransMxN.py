@@ -17,7 +17,7 @@ def concatenate_uint32_row(row):
 
 # 根据硬件参数设置
 SIZE_K = 16    # 应匹配硬件中的sizeM
-SIZE_N = 16   # 应匹配硬件中的sizeN
+SIZE_N = 8   # 应匹配硬件中的sizeN
 SIZE_PE = 8    # 应匹配硬件中的sizePE
 WIDTH = 32     # 应匹配硬件中的width
 # DTYPE = np.uint16  # 数据类型
@@ -123,7 +123,7 @@ async def matTransMxNStream_test(dut):
         await RisingEdge(dut.clk)
     dut.io_output_ready.value = 1
     row = 0
-    while True:
+    while row != SIZE_N:
         # 输出就绪后，连续N个周期接收每一行数据
 
         if dut.io_output_valid.value == 1 and dut.io_output_payload_last.value == 0:

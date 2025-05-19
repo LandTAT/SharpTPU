@@ -1,8 +1,6 @@
 <testsuites name="results">
   <testsuite name="all" package="all">
-    <property name="random_seed" value="1747657781" />
-    <testcase name="matTransMxNStream_test" classname="test_MatTransMxN" file="/Users/azureglacier/miniconda3/lib/python3.12/site-packages/cocotb/decorators.py" lineno="26" time="0.0909428596496582" sim_time_ns="10000.001" ratio_time="109959.16599195683">
-      <failure message="Test failed with RANDOM_SEED=1747657781" />
-    </testcase>
+    <property name="random_seed" value="1747661875" />
+    <testcase name="matTransMxNStream_test" classname="test_MatTransMxN" file="/Users/azureglacier/miniconda3/lib/python3.12/site-packages/cocotb/decorators.py" lineno="26" time="0.0072138309478759766" sim_time_ns="337.501" ratio_time="46785.26603113329" />
   </testsuite>
 </testsuites>

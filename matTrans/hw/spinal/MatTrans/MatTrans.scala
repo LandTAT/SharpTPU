@@ -269,7 +269,7 @@ case class MatTransMxNStream(sizePE: Int = 8, width: Int = 32) extends Component
     val op = in (MxNOp)
   }
   val peArray = Array.fill(2)(MatTransNxNStream(sizePE, width))
-  val addr_width = 7
+  val addr_width = 6
   val memory = ram_t2p(addr_width, 8 * width)
   val sizeMode = RegNext(io.op)
 
