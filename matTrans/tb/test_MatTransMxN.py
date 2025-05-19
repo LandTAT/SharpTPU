@@ -17,9 +17,9 @@ def concatenate_uint32_row(row):
 
 # 根据硬件参数设置
 SIZE_K = 16    # 应匹配硬件中的sizeM
-SIZE_N = 32   # 应匹配硬件中的sizeN
+SIZE_N = 16   # 应匹配硬件中的sizeN
 SIZE_PE = 8    # 应匹配硬件中的sizePE
-WIDTH = 8     # 应匹配硬件中的width
+WIDTH = 32     # 应匹配硬件中的width
 # DTYPE = np.uint16  # 数据类型
 
 #%%
@@ -123,32 +123,50 @@ async def matTransMxNStream_test(dut):
         await RisingEdge(dut.clk)
     dut.io_output_ready.value = 1
     row = 0
-    while (row != N):
+    while True:
         # 输出就绪后，连续N个周期接收每一行数据
-        if dut.io_output_valid.value == 1:
+
+        if dut.io_output_valid.value == 1 and dut.io_output_payload_last.value == 0:
             for j in range(SIZE_K // SIZE_PE):
                 # 计算当前行的起始索引
                 start_index = j * SIZE_PE
                 # 计算当前行的结束索引
                 end_index = start_index + SIZE_PE
 
-            
-                len1 = len(dut.io_output_payload.value)
                 # print(f"\n第{row}行数据: {len1}\n")
                 # 将接收到的数据存储到输出矩阵中
                 # Calculate the correct byte size based on SIZE_PE and DTYPE
                 bytes_needed = SIZE_PE * np.dtype(DTYPE).itemsize
-                output_matrix[row][start_index:end_index] = np.frombuffer(int(dut.io_output_payload.value).to_bytes(bytes_needed, byteorder='little'), dtype=DTYPE)
+                output_matrix[row][start_index:end_index] = np.frombuffer(int(dut.io_output_payload_fragment.value).to_bytes(bytes_needed, byteorder='little'), dtype=DTYPE)
                 # 等待一个时钟周期进入下一行
                 # print(f"\n第{row}行数据: {output_matrix[0][0]}\n")
                 
                 await RisingEdge(dut.clk) 
             print(f"第{row}行输出数据:\n {output_matrix}\n")
-            row += 1 
-            
+            row += 1
+        elif dut.io_output_valid.value == 1 and dut.io_output_payload_last.value == 1:
+            for j in range(SIZE_K // SIZE_PE):
+                # 计算当前行的起始索引
+                start_index = j * SIZE_PE
+                # 计算当前行的结束索引
+                end_index = start_index + SIZE_PE
+
+                # print(f"\n第{row}行数据: {len1}\n")
+                # 将接收到的数据存储到输出矩阵中
+                # Calculate the correct byte size based on SIZE_PE and DTYPE
+                bytes_needed = SIZE_PE * np.dtype(DTYPE).itemsize
+                output_matrix[row][start_index:end_index] = np.frombuffer(int(dut.io_output_payload_fragment.value).to_bytes(bytes_needed, byteorder='little'), dtype=DTYPE)
+                # 等待一个时钟周期进入下一行
+                # print(f"\n第{row}行数据: {output_matrix[0][0]}\n")
+                
+                await RisingEdge(dut.clk) 
+            print(f"第{row}行输出数据:\n {output_matrix}\n")
+            print("ROW:", row, dut.io_output_payload_last.value)
+            break
         else:
             await RisingEdge(dut.clk)
 
+    print("break")
     # 将原始矩阵转置以进行比较
     expected_transpose = np.transpose(random_uint32)
     

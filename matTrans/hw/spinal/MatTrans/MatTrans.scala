@@ -265,7 +265,7 @@ object MxNOp extends SpinalEnum {
 case class MatTransMxNStream(sizePE: Int = 8, width: Int = 32) extends Component {
   val io = new Bundle {
     val input = slave Stream(Bits(width * sizePE bits))
-    val output = master Stream(Bits(width * sizePE bits))
+    val output = master Stream(Fragment(Bits(width * sizePE bits)))
     val op = in (MxNOp)
   }
   val peArray = Array.fill(2)(MatTransNxNStream(sizePE, width))
@@ -330,7 +330,8 @@ case class MatTransMxNStream(sizePE: Int = 8, width: Int = 32) extends Component
 
     io.input.ready := False
     io.output.valid := False
-    io.output.payload := 0
+    io.output.fragment := 0
+    io.output.last := False
 
     peArray.foreach(pe =>{
       pe.io.input.valid := False
@@ -399,11 +400,11 @@ case class MatTransMxNStream(sizePE: Int = 8, width: Int = 32) extends Component
           when(count(0) === False) {
             peArray(0).io.output.ready := True
             peArray(1).io.output.ready := False
-            io.output.payload := peArray(0).io.output.payload
+            io.output.fragment := peArray(0).io.output.payload
           } otherwise {
             peArray(0).io.output.ready := False
             peArray(1).io.output.ready := True
-            io.output.payload := peArray(1).io.output.payload
+            io.output.fragment := peArray(1).io.output.payload
           }
 
         } otherwise {
@@ -414,7 +415,8 @@ case class MatTransMxNStream(sizePE: Int = 8, width: Int = 32) extends Component
 
         
         when(countBlock === (sizeN >> U(log2Up(sizePE)).resize(addr_width)) - 1 && count === 2*sizePE - 1) {
-          goto(loadData2Mem)
+          goto(idle)
+          io.output.last := True
         }
 
         when(countBlock =/= (sizeN >> U(log2Up(sizePE)).resize(addr_width)) -1 && count === 2*sizePE - 1) {
@@ -436,5 +438,5 @@ object MyTopLevelStreamVerilog extends App {
 }
 
 object MyTopLevelMxNStreamVerilog extends App {
-    Config.spinal.generateVerilog(MatTransMxNStream(8,8))
+    Config.spinal.generateVerilog(MatTransMxNStream())
 }
