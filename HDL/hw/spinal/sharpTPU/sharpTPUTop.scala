@@ -38,6 +38,11 @@ case class sharpTPUTop() extends Component {
     val U_regIF = axiLiteRegIF(axil_cfg)
     val U_axiARIssuer = axiARIssuer(axi_cfg)
     val U_axiDispatch = axiRdDispatcher(axi_cfg)
+
+    val U_matPad_0 = MatTransPadZero(axi_cfg.dataWidth)
+    val U_matTrans = MatTransMxNStream(axi_cfg.dataWidth / 32, 32)
+    val U_matDel_0 = MatTransDelZero(axi_cfg.dataWidth)
+
     val U_bufA_Writer = bufferSeqWriter(5, axi_cfg.dataWidth, 512)
     val U_bufB_Writer = bufferSeqWriter(5, axi_cfg.dataWidth, 512)
     val U_bufC_Writer = bufferSeqWriter(5, axi_cfg.dataWidth, axi_cfg.dataWidth)
@@ -93,12 +98,26 @@ case class sharpTPUTop() extends Component {
     U_axiARIssuer.io.addrC := U_regIF.io.addrC
     U_axiARIssuer.io.axiAr >> io.axi.ar
     U_axiDispatch.io.axiRd << io.axi.r
+
+    U_matPad_0.io.arith := U_regIF.io.arith
+    U_matPad_0.io.shape := U_regIF.io.shape
+    U_matPad_0.io.recvB << U_axiDispatch.io.mat_B
+
+    // U_matTrans.io.op    := U_regIF.io.shape
+    U_matTrans.io.op.assignFromBits(U_regIF.io.shape.asBits)
+    U_matTrans.io.input << U_matPad_0.io.sendB.map(_.fragment)
+    U_matDel_0.io.arith := U_regIF.io.arith
+    U_matDel_0.io.shape := U_regIF.io.shape
+    U_matDel_0.io.recvB << U_matTrans.io.output
+
     U_bufA_Writer.io.rdStm << U_axiDispatch.io.mat_A
-    U_bufB_Writer.io.rdStm << U_axiDispatch.io.mat_B
+    // U_bufB_Writer.io.rdStm << U_axiDispatch.io.mat_B
+    U_bufB_Writer.io.rdStm << U_matDel_0.io.sendB
     U_bufC_Writer.io.rdStm << U_axiDispatch.io.mat_C
     // U_bufA_Writer.io.done
     // U_bufB_Writer.io.done
     // U_bufC_Writer.io.done
+
     U_bufA.io.aw << U_bufA_Writer.io.wrMem
     U_bufB.io.aw << U_bufB_Writer.io.wrMem
     U_bufC.io.aw << U_bufC_Writer.io.wrMem
@@ -135,6 +154,11 @@ case class sharpTPUTop() extends Component {
         val valid = Mux(U_regIF.io.arith === ArithOp.INT8 || U_regIF.io.arith === ArithOp.INT4, valid_i, valid_f)
         val  last = Mux(U_regIF.io.arith === ArithOp.INT8 || U_regIF.io.arith === ArithOp.INT4,  last_i,  last_f)
     }
+    U_regIF.io.nan_f := U_prod.io.nan_f
+    U_regIF.io.inf_f := U_prod.io.inf_f
+    U_regIF.io.ovf_i := U_prod.io.ovf_i
+    U_regIF.io.dot_o := U_delay.valid
+    
     U_bufD_Writer.io.arith := U_regIF.io.arith
     U_bufD_Writer.io.start := U_fsm.state === mState.LOAD && U_fsm.nextState === mState.CALC
     U_bufD_Writer.io.rdFlw.payload.fragment := U_prod.io.vecD
