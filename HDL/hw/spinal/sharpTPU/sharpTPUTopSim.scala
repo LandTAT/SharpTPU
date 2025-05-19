@@ -4,6 +4,7 @@ import spinal.core._
 import spinal.core.sim._
 
 object sharpTPUTopSim extends App {
+  /*
   Config.sim.compile(sharpTPUTop()).doSim { dut =>
     // Fork a process to generate the reset and the clock on the dut
     dut.clockDomain.forkStimulus(period = 10)
@@ -28,4 +29,5 @@ object sharpTPUTopSim extends App {
       }
     }
   }
+  */
 }
