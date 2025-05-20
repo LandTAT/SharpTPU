@@ -17,7 +17,7 @@ TOPLEVEL = sharpTPUTop
 
 # MODULE is the basename of the Python test file
 # MODULE = dotProdUnit_TB
-MODULE = sharpTPU_TB
+MODULE = sharpTPU_TBv2
 
 # include cocotb's make rules to take care of the simulator setup
 include $(shell cocotb-config --makefiles)/Makefile.sim

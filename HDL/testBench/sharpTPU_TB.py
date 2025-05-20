@@ -27,7 +27,7 @@ matShape_Code = {
 async def sharpTPU_FPx(dut):
     # Load Data
     arith = "FP32"
-    M, N, K = 32, 8, 16
+    M, N, K = 16, 16, 16
     name = "../../funcModel/output/{:s}_m{:d}n{:d}k{:d}.npz".format(arith, M, N, K)
     tag = f"{arith} m{M}n{N}k{K}"
     data = np.load(name)
@@ -98,7 +98,7 @@ async def sharpTPU_FPx(dut):
     assert np.all(Z == D)
 
 #%%
-# @cocotb.test()
+@cocotb.test()
 async def sharpTPU_Int8(dut):
     # Load Data
     arith = "INT8"
@@ -109,7 +109,6 @@ async def sharpTPU_Int8(dut):
     A = np.fromfile(os.path.join(path, shape, "a_int8_{:s}.bin".format(shape)) , dtype=np.int8 ).reshape(M, K)
     B = np.fromfile(os.path.join(path, shape, "b_int8_{:s}.bin".format(shape)) , dtype=np.int8 ).reshape(K, N)
     C = np.fromfile(os.path.join(path, shape, "c_int32_{:s}.bin".format(shape)), dtype=np.int32).reshape(M, N)
-    # B = B.transpose(1, 0)
 
     AA = A.astype(np.int32)
     BB = B.astype(np.int32)
