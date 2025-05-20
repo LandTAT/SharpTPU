@@ -1,10 +1,10 @@
 # Makefile
 
 # defaults
-SIM ?= icarus
-WAVES ?= 1
-# SIM ?= verilator
-# EXTRA_ARGS += --trace --trace-fst --trace-structs
+# SIM ?= icarus
+# WAVES ?= 1
+SIM ?= verilator
+EXTRA_ARGS += --trace --trace-fst --trace-structs -Wno-fatal
 TOPLEVEL_LANG ?= verilog
 
 # VERILOG_SOURCES += ../hw/gen/dotProdUnit.v

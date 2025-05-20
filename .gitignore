@@ -87,3 +87,5 @@ sim_build/
 build/
 output/
 HLS_arbitrary_Precision_Types/
+axi4Lite/
+matTrans/
